@@ -279,12 +279,87 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .game .gbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 100%}
 .game .area{position:absolute;inset:0;background:none;touch-action:none;overflow:hidden;z-index:0;isolation:isolate}
 .game .modal-bg{z-index:6}
+#modal-root>.modal-bg{z-index:70}
 .game .gtop{z-index:7}
 .gtop{position:absolute;left:0;right:0;top:0;padding:calc(12px + env(safe-area-inset-top)) 14px 0;display:flex;align-items:center;justify-content:space-between;z-index:4;pointer-events:none}
 .gtop>*{pointer-events:auto}
 .back{width:44px;height:44px;border-radius:50%;background:#FFFDF9;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
 .gp{height:40px;font-size:16px;font-variant-numeric:tabular-nums}
 .gright{display:flex;gap:6px;align-items:center}
+/* 일기 쓰기: 위는 쓰는 곳, 아래는 고친 글 */
+.game.diary{display:flex;flex-direction:column;overflow:hidden;user-select:auto;-webkit-user-select:auto;padding-bottom:env(safe-area-inset-bottom)}
+.game.diary .gtop{gap:8px}
+.dhalf{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:8px;padding:8px 16px}
+.dpaper{position:relative;flex:1;min-height:0;border:1px solid var(--edge);border-radius:18px;background:#FFFDF8;overflow:hidden}
+#d-text,#d-mirror{font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:18px;line-height:30px;padding:0 14px;white-space:pre-wrap;overflow-wrap:break-word;word-break:break-all;letter-spacing:0;-webkit-text-stroke:0}
+#d-text{position:absolute;inset:0;width:100%;height:100%;border:0;margin:0;resize:none;outline:none;color:var(--ink);background:repeating-linear-gradient(transparent 0 29px,#EADFC8 29px 30px);background-attachment:local;user-select:text;-webkit-user-select:text}
+#d-mirror{position:absolute;left:0;right:0;top:0;visibility:hidden;pointer-events:none}
+.dbot{overflow-y:auto;border-top:1.5px dashed var(--edge);background:#FFF6E6;padding-top:12px;padding-bottom:14px}
+.dhint{margin:auto;text-align:center;line-height:1.5;font-size:17px}.dhint p{margin:0 0 8px}
+.dres{margin:0;text-align:center;font-size:18px}.dres svg{vertical-align:-5px}
+.dfixed{padding:10px 14px;border-radius:14px;background:#fff;border:1px solid var(--edge);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:17px;line-height:1.65;text-align:left;word-break:break-all;user-select:text;-webkit-user-select:text}
+.dfixed mark{background:#FDF0B1;border-bottom:2px solid #E3B200;border-radius:3px;padding:0 2px;color:inherit;font-family:inherit!important}
+.dlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left}
+.dlist li{padding:8px 12px;border-radius:12px;background:#fff;border:1px solid var(--edge);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:16px}
+.dlist li *{font-family:inherit!important}.dlist s{color:#B5533C}.dlist span{display:block;margin-top:2px;font-size:13px;color:var(--mut)}
+.dold{width:100%;max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+.dold button{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--edge);background:#FFFDF9}
+.dold button span{font-size:14px;color:var(--mut);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important}
+/* 숫자 스톱워치 */
+.sdots{display:flex;gap:8px}.sdot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--edge);background:#FFFDF9;display:flex;align-items:center;justify-content:center;font-style:normal;font-family:var(--num);font-size:15px;color:var(--mut)}
+.sdot.used{background:#F0EDE6;color:#8A8377}.sdot.hit{background:var(--y);border-color:#3A372E;color:#3A372E}
+.game.stopw{display:flex;flex-direction:column;align-items:center;gap:9px;overflow:hidden;padding:0 16px;background:linear-gradient(#FEF6E8,#FDECE0 55%,#FEEFDB);color:#5A3A1C}
+.sw-win{position:absolute;right:0;top:0;width:104px;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 22%),linear-gradient(#000 78%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 22%),linear-gradient(#000 78%,transparent);mask-composite:intersect}
+.game.stopw .gtop{align-self:stretch;margin:0 -16px;justify-content:space-between;align-items:flex-start;position:relative;z-index:2}
+.sw-head{display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:2px}
+.sw-head b{display:flex;align-items:center;gap:6px;font-family:var(--hand)!important;font-size:29px;line-height:1.1;-webkit-text-stroke:.7px currentColor}
+.sw-head b svg{stroke:#E0A01A;fill:#FFE7A0}
+.sw-head span{display:flex;align-items:center;gap:6px;padding:3px 16px;border-radius:99px;background:#DCD0E8;font-size:15px;color:#5B4A78}
+.sw-head span i{font-style:normal;color:#F5B800;font-size:17px;line-height:1}
+.sw-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;width:100%;position:relative;z-index:1}
+.sw-step{display:flex;flex-direction:column;align-items:center;padding:6px 4px 5px;border-radius:14px;border:1.5px solid #EADCC6;background:#FBF5E7;color:#B8A898;box-shadow:0 2px 0 rgba(120,90,40,.08)}
+.sw-step b{font-size:18px;line-height:1.15}.sw-step span{font-size:15px;line-height:1.15}.sw-step em{font-style:normal;font-size:13px;height:22px;display:flex;align-items:center;font-family:var(--num)!important}
+.sw-step.now{color:#5A3A1C;border:2px solid #E8B93A;background:linear-gradient(#FFF6A8,#FBE46B);box-shadow:0 3px 0 #E0A91E}.sw-step.now em{color:#D9480F}
+.sw-step.used{color:#8A7868}.sw-step.hit{color:#5A3A1C;background:#FFE9A6;border-color:#E8B93A}
+.sw-target{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:6px 34px 4px;border-radius:20px;background:#FFFBF5;border:1.5px solid #EADCC6;box-shadow:0 3px 8px rgba(120,90,40,.12)}
+.sw-target span{font-size:18px;-webkit-text-stroke:.4px currentColor}
+.sw-target b{font-family:'Jua',var(--num)!important;font-size:54px;line-height:1;color:#E8590C;font-variant-numeric:tabular-nums;min-width:88px;text-align:center}
+.sw-wrap{flex:1 1 0;min-height:150px;width:100%;display:flex;align-items:center;justify-content:center;container-type:size}
+.sw-clock{position:relative;width:min(100cqw,100cqh - 14px,270px);aspect-ratio:1;margin-top:14px;container-type:inline-size}
+.sw-knob{position:absolute;left:50%;top:-13px;width:26px;height:16px;margin-left:-13px;border-radius:5px 5px 0 0;background:linear-gradient(#FFD667,#F2B43A);box-shadow:inset 0 -2px 0 rgba(180,120,20,.25)}
+.sw-ear{position:absolute;top:-2%;width:27%;height:27%;background:linear-gradient(160deg,#FFDC7A,#F5B93A);box-shadow:inset 0 0 0 5px #FFE9A6}
+.sw-ear.l{left:9%;border-radius:22% 70% 0 70%;transform:rotate(-14deg)}.sw-ear.r{right:9%;border-radius:70% 22% 70% 0;transform:rotate(14deg)}
+.sw-dial{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 42%,#fff,#FFFBEF 70%);border:3px solid #EDBE52;box-shadow:inset 0 0 0 9px #FFEFC2,inset 0 0 0 11px #F6D683,0 8px 16px rgba(190,140,40,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:manipulation}
+.sw-dial b{font-family:'Jua',var(--num)!important;font-size:38cqw;line-height:1;color:#4A2A12;font-variant-numeric:tabular-nums;position:relative;z-index:1}
+.sw-dial small{font-size:max(12px,7cqw);margin-top:2px;min-height:1.25em;position:relative;z-index:1;-webkit-text-stroke:.3px currentColor}
+.sw-ring{position:absolute;inset:-5px;border-radius:50%;border:8px solid transparent;border-top-color:#F26A1B;border-left-color:#F9A03F;opacity:0}
+.sw-clock.run .sw-ring{opacity:1;animation:swspin .55s linear infinite}@keyframes swspin{to{transform:rotate(360deg)}}
+.sw-clock.run .sw-dial small{color:#E8590C;background:linear-gradient(transparent 55%,#FFE27A 55%);padding:0 6px}
+.sw-clock.run{animation:swshake .18s linear infinite}@keyframes swshake{50%{transform:translateX(1.5px) rotate(.4deg)}}
+.sw-rib,.sw-spark{display:none}
+.sw-clock.hit .sw-dial{background:radial-gradient(circle at 50% 38%,#FFF3B0,#FFD23F 62%,#FBBF24);border-color:#E8A91E;box-shadow:inset 0 0 0 9px #FFE27A,0 0 0 8px rgba(255,220,110,.35),0 8px 18px rgba(190,140,40,.3);animation:joy .6s cubic-bezier(.3,.7,.4,1)}
+.sw-clock.hit .sw-dial small{display:none}.sw-clock.hit .sw-dial b{margin-bottom:16%}
+.sw-clock.hit .sw-rib{display:flex;align-items:center;gap:6px;position:absolute;left:-7%;right:-7%;bottom:9%;justify-content:center;padding:5px 0 6px;border-radius:10px;background:linear-gradient(#FFF6DC,#FFE7B0);border:2px solid #E8B93A;box-shadow:0 3px 0 rgba(180,120,20,.25);font-size:max(14px,9.4cqw);white-space:nowrap;z-index:2;-webkit-text-stroke:.6px currentColor}
+.sw-rib svg{width:8cqw;height:8cqw}
+.sw-clock.hit .sw-spark{display:block;position:absolute;inset:0;z-index:1}.sw-spark i{position:absolute;font-style:normal;color:#fff;font-size:9.5cqw;text-shadow:0 0 6px rgba(255,255,255,.9);animation:twk 1s ease-in-out infinite alternate}
+.sw-spark i:nth-child(1){left:18%;top:34%}.sw-spark i:nth-child(2){right:16%;top:22%;font-size:20px;animation-delay:.3s}.sw-spark i:nth-child(3){right:20%;top:52%;animation-delay:.5s}.sw-spark i:nth-child(4){left:26%;top:16%;font-size:16px;animation-delay:.2s}
+@keyframes twk{from{transform:scale(.6);opacity:.5}to{transform:scale(1.1);opacity:1}}
+.sw-clock.miss .sw-dial b{color:#9A8878}
+.sw-msg{position:relative;z-index:2;margin:0;text-align:center;word-break:keep-all;min-height:0}
+.sw-msg b{color:#E8590C}.sw-msg svg{width:20px;height:20px;vertical-align:-4px}
+.sw-msg.info{width:100%;padding:8px 10px;border-radius:18px;background:rgba(255,251,245,.9);border:1.5px solid #F0E3CE;font-size:17px;line-height:1.5}
+.sw-msg.bub{padding:7px 22px;border-radius:99px;background:#FFFBF5;border:1.5px solid #EADCC6;box-shadow:0 3px 8px rgba(120,90,40,.12);font-size:21px;-webkit-text-stroke:.4px currentColor}
+.sw-msg.bub::after{content:"";position:absolute;left:50%;bottom:-8px;width:13px;height:13px;margin-left:-7px;background:#FFFBF5;border-right:1.5px solid #EADCC6;border-bottom:1.5px solid #EADCC6;transform:rotate(45deg)}
+.sw-space{flex:none;height:210px;width:100%}
+.sw-scene{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:1;pointer-events:none;max-height:36%;object-fit:cover;object-position:50% 0;-webkit-mask-image:linear-gradient(transparent,#000 9%);mask-image:linear-gradient(transparent,#000 9%)}
+@media (max-height:780px){.game.stopw{gap:6px}.sw-head b{font-size:25px}.sw-step b{font-size:16px}.sw-step span{font-size:13px}.sw-step em{height:18px}.sw-target{padding:4px 28px 2px}.sw-target span{font-size:16px}.sw-target b{font-size:44px}.sw-msg.info{font-size:15px;line-height:1.4;padding:6px 8px}.sw-msg.bub{font-size:18px}.sw-go{min-height:54px;font-size:24px}.sw-wrap{min-height:130px}}
+.sw-go{position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:3;width:74%;max-width:330px;min-height:62px;border-radius:99px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:27px;-webkit-text-stroke:.8px currentColor}
+.sw-go.y{background:linear-gradient(#FFE680,#F9C431);border:2px solid #E3AE22;box-shadow:inset 0 2px 0 rgba(255,255,255,.6),0 5px 0 #D99A12,0 9px 14px rgba(150,100,10,.25);color:#5A3A1C}
+.sw-go.o{background:linear-gradient(#FF9B52,#F2661A);border:2px solid #E2560E;box-shadow:inset 0 2px 0 rgba(255,255,255,.4),0 5px 0 #C9480A,0 9px 14px rgba(190,70,10,.3);color:#fff;font-size:31px}
+.sw-go:active{transform:translateX(-50%) translateY(3px)}
+.sw-conf{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:2}
+.sw-conf i{position:absolute;top:22%;width:9px;height:9px;border-radius:2px;opacity:0;animation:conf 1.6s ease-out forwards}
+@keyframes conf{0%{opacity:1;margin-top:0}100%{opacity:0;margin-top:46vh}}
 .toyi{flex:none}.act .toyi{width:42px;height:38px}
 .snack.toy{min-height:70px;padding:8px 10px}.snack.toy.sel{border-color:#3A372E;background:#FDF0B1;box-shadow:inset 0 0 0 1.5px #3A372E}
 .snack.toy.own{background:#F3FAEC}
@@ -516,6 +591,7 @@ button.cc{cursor:pointer}
 .tcat.say img{animation:joy .6s cubic-bezier(.3,.7,.4,1)}
 .tbub{position:relative;max-width:100%;padding:6px 14px;border-radius:18px;background:#fff;border:1.5px solid #3A372E;font-size:20px;line-height:1.25;text-align:center;word-break:keep-all;-webkit-text-stroke:.4px currentColor}
 .tbub:empty{visibility:hidden}
+.theard{min-height:22px;margin:-4px 24px 0;text-align:center;font-size:15px;color:var(--mut);word-break:keep-all}
 .tbub{z-index:2}
 .tbub::after{content:"";position:absolute;left:50%;bottom:-7px;width:11px;height:11px;margin-left:-6px;background:#fff;border-right:1.5px solid #3A372E;border-bottom:1.5px solid #3A372E;transform:rotate(45deg)}
 .tmsg{margin:0;text-align:center;font-size:22px;min-height:30px;-webkit-text-stroke:.5px currentColor}
@@ -1187,12 +1263,14 @@ function renderToday(){
   const st = situation(), p = prog();
   renderHeader(); renderGarden(st, p);
   const B = $("today-body");
-  B.innerHTML = scheduleCard(st, p) + tasksCard(st, p);
+  B.innerHTML = scheduleCard(st, p) + stopCard() + tasksCard(st, p) + diaryCard();
   B.querySelectorAll("[data-start]").forEach(b => b.onclick = () => startTask(b.dataset.start));
   B.querySelectorAll("[data-undo]").forEach(b => b.onclick = () => { if(UI.undo === b.dataset.undo && Date.now() - UI.undoAt < 3000){ delete day().tasks[b.dataset.undo]; UI.undo = null; save(); render(); } else { UI.undo = b.dataset.undo; UI.undoAt = Date.now(); toast("한 번 더 누르면 이 기록이 지워져요"); } });
   B.querySelectorAll("[data-play]").forEach(b => b.onclick = () => tryPlay(b.dataset.play));
   const ts = $("t-stop"); if(ts) ts.onclick = () => stopTask();
   $("t-add").onclick = () => addTaskModal("");
+  $("go-diary").onclick = diaryScreen;
+  const gs = $("go-stop"); if(gs) gs.onclick = stopScreen;
   const gt = $("go-table"); if(gt) gt.onclick = () => show("table");
 }
 function addTaskModal(msg){
@@ -1232,13 +1310,15 @@ function toggleCls(i){
   const got = pay("c"+i, S.rewards.cls, e[2]);
   reward("naong", got, unlocked("naong") ? "오늘 일정 끝! 같이 놀자옹" : "잘했어! 최고야");
 }
+const ALL_BONUS = 5;             // 오늘 할 일을 모두 끝낸 날 한 번 주는 보너스
 function startTask(id){ if(S.running) return; S.running = {id:id, start:Date.now(), asked:0}; save(); render(); catSay("aeong", "좋아, 같이 해 보자!"); }
 function finishTask(id, start, end){
   const t = allTasks().find(x => x.id === id), rec = {start:start, end:end}; day().tasks[id] = rec;
   const label = t.n+" "+hm(start)+"–"+hm(end)+" ("+spent(rec)+")";
   const got = pay(id, t.timed ? S.rewards.timed : S.rewards.task, label);
   if(!got) logAdd(label, "✓");
-  reward("aeong", got, unlocked("aeong") ? "할 일 끝! 최고야" : "야호옹! 해냈다");
+  const all = allTasks().every(x => taskDone(day(), x.id)), bonus = all ? pay("all-tasks", ALL_BONUS, "오늘 할 일 모두 끝") : 0;
+  reward("aeong", got + bonus, bonus ? "다 끝냈다! 보너스 "+bonus+"마리!" : unlocked("aeong") ? "할 일 끝! 최고야" : "야호옹! 해냈다");
 }
 
 function stopTask(endAt){
@@ -1381,7 +1461,7 @@ function renderRoom(){
     + '<button class="scene" id="room-cat" aria-label="고양이 쓰다듬기">'+sceneLayers()+'<span class="say '+(roomFx && roomFx.who ? roomFx.who : "")+'" role="status">'+esc(roomFx ? roomFx.say : "")+'</span><span class="cw"><img id="room-img" src="'+img+'" alt="나옹이와 애옹이"></span></button>'
     + '<div class="grid2 cats2">'+card("naong")+card("aeong")+'</div>'
     + '<div class="grid2">'+["naong","aeong"].map(x => '<button class="act" data-snack="'+x+'"><img src="'+art(x === "naong" ? "snack_milk" : "snack_can")+'" alt="">'+CATS[x].name+'<br>간식 주기</button>').join("")
-    + ["naong","aeong"].map(x => '<button class="act" data-toys="'+x+'">'+toyIcon(TOYS[x === "naong" ? 1 : 3], 40)+CATS[x].name+'<br>장난감 사주기</button>').join("")
+    + ["naong","aeong"].map(x => '<button class="act" data-toys="'+x+'">'+toyIcon(TOYS[x === "naong" ? 1 : 3], 40)+CATS[x].name+'<br>장난감 대여하기</button>').join("")
     + ["naong","aeong"].map(x => '<button class="act" data-with="'+x+'"><img src="'+spr(x, x === "naong" ? "yarn" : "paw")+'" alt="">'+CATS[x].name+'랑<br>놀기</button>').join("")+'</div>'
     + '<button class="act talkbtn" id="open-talk">'+MIC+'나옹이·애옹이와 대화하기</button>'
     ;
@@ -1406,37 +1486,39 @@ function profileModal(k, edit){
     return;
   }
   modal(head+'<dl class="pf">'+PFIELDS.map(f => '<div'+(f[0] === "nature" || f[0] === "likes" ? ' class="wide"' : '')+'><dt>'+f[1]+'</dt><dd>'+esc(pfVal(k, f[0]))+'</dd></div>').join("")
-    + '<div class="wide"><dt>장난감</dt><dd>'+(TOYS.filter(t => hasToy(k, t.id)).map(t => '<span title="'+t.n+'">'+toyIcon(t, 34)+'</span>').join("") || "아직 없어요")+'</dd></div>'
+    + '<div class="wide"><dt>장난감</dt><dd>'+(TOYS.filter(t => hasToy(k, t.id)).map(t => '<span title="'+t.n+'" style="display:inline-flex;flex-direction:column;align-items:center;margin-right:8px;font-size:12px;color:var(--mut)">'+toyIcon(t, 34)+toyLeft(k, t.id)+'일</span>').join("") || "빌린 장난감이 없어요")+'</dd></div>'
     + '<div class="wide"><dt>기분</dt><dd>'+moodTxt(c.mood)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+c.mood+'%"></i></span></dd></div>'
     + '<div class="wide"><dt>친밀도</dt><dd>Lv.'+affLv(c.aff)+' · 모은 하트 ♥'+c.aff+' · 다음 레벨까지 ♥'+(20 - c.aff % 20)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+pct+'%"></i></span></dd></div></dl>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="pf-edit">고치기</button><button class="btn y sp" id="pf-x">닫기</button></div>', () => {
       $("pf-x").onclick = closeModal; $("pf-edit").onclick = () => profileModal(k, true);
     });
 }
-// ───────── 장난감 (간식보다 비싸고, 한 번 사 주면 계속 가지고 있다) ─────────
+// ───────── 장난감 대여 (간식보다 비싸고, 한 번 빌리면 10일 동안 가지고 논다) ─────────
+const RENT_DAYS = 10;
 const TOYO = 'stroke="#4A3B2A" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"';
 const TOYS = [
-  {id:"yarn", n:"털실 공", price:10, svg:'<circle cx="24" cy="25" r="15" fill="#F7A8B8" '+TOYO+'/><path d="M12 20c8 2 16 8 20 17M10 28c7 0 14 4 18 11M17 12c7 3 14 10 18 20M27 10c4 3 8 8 10 14" fill="none" '+TOYO+'/><path d="M36 36c4 2 6 5 5 8" fill="none" '+TOYO+'/>'},
-  {id:"bell", n:"방울 공", price:12, svg:'<circle cx="24" cy="26" r="14" fill="#FFD95A" '+TOYO+'/><path d="M10 26h28" fill="none" '+TOYO+'/><circle cx="24" cy="31" r="2.6" fill="#4A3B2A"/><path d="M24 33.500v5" '+TOYO+'/><path d="M20 12c0-4 8-4 8 0" fill="none" '+TOYO+'/>'},
-  {id:"wand", n:"깃털 낚싯대", price:15, svg:'<path d="M8 42L30 14" fill="none" '+TOYO+'/><path d="M30 14c2-5 6-7 9-5" fill="none" '+TOYO+'/><path d="M39 9c5 4 4 13-2 16c-3-2-5-10 2-16z" fill="#9AD0F5" '+TOYO+'/><path d="M35 12c-5 3-6 10-2 14c3-3 4-9 2-14z" fill="#F7A8B8" '+TOYO+'/>'},
-  {id:"mouse", n:"생쥐 인형", price:15, svg:'<path d="M8 32c0-9 8-15 17-15s15 6 15 13c0 3-2 5-5 5H12c-3 0-4-1-4-3z" fill="#C9C4BC" '+TOYO+'/><circle cx="29" cy="17" r="5.500" fill="#F7A8B8" '+TOYO+'/><circle cx="33" cy="27" r="1.600" fill="#4A3B2A"/><circle cx="40.500" cy="31" r="1.500" fill="#F08A8A"/><path d="M8 33c-4 1-5 5-2 8" fill="none" '+TOYO+'/>'},
-  {id:"fishtoy", n:"물고기 인형", price:18, svg:'<path d="M6 25c6-10 20-12 28-1c-8 11-22 9-28 1z" fill="#8FC8F0" '+TOYO+'/><path d="M33 24l9-7v15z" fill="#8FC8F0" '+TOYO+'/><circle cx="14" cy="23" r="1.800" fill="#4A3B2A"/><path d="M21 19c2 3 2 8 0 11" fill="none" '+TOYO+'/>'},
-  {id:"cushion", n:"캣닢 쿠션", price:18, svg:'<rect x="8" y="14" width="32" height="24" rx="9" fill="#BFE3A8" '+TOYO+'/><path d="M24 31c-6-1-8-7-5-11c5 1 7 6 5 11zM24 31c6-1 8-7 5-11c-5 1-7 6-5 11z" fill="#7DBE6B" '+TOYO+'/>'},
-  {id:"tunnel", n:"놀이 터널", price:20, svg:'<path d="M14 12h22c4 0 6 6 6 12s-2 12-6 12H14z" fill="#FFC98A" '+TOYO+'/><ellipse cx="14" cy="24" rx="7" ry="12" fill="#6B5440" '+TOYO+'/><path d="M26 12c3 3 3 21 0 24M34 12c3 3 3 21 0 24" fill="none" '+TOYO+'/>'},
-  {id:"scratch", n:"스크래처", price:22, svg:'<rect x="19" y="8" width="10" height="28" rx="3" fill="#E8C79A" '+TOYO+'/><path d="M19 14h10M19 19h10M19 24h10M19 29h10" fill="none" '+TOYO+'/><rect x="8" y="35" width="32" height="6" rx="3" fill="#C59A6A" '+TOYO+'/><circle cx="24" cy="7" r="4" fill="#F7A8B8" '+TOYO+'/>'},
-  {id:"house", n:"숨숨집", price:28, svg:'<path d="M6 24L24 9l18 15v15H6z" fill="#FFE1A8" '+TOYO+'/><path d="M4 25L24 8l20 17" fill="none" '+TOYO+'/><path d="M17 39V29a7 7 0 0114 0v10z" fill="#6B5440" '+TOYO+'/>'},
-  {id:"tower", n:"캣타워", price:30, svg:'<rect x="21" y="10" width="6" height="30" fill="#E8C79A" '+TOYO+'/><rect x="6" y="38" width="36" height="5" rx="2.500" fill="#C59A6A" '+TOYO+'/><rect x="8" y="24" width="18" height="5" rx="2.500" fill="#BFE3A8" '+TOYO+'/><rect x="20" y="8" width="20" height="5" rx="2.500" fill="#F7A8B8" '+TOYO+'/><path d="M34 13v7" fill="none" '+TOYO+'/><circle cx="34" cy="22" r="2.400" fill="#FFD95A" '+TOYO+'/>'}
+  {id:"yarn", n:"털실 공", price:15, svg:'<circle cx="24" cy="25" r="15" fill="#F7A8B8" '+TOYO+'/><path d="M12 20c8 2 16 8 20 17M10 28c7 0 14 4 18 11M17 12c7 3 14 10 18 20M27 10c4 3 8 8 10 14" fill="none" '+TOYO+'/><path d="M36 36c4 2 6 5 5 8" fill="none" '+TOYO+'/>'},
+  {id:"bell", n:"방울 공", price:18, svg:'<circle cx="24" cy="26" r="14" fill="#FFD95A" '+TOYO+'/><path d="M10 26h28" fill="none" '+TOYO+'/><circle cx="24" cy="31" r="2.6" fill="#4A3B2A"/><path d="M24 33.500v5" '+TOYO+'/><path d="M20 12c0-4 8-4 8 0" fill="none" '+TOYO+'/>'},
+  {id:"wand", n:"깃털 낚싯대", price:22, svg:'<path d="M8 42L30 14" fill="none" '+TOYO+'/><path d="M30 14c2-5 6-7 9-5" fill="none" '+TOYO+'/><path d="M39 9c5 4 4 13-2 16c-3-2-5-10 2-16z" fill="#9AD0F5" '+TOYO+'/><path d="M35 12c-5 3-6 10-2 14c3-3 4-9 2-14z" fill="#F7A8B8" '+TOYO+'/>'},
+  {id:"mouse", n:"생쥐 인형", price:22, svg:'<path d="M8 32c0-9 8-15 17-15s15 6 15 13c0 3-2 5-5 5H12c-3 0-4-1-4-3z" fill="#C9C4BC" '+TOYO+'/><circle cx="29" cy="17" r="5.500" fill="#F7A8B8" '+TOYO+'/><circle cx="33" cy="27" r="1.600" fill="#4A3B2A"/><circle cx="40.500" cy="31" r="1.500" fill="#F08A8A"/><path d="M8 33c-4 1-5 5-2 8" fill="none" '+TOYO+'/>'},
+  {id:"fishtoy", n:"물고기 인형", price:27, svg:'<path d="M6 25c6-10 20-12 28-1c-8 11-22 9-28 1z" fill="#8FC8F0" '+TOYO+'/><path d="M33 24l9-7v15z" fill="#8FC8F0" '+TOYO+'/><circle cx="14" cy="23" r="1.800" fill="#4A3B2A"/><path d="M21 19c2 3 2 8 0 11" fill="none" '+TOYO+'/>'},
+  {id:"cushion", n:"캣닢 쿠션", price:27, svg:'<rect x="8" y="14" width="32" height="24" rx="9" fill="#BFE3A8" '+TOYO+'/><path d="M24 31c-6-1-8-7-5-11c5 1 7 6 5 11zM24 31c6-1 8-7 5-11c-5 1-7 6-5 11z" fill="#7DBE6B" '+TOYO+'/>'},
+  {id:"tunnel", n:"놀이 터널", price:30, svg:'<path d="M14 12h22c4 0 6 6 6 12s-2 12-6 12H14z" fill="#FFC98A" '+TOYO+'/><ellipse cx="14" cy="24" rx="7" ry="12" fill="#6B5440" '+TOYO+'/><path d="M26 12c3 3 3 21 0 24M34 12c3 3 3 21 0 24" fill="none" '+TOYO+'/>'},
+  {id:"scratch", n:"스크래처", price:33, svg:'<rect x="19" y="8" width="10" height="28" rx="3" fill="#E8C79A" '+TOYO+'/><path d="M19 14h10M19 19h10M19 24h10M19 29h10" fill="none" '+TOYO+'/><rect x="8" y="35" width="32" height="6" rx="3" fill="#C59A6A" '+TOYO+'/><circle cx="24" cy="7" r="4" fill="#F7A8B8" '+TOYO+'/>'},
+  {id:"house", n:"숨숨집", price:42, svg:'<path d="M6 24L24 9l18 15v15H6z" fill="#FFE1A8" '+TOYO+'/><path d="M4 25L24 8l20 17" fill="none" '+TOYO+'/><path d="M17 39V29a7 7 0 0114 0v10z" fill="#6B5440" '+TOYO+'/>'},
+  {id:"tower", n:"캣타워", price:45, svg:'<rect x="21" y="10" width="6" height="30" fill="#E8C79A" '+TOYO+'/><rect x="6" y="38" width="36" height="5" rx="2.500" fill="#C59A6A" '+TOYO+'/><rect x="8" y="24" width="18" height="5" rx="2.500" fill="#BFE3A8" '+TOYO+'/><rect x="20" y="8" width="20" height="5" rx="2.500" fill="#F7A8B8" '+TOYO+'/><path d="M34 13v7" fill="none" '+TOYO+'/><circle cx="34" cy="22" r="2.400" fill="#FFD95A" '+TOYO+'/>'}
 ];
 const toyIcon = (t, size) => '<svg class="toyi" width="'+(size || 46)+'" height="'+(size || 46)+'" viewBox="0 0 48 48" aria-hidden="true">'+t.svg+'</svg>';
-const hasToy = (cat, id) => !!(S.toys && S.toys[cat] && S.toys[cat][id]);
+const toyLeft = (cat, id) => { const t = S.toys && S.toys[cat] && S.toys[cat][id]; if(!t) return 0; const el = (now().getTime() - t) / 86400000; return el >= RENT_DAYS ? 0 : RENT_DAYS - Math.max(0, Math.floor(el)); };      // 남은 날 (0 이하면 대여 끝)
+const hasToy = (cat, id) => toyLeft(cat, id) > 0;
 function toyModal(cat, sel, msg){
   const list = TOYS.map(t => { const own = hasToy(cat, t.id);
-    return '<button class="snack toy'+(own ? " own" : "")+(sel === t.id ? " sel" : "")+'" data-toy="'+t.id+'" aria-pressed="'+(sel === t.id)+'" aria-label="'+t.n+(own ? " 가지고 있어요" : " 생선 "+t.price+"마리")+'">'+toyIcon(t)+'<span style="min-width:0"><b style="display:block;font-size:16px;white-space:normal;word-break:keep-all;line-height:1.15">'+t.n+'</b><span class="row" style="gap:4px">'+(own ? '<span class="tag g">있어요</span>' : FISH+t.price)+'</span></span></button>'; }).join("");
+    return '<button class="snack toy'+(own ? " own" : "")+(sel === t.id ? " sel" : "")+'" data-toy="'+t.id+'" aria-pressed="'+(sel === t.id)+'" aria-label="'+t.n+(own ? " 빌린 중, "+toyLeft(cat, t.id)+"일 남음" : " 생선 "+t.price+"마리")+'">'+toyIcon(t)+'<span style="min-width:0"><b style="display:block;font-size:16px;white-space:normal;word-break:keep-all;line-height:1.15">'+t.n+'</b><span class="row" style="gap:4px">'+(own ? '<span class="tag g">'+toyLeft(cat, t.id)+'일 남음</span>' : FISH+t.price)+'</span></span></button>'; }).join("");
   const st = TOYS.find(t => t.id === sel), own = st && hasToy(cat, st.id);
-  modal('<h3 class="sec">'+CATS[cat].name+' 장난감 사주기</h3><span class="pill y">'+FISH+S.fish+'</span>'
+  modal('<h3 class="sec">'+CATS[cat].name+' 장난감 대여하기</h3><span class="pill y">'+FISH+S.fish+'</span>'
     + '<div class="grid2" style="width:100%">'+list+'</div>'
-    + '<p class="small" id="ty-msg" role="status" style="min-height:20px;margin:0;color:#9A5B00">'+esc(msg || (st ? "" : "한 번 사 주면 계속 가지고 놀아요."))+'</p>'
-    + '<div class="row" style="width:100%"><button class="btn sp" id="ty-x">닫기</button>'+(st ? '<button class="btn y sp" id="ty-ok" style="flex:2">'+(own ? "가지고 놀기" : FISH+st.price+"마리로 사주기")+'</button>' : '')+'</div>', () => {
+    + '<p class="small" id="ty-msg" role="status" style="min-height:20px;margin:0;color:#9A5B00">'+esc(msg || (st ? "" : "한 번 빌리면 "+RENT_DAYS+"일 동안 가지고 놀아요."))+'</p>'
+    + '<div class="row" style="width:100%"><button class="btn sp" id="ty-x">닫기</button>'+(st ? '<button class="btn y sp" id="ty-ok" style="flex:2">'+(own ? "가지고 놀기" : FISH+st.price+"마리로 "+RENT_DAYS+"일 빌리기")+'</button>' : '')+'</div>', () => {
       $("ty-x").onclick = closeModal;
       $("modal-root").querySelectorAll("[data-toy]").forEach(b => b.onclick = () => toyModal(cat, b.dataset.toy, ""));
       if(!st) return;
@@ -1444,8 +1526,8 @@ function toyModal(cat, sel, msg){
         const pose = cat === "naong" ? pickOne(["play","reach","laugh","roll"]) : pickOne(["cheer","reach","roll","laugh"]);
         if(own){ cheer(cat, 3, 0); save(); closeModal(); roomJoy(cat === "naong" ? st.n+" 갖고 놀래옹!" : "애옹~ "+st.n+" 재밌어!", spr(cat, pose), cat); return; }
         if(S.fish < st.price){ toyModal(cat, sel, "생선 "+(st.price - S.fish)+"마리만 더 모으면 돼요."); return; }
-        S.fish -= st.price; S.toys = S.toys || {}; (S.toys[cat] = S.toys[cat] || {})[st.id] = Date.now();
-        cheer(cat, 20, Math.round(st.price / 2)); logAdd(st.n+" → "+CATS[cat].name, "−"+st.price); save(); closeModal(); sfx("win");
+        S.fish -= st.price; S.toys = S.toys || {}; (S.toys[cat] = S.toys[cat] || {})[st.id] = now().getTime();
+        cheer(cat, 20, Math.round(st.price / 3)); logAdd(st.n+" "+RENT_DAYS+"일 대여 → "+CATS[cat].name, "−"+st.price); save(); closeModal(); sfx("win");
         roomJoy(cat === "naong" ? "우와, "+st.n+"다옹! 고마워옹!" : "애옹! "+st.n+" 너무 좋아!", spr(cat, pose), cat);
       };
     });
@@ -1476,7 +1558,7 @@ function playModal(cat){
   PLAYCAT = cat; const ids = ["spell", "match", "slice", "tower"];
   modal('<h3 class="sec">'+CATS[cat].name+'랑 놀기</h3><div style="width:100%;display:flex;flex-direction:column;gap:10px">'+ids.map(id => { const g = GAMES[id], st = gameState(id);
       return '<button class="snack'+(st !== "open" ? " off" : "")+'" data-game="'+id+'"><img src="'+gicon(g)+'" alt="" style="width:56px;height:48px;object-fit:contain;flex:none"><span style="text-align:left"><b style="display:block">'+g.n+'</b>'
-        + '<span class="mut" style="font-size:14px">'+(st === "locked" ? "맞춤법 퀴즈를 먼저 하면 열려요" : st === "done" ? "오늘 두 번 다 했어요. 내일 또 해요" : "생선 최대 "+PRIZE[id]+"마리 · 오늘 "+playN(id)+"/"+PLAYMAX+"번")+'</span></span></button>'; }).join("")+'</div>'
+        + '<span class="mut" style="font-size:14px">'+(st === "locked" ? "맞춤법 퀴즈를 먼저 하면 열려요" : st === "done" ? "오늘 두 번 다 했어요. 내일 또 해요" : (id !== "spell" && playN(id) >= 1 ? "한 번 더 놀 수 있어요 (생선은 첫 판만)" : "생선 최대 "+PRIZE[id]+"마리 · 오늘 "+playN(id)+"/"+PLAYMAX+"번"))+'</span></span></button>'; }).join("")+'</div>'
     + '<button class="btn" id="pl-x" style="width:100%">닫기</button>', () => {
       $("pl-x").onclick = closeModal;
       $("modal-root").querySelectorAll("[data-game]").forEach(b => b.onclick = () => { const id = b.dataset.game; if(gameState(id) === "open") closeModal(); openGame(id); });
@@ -1582,6 +1664,7 @@ function gameState(id){
 // 보상: 놀이를 끝까지 하면 정해진 수만큼 준다 (간식 슬라이스·츄르 타워 1, 같은 그림 찾기 2, 맞춤법 퀴즈 5)
 function rewardOf(id, score){
   if(playN(id) >= PLAYMAX) return 0;
+  if(id !== "spell" && playN(id) >= 1) return 0;          // 같은 그림·슬라이스·츄르 타워는 첫 판에만 생선
   if(id === "spell") return Math.min(5, Math.floor(score / 2)) + (score >= 10 ? 2 : 0);    // 2개당 1마리, 다 맞히면 +2
   if(id === "match") return score >= 6 ? 2 : score >= 3 ? 1 : 0;
   if(id === "slice") return score >= 10 ? 1 : 0;
@@ -1601,10 +1684,10 @@ function openGame(id){
 function fx(area, x, y, text){ const e = document.createElement("span"); e.className = "gfx"; e.textContent = text; e.style.left = (x-14)+"px"; e.style.top = (y-20)+"px"; area.appendChild(e); setTimeout(() => e.remove(), 850); }
 function closeGame(){ $("game-root").innerHTML = ""; render(); }
 function runGame(id, setup){
-  const g = GAMES[id], again = false, SECS = g.secs || GAME_SECS, mmss = n => pad(Math.floor(n/60))+":"+pad(n%60);
+  const g = GAMES[id], again = id !== "spell" && playN(id) >= 1, SECS = g.secs || GAME_SECS, mmss = n => pad(Math.floor(n/60))+":"+pad(n%60);
   $("game-root").innerHTML = '<div class="game" role="dialog" aria-modal="true" aria-label="'+g.n+'">'+(g.bg ? '<img class="gbg" src="'+art(g.bg)+'" alt="">' : '')+'<div class="area" id="g-area"></div><div class="gsay" id="g-say" role="status"></div>'
     + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><span class="pill gp" role="timer" aria-label="남은 시간">'+CLOCK+'<span id="g-time">'+mmss(SECS)+'</span></span><span class="gright">'+(g.unit ? '<span class="pill gp" aria-label="'+g.unit[0]+'"><span id="g-pts">0</span>'+g.unit[1]+'</span>' : '')+'<span class="pill y gp" aria-label="받을 생선">'+FISH+'+<span id="g-score">0</span></span></span></div>'
-    + (g.custom ? churuIntro(again) : '<div class="modal-bg" id="g-intro"><div class="modal"><img src="'+gicon(g)+'" alt="" style="height:72px"><h3 class="sec" style="font-size:28px">'+g.n+'</h3><p class="g-how">'+g.how+'</p>'+(g.rule ? '<p class="g-rule">'+FISH+'<span>'+g.rule+'</span></p>' : '')+(again ? '<p class="g-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '')+'<button class="btn y" id="g-start" style="width:100%">시작!</button></div></div>')+'</div>';
+    + (g.custom ? churuIntro(again) : '<div class="modal-bg" id="g-intro"><div class="modal"><img src="'+gicon(g)+'" alt="" style="height:72px"><h3 class="sec" style="font-size:28px">'+g.n+'</h3><p class="g-how">'+g.how+'</p>'+(g.rule && !again ? '<p class="g-rule">'+FISH+'<span>'+g.rule+'</span></p>' : '')+(again ? '<p class="g-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '')+'<button class="btn y" id="g-start" style="width:100%">시작!</button></div></div>')+'</div>';
   let score = 0, running = false, t0 = 0, last = 0, raf = 0;
   const api = {area:$("g-area"), say:t => { $("g-say").textContent = t; }, add:n => { score = Math.max(0, score + n); $("g-score").textContent = rewardOf(id, score); const pe = $("g-pts"); if(pe) pe.textContent = score; }, _init:(() => { setTimeout(() => { const e = $("g-score"); if(e) e.textContent = rewardOf(id, 0); }, 0); })(), isOn:() => running, finish:() => { if(running){ running = false; cancelAnimationFrame(raf); setTimeout(() => gameEnd(id, score), 600); } }};
   const game = setup(api);
@@ -1629,7 +1712,7 @@ function gameEnd(id, score){
   save(); sfx(got ? "win" : "end");
   const box = document.createElement("div"); box.className = "modal-bg result";
   box.innerHTML = '<div class="rays"></div><div class="modal rcard" role="alertdialog" aria-label="놀이 끝"><h3 class="sec" style="font-size:28px">잘 놀았어요! '+PAW+'</h3><p class="rfish">'+FISH.replace('width="18" height="18"','width="44" height="44"')+'+'+got+'</p>'
-    + (g.unit ? '<p class="rpts">'+g.unit[0]+' <b>'+score+g.unit[1]+'</b></p>' : '')+(g.rule ? '<p class="small mut" style="margin:0;line-height:1.35">'+g.rule+'</p>' : '')+''+'<button class="btn y" id="g-home" style="width:100%">확인</button>'+'</div>'
+    + (g.unit ? '<p class="rpts">'+g.unit[0]+' <b>'+score+g.unit[1]+'</b></p>' : '')+(g.rule ? '<p class="small mut" style="margin:0;line-height:1.35">'+(id !== "spell" && playN(id) >= 2 ? "두 번째 판은 생선 없이 놀아요." : g.rule)+'</p>' : '')+''+'<button class="btn y" id="g-home" style="width:100%">확인</button>'+'</div>'
     + '<img class="rc l joy" src="'+spr("naong","laugh")+'" alt=""><img class="rc r joy" src="'+spr("aeong","cheer")+'" alt="">';
   $("game-root").querySelector(".game").appendChild(box);
   $("g-home").onclick = () => { $("game-root").innerHTML = ""; show("room"); };
@@ -1971,13 +2054,13 @@ function decoScreen(){
 }
 
 // ───────── 대화하기 ─────────
-window.__meow = {at:(...a) => meowAt(...a), kinds:() => Object.keys(MEOWS), reply:d => buildReply(d), load:c => loadSounds(c)};   // 소리 점검용
+window.__meow = {at:(...a) => meowAt(...a), kinds:() => Object.keys(MEOWS), reply:(...a) => buildReply(...a), mood:t => moodOf(t), load:c => loadSounds(c)};   // 소리 점검용
 // 지안이가 마이크 버튼을 누르고 말하면, 다 말한 뒤 고양이들이 여러 가지 울음소리로 대답한다.
 // 실제로 목소리를 녹음하거나 어디로 보내지 않는다 — 말한 시간의 길이만 재서 대답 길이를 맞춘다.
 // 울음소리는 Web Audio로 그 자리에서 만들어 낸다 (나옹이는 낮은 목소리, 애옹이는 높은 목소리).
 // 울음소리는 실제 고양이 녹음(공개 도메인 CC0, freesound 원본 · ESC-50 데이터셋 수록)을 쓴다.
 // 고양이마다 다른 녹음을 쓰고, 빠르기·높이·길이를 조금씩 바꿔서 매번 다르게 들리게 한다.
-const CATVOICE = {naong:{rate:0.88, clips:["m05","m06","m07","m08","m09","m02"], long:["m06","m07","m09"], short:["m02","m05"]},
+const CATVOICE = {naong:{rate:0.88, clips:["m05","m06","m07","m08","m09","m02","m11"], long:["m06","m07","m09"], short:["m02","m05"]},
                   aeong:{rate:1.12, clips:["m00","m01","m03","m04"], long:["m01","m00"], short:["m03","m04"]}};
 const MEOWS = {
   mew:    {w:{naong:["냥!","먀!","냐!"], aeong:["앵!","먕!","애옹!"]}},
@@ -1985,12 +2068,43 @@ const MEOWS = {
   long:   {w:{naong:["냐아아아옹~","야오오오옹~","므야아아옹"], aeong:["애오오오옹~","먀아아아옹~","애애애옹~"]}},
   ask:    {w:{naong:["냐옹?","먀?","냥?"], aeong:["애옹?","먕?","앵?"]}},
   twice:  {w:{naong:["야옹 야옹!","냐옹 냐아옹"], aeong:["애옹 애옹!","먀옹 애오옹"]}},
-  chatter:{w:{naong:["냐냐냐냐!","먁먁먁!"], aeong:["애애애앵!","먀먀먀먀!"]}}
+  chatter:{w:{naong:["냐냐냐냐!","먁먁먁!"], aeong:["애애애앵!","먀먀먀먀!"]}},
+  // 아래는 말의 분위기에 맞춰 쓰는 소리
+  chirp:  {w:{naong:["므릉?","므르릉!","먀릉~"], aeong:["으릉?","애르릉!","먀릉~"]}},              // 반가울 때 짧게 올라가는 소리
+  happy:  {w:{naong:["냐앙!","야옹!!","먀아!"], aeong:["애옹!!","먀앙!","애앵!"]}},                // 신날 때 높고 빠르게
+  soft:   {w:{naong:["먀아…","냐아옹…","므으응~"], aeong:["애오…","먀아…","애으응~"]}},            // 다정하고 작게
+  sad:    {w:{naong:["냐아아…","먀우…","므야아…"], aeong:["애우…","먀아아…","애오오…"]}},          // 같이 속상해하는 낮고 느린 소리
+  whine:  {w:{naong:["냐아아앙~","먀아아앙~"], aeong:["애에에엥~","먀아아앙~"]}},                   // 조르는 떨리는 소리
+  yawn:   {w:{naong:["냐아아암…","므야아암…"], aeong:["애아아암…","먀아아암…"]}},                   // 졸릴 때 길게 늘어지는 소리
+  beg:    {w:{naong:["냐옹 냐옹 냐아옹!","먀 먀 먀아!"], aeong:["애옹 애옹 애오옹!","먀 먀 먀아!"]}},  // 달라고 점점 높아지는 소리
+  tiny:   {w:{naong:["먀…","냥…"], aeong:["앵…","먕…"]}}                                          // 풀 죽은 아주 작은 소리
 };
+const BASEKINDS = ["mew","meow","long","ask","twice","chatter","chirp","happy"];       // 말을 못 알아들었을 때 섞어 쓰는 소리
+// 말한 내용에서 분위기를 고른다 (위에서부터 먼저 맞는 것)
+const MOODS = [
+  ["scold", /바보|미워|나빠|못생|멍청|저리\s*가|꺼져/],
+  ["sad",   /슬퍼|슬프|속상|힘들|울었|울고|눈물|아파|아프|무서|외로|우울|짜증|혼났|혼나|싫어|망했|걱정/],
+  ["sleep", /잘\s*자|졸려|졸리|자자|굿\s*나[잇이]|피곤|자러|잘게|잠이/],
+  ["done",  /다\s*했|끝냈|끝났|해냈|백\s*점|잘했|칭찬|성공|이겼|숙제.*했|공부.*했/],
+  ["food",  /밥|간식|배고|츄르|먹|참치|우유|맘마|냠냠/],
+  ["love",  /사랑|좋아|예뻐|예쁘|귀여|귀엽|최고|고마워|고맙|보고\s*싶|멋져|멋지|착하|소중/],
+  ["play",  /놀자|놀까|놀아|신나|재밌|재미|게임|야호|우와|대박|장난감|달리|숨바꼭질/],
+  ["bye",   /잘\s*가|빠이|바이|다녀올게|갔다\s*올게|내일\s*봐|안녕히|이따\s*봐/],
+  ["hi",    /안녕|하이|헬로|왔어|다녀왔|나\s*왔|좋은\s*아침|반가/],
+  ["ask",   /\?|뭐|왜|어디|언제|누구|어때|어떻|할까|일까|했어$|했니|있어$|니$|까$/]
+];
+const moodOf = text => { const t = (text || "").trim(); if(!t) return ""; const m = MOODS.find(x => x[1].test(t)); return m ? m[0] : "talk"; };
+const RECIPE = {            // 분위기마다 소리 순서 (짧게 말하면 앞의 것만 쓴다)
+  hi:[["chirp","meow","happy"],["happy","chirp","mew"]], love:[["soft","chirp","soft"],["chirp","soft","long"]], sad:[["sad","soft","sad"],["tiny","sad","soft"]],
+  sleep:[["yawn","soft"],["soft","yawn"]], done:[["happy","chirp","long"],["happy","twice","happy"]], food:[["beg","whine","twice"],["twice","beg","mew"]],
+  play:[["chatter","happy","twice"],["happy","chatter","chirp"]], bye:[["meow","soft"],["soft","mew"]], scold:[["tiny","sad"],["tiny","tiny"]],
+  ask:[["ask","mew","ask"],["ask","chirp"]], talk:[["meow","chirp","twice"],["mew","long","meow"],["chirp","meow","ask"]]
+};
+const MOODPOSE = {sad:["wonder","curious"], scold:["loaf","loaf"], sleep:["nap","nap"], love:["roll","roll"], food:["lookup","reach"], play:["play","cheer"], done:["laugh","cheer"], ask:["look","lookup"], hi:["laugh","cheer"], bye:["sit","sit2"]};
 const rnd = (a, b) => a + Math.random() * (b - a), pickOne = a => a[Math.floor(Math.random() * a.length)];
 const SND = {};
 function loadSounds(ctx){
-  const names = ["m00","m01","m02","m03","m04","m05","m06","m07","m08","m09"];
+  const names = ["m00","m01","m02","m03","m04","m05","m06","m07","m08","m09","m11"];
   return Promise.all(names.map(n => SND[n] ? 0 : fetch(R("snd/"+n+".mp3")).then(r => r.arrayBuffer()).then(ab => new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no))).then(b => { SND[n] = b; }).catch(() => {})));
 }
 // 녹음 한 토막을 t 시각에 튼다. rate=빠르기(높이), cut=앞부분만 쓸 길이(초), rise=끝을 올려 묻는 말투로
@@ -2003,8 +2117,29 @@ function playClip(ctx, out, t, name, rate, cut, rise){
   g.gain.setValueAtTime(1, t); if(cut && cut < buf.duration){ g.gain.setValueAtTime(1, t + d - 0.05); g.gain.linearRampToValueAtTime(0, t + d); }
   src.connect(g); g.connect(out); src.start(t, 0, len + 0.02); return rise ? d * 0.9 : d;
 }
+// 녹음 한 토막을 더 다양하게: bend=[[위치 0~1, 빠르기 배수]…], vol=크기, lp=부드럽게(Hz), vib=떨림 깊이
+function playFx(ctx, out, t, name, rate, o){
+  const buf = SND[name]; if(!buf) return 0; o = o || {};
+  const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = buf;
+  const len = Math.min(buf.duration, o.cut || 99), bend = o.bend || [[0, 1], [1, 1]];
+  let avg = 0; for(let i = 1; i < bend.length; i++) avg += (bend[i][0] - bend[i-1][0]) * (bend[i][1] + bend[i-1][1]) / 2;
+  const d = len / (rate * (avg || 1));
+  src.playbackRate.setValueAtTime(rate * bend[0][1], t); bend.slice(1).forEach(b => src.playbackRate.linearRampToValueAtTime(rate * b[1], t + d * b[0]));
+  if(o.vib){ const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = o.vibHz || 7; lg.gain.value = rate * o.vib; l.connect(lg); lg.connect(src.playbackRate); l.start(t); l.stop(t + d + 0.05); }
+  const vol = o.vol || 1; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.02); g.gain.setValueAtTime(vol, t + Math.max(0.03, d - (o.fade || 0.06))); g.gain.linearRampToValueAtTime(0, t + d);
+  let node = src; if(o.lp){ const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = o.lp; f.Q.value = 0.5; node.connect(f); node = f; }
+  node.connect(g); g.connect(out); src.start(t, 0, len + 0.02); return d;
+}
 function meowAt(ctx, out, t, cat, kind){
   const v = CATVOICE[cat], r = v.rate * rnd(0.94, 1.07);
+  if(kind === "chirp") return playFx(ctx, out, t, pickOne(v.short), r * 1.250, {cut:rnd(0.22, 0.3), bend:[[0, 0.850], [1, 1.350]], vol:0.9});
+  if(kind === "happy") return playFx(ctx, out, t, pickOne(v.clips), r * 1.150, {cut:rnd(0.4, 0.55), bend:[[0, 0.950], [0.5, 1.120], [1, 1.050]]});
+  if(kind === "soft") return playFx(ctx, out, t, pickOne(v.clips), r * 0.900, {bend:[[0, 1], [1, 0.930]], vol:0.5, lp:2200, fade:0.18});
+  if(kind === "sad") return playFx(ctx, out, t, pickOne(v.long), r * 0.760, {bend:[[0, 1.050], [0.4, 0.960], [1, 0.800]], vol:0.6, lp:2600, fade:0.22});
+  if(kind === "whine") return playFx(ctx, out, t, pickOne(v.long), r * 0.920, {bend:[[0, 0.950], [0.6, 1.080], [1, 1]], vib:0.035, vibHz:6.500});
+  if(kind === "yawn") return playFx(ctx, out, t, pickOne(v.long), r * 0.660, {bend:[[0, 0.900], [0.35, 1.100], [1, 0.780]], vol:0.6, lp:2400, fade:0.3});
+  if(kind === "tiny") return playFx(ctx, out, t, pickOne(v.short), r * 1.080, {cut:rnd(0.2, 0.28), bend:[[0, 1], [1, 0.880]], vol:0.4, lp:3000});
+  if(kind === "beg"){ let at = t; [0.960, 1.050, 1.160].forEach((m, i) => { at += playFx(ctx, out, at, pickOne(v.clips), r * m, {cut:i < 2 ? rnd(0.3, 0.4) : 0, bend:[[0, 1], [1, i < 2 ? 1.060 : 1.150]], vol:0.8 + i * 0.1}) + 0.07; }); return at - t; }
   if(kind === "mew") return playClip(ctx, out, t, pickOne(v.short), r * 1.120, rnd(0.26, 0.36));
   if(kind === "long") return playClip(ctx, out, t, pickOne(v.long), r * rnd(0.74, 0.82));
   if(kind === "ask") return playClip(ctx, out, t, pickOne(v.clips), r * 1.040, rnd(0.42, 0.55), true);
@@ -2013,13 +2148,18 @@ function meowAt(ctx, out, t, cat, kind){
   return playClip(ctx, out, t, pickOne(v.clips), r);
 }
 // 말한 길이에 맞춰 대답을 짠다: 짧게 말하면 한두 마디, 길게 말하면 여러 마디에 긴 울음도 섞는다
-function buildReply(spoke, cats){
+function buildReply(spoke, cats, mood, text){
   cats = cats && cats.length ? cats : ["naong","aeong"];
-  const n = spoke < 1.500 ? 1 : spoke < 3.500 ? 2 : spoke < 6 ? 3 : 4, kinds = Object.keys(MEOWS), out = [];
+  if(mood && RECIPE[mood]){
+    const seq = pickOne(RECIPE[mood]).slice(0, spoke < 1.500 ? 2 : 3), named = cats.filter(c => (text || "").indexOf(c === "naong" ? "나옹" : "애옹") >= 0);
+    let w = named.length === 1 ? named[0] : pickOne(cats);              // 이름을 부르면 그 고양이가 먼저 대답한다
+    return seq.map((k, i) => { const u = {cat:w, kind:k, text:pickOne(MEOWS[k].w[w]), mood:mood}; if(cats.length > 1 && (i === 0 || Math.random() < 0.4)) w = w === "naong" ? "aeong" : "naong"; return u; });
+  }
+  const n = spoke < 1.500 ? 1 : spoke < 3.500 ? 2 : spoke < 6 ? 3 : 4, kinds = BASEKINDS, out = [];
   let who = pickOne(cats), prev = "";
   for(let i = 0; i < n; i++){
     let pool = kinds.filter(k => k !== prev);
-    if(n === 1) pool = ["mew","meow","ask","meow","long","twice"];
+    if(n === 1) pool = ["mew","meow","ask","meow","long","twice","chirp","happy"];
     if(n >= 3 && i === 1 && Math.random() < 0.6) pool = ["long"];
     const k = pickOne(pool); out.push({cat:who, kind:k, text:pickOne(MEOWS[k].w[who])}); prev = k;
     if(cats.length > 1 && (i === 0 || Math.random() < 0.45)) who = who === "naong" ? "aeong" : "naong";
@@ -2031,9 +2171,9 @@ function talkScreen(){
   $("game-root").innerHTML = '<div class="game deco talk" role="dialog" aria-modal="true" aria-label="대화하기"><div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><b class="hand" style="font-size:26px">대화하기</b><span style="width:44px"></span></div>'
     + '<div class="seg twho" role="group" aria-label="누구랑 이야기할까요">'+[["both","둘 다"],["naong","나옹이"],["aeong","애옹이"]].map(w => '<button data-tw="'+w[0]+'" class="'+(w[0] === "both" ? "on" : "")+'" aria-pressed="'+(w[0] === "both")+'">'+w[1]+'</button>').join("")+'</div>'
     + '<div class="tscene" id="t-scene"><img class="rbg" src="'+art("bg_game_garden")+'" alt=""><div class="tcat l" id="tc-naong"><span class="tbub" id="tb-naong" role="status"></span><img src="'+spr("naong","sit")+'" alt="나옹이"></div><div class="tcat r" id="tc-aeong"><span class="tbub" id="tb-aeong" role="status"></span><img src="'+spr("aeong","sit2")+'" alt="애옹이"></div></div>'
-    + '<p class="tmsg" id="t-msg" role="status">마이크를 누르고 말해 봐!</p>'
+    + '<p class="tmsg" id="t-msg" role="status">마이크를 누르고 말해 봐!</p><p class="theard" id="t-heard" aria-live="polite"></p>'
     + '<button class="micbtn" id="t-mic" aria-pressed="false" aria-label="말하기 시작">'+MIC+'</button>'
-    + '<p class="small mut" style="text-align:center;margin:0 24px">목소리는 녹음하지 않아요. 소리가 안 나면 휴대폰 무음 모드를 풀어 주세요.</p></div>';
+    + '<p class="small mut" id="t-note" style="text-align:center;margin:0 24px">말을 알아듣는 데 마이크를 써요. 앱에 저장하지는 않아요.<br>소리가 안 나면 무음 모드를 풀어 주세요.</p></div>';
   let state = "idle", t0 = 0, auto = 0, timers = [], ready = null, who = "both";
   const cats = () => who === "both" ? ["naong","aeong"] : [who];
   $("game-root").querySelectorAll("[data-tw]").forEach(b => b.onclick = () => {
@@ -2045,30 +2185,43 @@ function talkScreen(){
   });
   const mic = $("t-mic"), msg = $("t-msg"), setCat = (k, pose) => { $("tc-"+k).querySelector("img").src = spr(k, pose); };
   const rest = () => { setCat("naong", "sit"); setCat("aeong", "sit2"); };
-  const stopAll = () => { timers.forEach(clearTimeout); timers = []; clearTimeout(auto); };
+  // 말 알아듣기 (폰 브라우저의 음성 인식). 안 되는 폰에서는 예전처럼 말한 길이로만 대답한다
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; let rec = null, heard = "", recDone = null, recErr = "";
+  if(!SR) $("t-note").innerHTML = "이 폰에서는 말을 알아듣지 못해서, 말한 길이에 맞춰 대답해요.<br>소리가 안 나면 무음 모드를 풀어 주세요.";
+  function startRec(){
+    heard = ""; recErr = ""; $("t-heard").textContent = ""; if(!SR) return;
+    try{ rec = new SR(); rec.lang = "ko-KR"; rec.interimResults = true; rec.continuous = true; rec.maxAlternatives = 1;
+      rec.onresult = e => { let x = ""; for(let i = 0; i < e.results.length; i++) x += e.results[i][0].transcript; heard = x.trim(); const h = $("t-heard"); if(h && heard) h.textContent = "“"+heard+"”"; };
+      rec.onerror = e => { recErr = e.error || "error"; };
+      rec.onend = () => { rec = null; if(recDone){ const f = recDone; recDone = null; f(); } };
+      rec.start(); }catch(e){ rec = null; }
+  }
+  const stopRec = () => new Promise(res => { if(!rec) return res(); recDone = res; try{ rec.stop(); }catch(e){ recDone = null; res(); } setTimeout(res, 1500); });
+  const stopAll = () => { timers.forEach(clearTimeout); timers = []; clearTimeout(auto); try{ if(rec){ rec.onend = null; rec.abort(); rec = null; } }catch(e){} };
   $("g-x").onclick = () => { stopAll(); try{ if(AC) AC.suspend(); }catch(e){} closeGame(); };
   function listen(){
     try{ AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); ready = ready || loadSounds(AC); }catch(e){ AC = null; }
     state = "listen"; t0 = Date.now(); mic.classList.add("on"); mic.setAttribute("aria-pressed", "true"); mic.setAttribute("aria-label", "다 말했어요");
     msg.textContent = "듣고 있어… 다 말하면 한 번 더 눌러!"; $("tb-naong").textContent = ""; $("tb-aeong").textContent = "";
-    setCat("naong", "look"); setCat("aeong", "curious"); auto = setTimeout(answer, 9000);
+    setCat("naong", "look"); setCat("aeong", "curious"); startRec(); auto = setTimeout(answer, 9000);
   }
   function answer(){
     clearTimeout(auto); if(state !== "listen") return;
     const spoke = (Date.now() - t0) / 1000;
     state = "reply"; mic.classList.remove("on"); mic.disabled = true; msg.textContent = "";
-    Promise.race([ready || Promise.resolve(), new Promise(r => setTimeout(r, 4000))]).then(() => speak(spoke));
+    Promise.all([stopRec(), Promise.race([ready || Promise.resolve(), new Promise(r => setTimeout(r, 4000))])]).then(() => speak(spoke));
   }
   function speak(spoke){
     if(!$("t-mic")) return;
-    const reply = buildReply(spoke, cats());
+    const mood = moodOf(heard), reply = buildReply(spoke, cats(), mood, heard);
+    if(recErr === "not-allowed" || recErr === "service-not-allowed") $("t-note").innerHTML = "마이크를 허용하면 말한 내용에 맞춰 대답해요.<br>지금은 말한 길이에 맞춰 대답해요.";
     state = "reply"; mic.classList.remove("on"); mic.disabled = true; mic.setAttribute("aria-pressed", "false"); msg.textContent = "";
     let t = AC ? AC.currentTime + 0.35 : 0, delay = 350, master = null;
     if(AC){ master = AC.createDynamicsCompressor(); const mg = AC.createGain(); mg.gain.value = 1; master.connect(mg); mg.connect(AC.destination); }
     reply.forEach(u => {
       const d = (AC && meowAt(AC, master, t, u.cat, u.kind)) || rnd(0.5, 0.9), gap = rnd(0.16, 0.38);
       timers.push(setTimeout(() => { const b = $("tb-"+u.cat); if(!b) return; b.textContent = (b.textContent ? b.textContent+" " : "")+u.text;
-        setCat(u.cat, u.kind === "ask" ? (u.cat === "naong" ? "look" : "lookup") : u.kind === "long" ? (u.cat === "naong" ? "stretch" : "cheer") : (u.cat === "naong" ? "laugh" : "cheer"));
+        setCat(u.cat, u.mood && MOODPOSE[u.mood] ? MOODPOSE[u.mood][u.cat === "naong" ? 0 : 1] : u.kind === "ask" ? (u.cat === "naong" ? "look" : "lookup") : u.kind === "long" ? (u.cat === "naong" ? "stretch" : "cheer") : (u.cat === "naong" ? "laugh" : "cheer"));
         const c = $("tc-"+u.cat); c.classList.remove("say"); void c.offsetWidth; c.classList.add("say"); }, delay));
       t += d + gap; delay += (d + gap) * 1000;
     });
@@ -2077,6 +2230,184 @@ function talkScreen(){
   }
   mic.onclick = () => { if(state === "idle") listen(); else if(state === "listen") answer(); };
 }
+
+// ───────── 일기 쓰기 (하루 한 번, 생선 10마리 · 처음 검사에서 틀린 게 없으면 3마리 더) ─────────
+const DIARY_FISH = 10, DIARY_BONUS = 3, DIARY_LINES = 5, DIARY_MINCH = 40;
+let DIARY = {}; try{ DIARY = JSON.parse(localStorage.getItem(KEY+"-diary") || "{}") || {}; }catch(e){ DIARY = {}; }
+const saveDiary = () => { try{ localStorage.setItem(KEY+"-diary", JSON.stringify(DIARY)); }catch(e){} };
+// 자주 틀리는 맞춤법 규칙: [찾을 모양, 고친 말, 까닭]. 문맥을 봐야 아는 것(낫다/낳다, 맞히다/맞추다 등)은 넣지 않는다.
+const SPFIX = (() => {
+  const R = [], add = (re, to, why) => R.push([re, to, why]);
+  const W = (pairs, why) => pairs.split(" ").forEach(p => { const [a, b] = p.split(">"); add(new RegExp(a, "g"), b.replace(/_/g, " "), why); });
+  SPELL.forEach(q => { if(q[0]) return; const bad = q[2], good = q[1]; if(["실어","마니","구지","애기","오뚜기","일부로","새수","됬다","오랫만에","무릅","찌게"].includes(bad)) return;
+    const cut = bad.endsWith("다") && good.endsWith("다") && bad.length > 2 ? 1 : 0; add(new RegExp(bad.slice(0, bad.length - cut), "g"), good.slice(0, good.length - cut), q[3]); });
+  add(/무릅(?!쓰)/g, "무릎", "다리의 한 부분은 '무릎'이에요."); add(/(^|\s|김치|된장|부대|순두부|참치)찌게/g, "$1찌개", "끓여 먹는 음식은 '찌개'예요.");
+  W("됬>됐 됫>됐 됏>됐", "'되었'을 줄이면 '됐'이에요.");
+  W("되요>돼요 되서>돼서 됀>된 돼는>되는 돼면>되면 돼고>되고 돼니>되니 됄>될", "'되어'로 바꿔 말이 되면 '돼', 안 되면 '되'예요.");
+  W("않해>안_해 않했>안_했 않돼>안_돼 않되>안_되 않먹>안_먹 않가>안_가 않갔>안_갔 않와>안_와 않왔>안_왔 않봐>안_봐 않봤>안_봤 않좋>안_좋 않하>안_하", "'아니'를 줄인 말은 '안'이에요. '않'은 '-지 않다'처럼 뒤에 와요.");
+  W("웬지>왠지", "'왜인지'를 줄인 말이라 '왠지'예요."); W("왠일>웬일 왠만>웬만", "'왠지'만 '왠'이고 나머지는 '웬'이에요.");
+  W("몇\\s?일>며칠", "날짜를 셀 때는 언제나 '며칠'이에요."); W("오랫만>오랜만", "'오래간만'을 줄인 말이라 '오랜만'이에요.");
+  W("어떻하>어떡하 어떡게>어떻게 어케>어떻게", "'어떻게'와 '어떡해(어떻게 해)'를 구분해요.");
+  add(/(할|갈|볼|올|줄|될|살|놀|을|쓸|탈|낼)께/g, "$1게", "'-ㄹ게'로 써요. 소리는 [께]지만 '게'로 적어요.");
+  add(/(할|갈|볼|올|줄|될|살|놀|을|일|쓸|탈|낼)꺼/g, "$1 거", "'-ㄹ 거'로 띄어 써요. 소리는 [꺼]지만 '거'로 적어요.");
+  W("같애>같아 같에>같아", "'같아'로 써요."); W("뵈요>봬요", "'뵈어요'를 줄이면 '봬요'예요."); W("예들아>얘들아", "'이 아이들아'를 줄인 말이라 '얘들아'예요.");
+  W("설레였>설렜", "기본 모양이 '설레다'라서 '설렜다'예요."); W("설레이>설레", "기본 모양이 '설레다'라서 '설레는, 설렘'이에요."); W("담궈>담가 잠궈>잠가 치뤄>치러", "'담그다, 잠그다, 치르다'는 '담가, 잠가, 치러'로 바뀌어요.");
+  W("이예요>이에요", "받침 뒤에는 '이에요', 받침이 없으면 '예요'예요.");
+  add(/(.)읍니다/g, (m, a) => { const c = a.charCodeAt(0) - 0xAC00; return c >= 0 && c < 11172 && (c % 28 === 20 || a === "없") ? a + "습니다" : m; }, "'-습니다'로 써요."); W("슴니다>습니다 임니다>입니다 함니다>합니다", "소리 나는 대로 쓰지 않고 '-ㅂ니다'로 써요.");
+  W("할려고>하려고 갈려고>가려고 볼려고>보려고 먹을려고>먹으려고", "'-려고' 앞에 'ㄹ'을 덧붙이지 않아요.");
+  W("조아요>좋아요 조아해>좋아해 조아서>좋아서 좋와>좋아 시러>싫어 걍>그냥 글구>그리고 가티>같이 갇이>같이 우껴>웃겨 마춤법>맞춤법 궁굼>궁금 몰르>모르 끌여>끓여 널버>넓어 짤바>짧아", "소리 나는 대로나 줄여 쓰지 않고 바른 모양으로 써요.");
+  W("고마와>고마워 반가와>반가워 즐거와>즐거워 아름다와>아름다워", "'-워'로 써요."); W("바꼈>바뀌었 사겼>사귀었", "'바뀌었, 사귀었'은 줄여 쓸 수 없어요.");
+  W("가르켜>가르쳐 가르키>가르치", "'가르치다(알려 주다)'와 '가리키다(손으로 짚다)'만 있어요.");
+  add(/예기(?!치)/g, "얘기", "'이야기'를 줄인 말은 '얘기'예요."); W("베게>베개 곱배기>곱빼기", "바른 모양으로 써요.");
+  W("재미잇>재미있 맛잇>맛있 멋잇>멋있 잇었>있었 잇어>있어", "'있다'는 받침이 'ㅆ'이에요.");
+  W("엇다>었다 엇어>었어 엇는>었는 겟다>겠다 겟어>겠어 햇다>했다 햇어>했어 햇는>했는 썻>썼 갓다>갔다 갓어>갔어 왓다>왔다 왓어>왔어 봣>봤 졋>졌", "지난 일을 말할 때 받침은 'ㅆ'이에요.");
+  add(/(.)앗(?=다|어|는|지|고|습)/g, (m, a) => a === "빼" ? m : a + "았", "지난 일을 말할 때 받침은 'ㅆ'이에요.");
+  W("할수>할_수 수있>수_있 것같>것_같", "'수', '것'은 앞말과 띄어 써요.");
+  add(/(^|\s)마니(?=\s|$)/g, "$1많이", "'많이'로 써요."); add(/(^|\s)구지(?=\s|$)/g, "$1굳이", "'굳이'로 써요."); add(/(^|\s)넘(?=\s)/g, "$1너무", "'너무'를 줄여 쓰지 않아요.");
+  return R;
+})();
+// 글에서 틀린 곳을 찾는다 → [{i, bad, good, why}] (겹치면 앞의 것, 같은 자리면 긴 것)
+function spellCheck(text){
+  const found = [];
+  SPFIX.forEach(r => { r[0].lastIndex = 0; let m; while((m = r[0].exec(text))){ if(!m[0]){ r[0].lastIndex++; continue; }
+    const good = typeof r[1] === "function" ? r[1](...m) : r[1].replace(/\$(\d)/g, (x, n) => m[+n] || ""); if(good !== m[0]) found.push({i:m.index, bad:m[0], good:good, why:r[2]}); } });
+  found.sort((a, b) => a.i - b.i || b.bad.length - a.bad.length);
+  const out = []; let end = 0; found.forEach(f => { if(f.i >= end){ out.push(f); end = f.i + f.bad.length; } });
+  return out;
+}
+function spellApply(text, fs){ let out = "", at = 0; fs.forEach(f => { out += text.slice(at, f.i) + f.good; at = f.i + f.bad.length; }); return out + text.slice(at); }
+function spellHtml(text, fs){ let out = "", at = 0; fs.forEach(f => { out += esc(text.slice(at, f.i)) + '<mark>' + esc(f.good) + '</mark>'; at = f.i + f.bad.length; }); return (out + esc(text.slice(at))).replace(/\n/g, "<br>"); }
+const hangulCount = t => (t.match(/[가-힣]/g) || []).length;
+const diaryDate = k => { const p = k.split("-"); return (+p[1])+"월 "+(+p[2])+"일 "+DAYS[new Date(+p[0], +p[1]-1, +p[2]).getDay()]+"요일"; };
+const PEN = ln('<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>', 24);
+function diaryCard(){
+  const e = DIARY[TK()], done = e && e.saved;
+  return '<section class="card"><div class="ch">'+PEN+'<h2 class="sec">오늘의 일기</h2></div><div class="row" style="gap:10px"><span class="sp" style="font-size:16px;line-height:1.3">'+(done ? "오늘 일기를 썼어요!" : "다섯 줄 이상 쓰면 "+FISH+" "+DIARY_FISH)+'</span><button class="btn'+(done ? "" : " y")+'" id="go-diary">'+(done ? "다시 보기" : "일기 쓰기")+'</button></div></section>';
+}
+function diaryScreen(){
+  const k = TK(), e = DIARY[k] || (DIARY[k] = {text:"", saved:false, got:0, first:null});
+  let checked = null;            // 마지막 검사 결과 (글을 고치면 다시 검사해야 저장할 수 있다)
+  $("game-root").innerHTML = '<div class="game deco diary" role="dialog" aria-modal="true" aria-label="일기 쓰기"><div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><b class="hand" style="font-size:24px">'+diaryDate(k)+' 일기</b><button class="btn" id="d-old" style="min-height:40px;padding:0 12px">지난 일기</button></div>'
+    + '<div class="dhalf dtop"><div class="dpaper"><textarea id="d-text" maxlength="1500" placeholder="오늘 있었던 일을 써 보세요." aria-label="일기 쓰는 곳"></textarea><div id="d-mirror" aria-hidden="true"></div></div>'
+    + '<div class="row" style="gap:10px"><span class="sp small" id="d-count" role="status"></span><button class="btn y" id="d-check">맞춤법 검사하기</button></div></div>'
+    + '<div class="dhalf dbot" id="d-out" aria-live="polite"></div></div>';
+  const ta = $("d-text"), out = $("d-out"); ta.value = e.text || "";
+  const lines = () => { const m = $("d-mirror"); m.textContent = ta.value.replace(/\n$/, "\n ") || " "; return ta.value.trim() ? Math.round(m.scrollHeight / 30) : 0; };
+  const enough = () => lines() >= DIARY_LINES && hangulCount(ta.value) >= DIARY_MINCH;
+  const count = () => { const n = lines(); $("d-count").innerHTML = n >= DIARY_LINES ? (hangulCount(ta.value) >= DIARY_MINCH ? "지금 "+n+"줄 · 다섯 줄을 채웠어요!" : "지금 "+n+"줄 · 글자를 조금 더 채워 봐요") : "지금 "+n+"줄 · "+(DIARY_LINES - n)+"줄 더 쓰면 생선을 받아요"; };
+  const hint = () => { out.innerHTML = '<div class="dhint">'+(e.saved ? '<p><b>오늘 일기는 저장했어요.</b><br>고쳐 쓰고 다시 저장할 수도 있어요.</p>' : '<p>다 쓰고 <b>맞춤법 검사하기</b>를 누르면<br>고친 글이 여기에 보여요.</p>')
+    + '<p class="small mut">다섯 줄 이상 쓰면 '+FISH+' '+DIARY_FISH+'마리<br>처음 검사에서 틀린 곳이 없으면 '+FISH+' '+DIARY_BONUS+'마리 더!</p></div>'; };
+  const saveBtn = () => '<button class="btn y" id="d-save" style="width:100%">'+(e.saved ? "다시 저장하기" : "일기 저장하기")+'</button>';
+  function showResult(){
+    const fs = checked.fs, t = checked.text;
+    out.innerHTML = (fs.length ? '<p class="dres">고칠 곳을 <b>'+fs.length+'군데</b> 찾았어요.</p><div class="dfixed">'+spellHtml(t, fs)+'</div><ul class="dlist">'+fs.map(f => '<li><s>'+esc(f.bad)+'</s> → <b>'+esc(f.good)+'</b><span>'+esc(f.why)+'</span></li>').join("")+'</ul><button class="btn" id="d-apply" style="width:100%">고친 글로 바꾸기</button>'
+        : '<p class="dres">'+PAW+' 틀린 곳을 찾지 못했어요. 잘 썼어요!</p><div class="dfixed">'+spellHtml(t, [])+'</div>')
+      + '<p class="small mut" style="margin:0;text-align:center">자주 틀리는 맞춤법만 찾아 줘요. 모든 틀린 곳을 찾지는 못해요.</p>' + saveBtn();
+    const ap = $("d-apply"); if(ap) ap.onclick = () => { ta.value = spellApply(t, fs); e.text = ta.value; saveDiary(); count(); checked = {text:ta.value, fs:spellCheck(ta.value)}; showResult(); };
+    $("d-save").onclick = saveIt;
+  }
+  function saveIt(){
+    if(!checked || checked.text !== ta.value){ toast("맞춤법 검사를 먼저 해 주세요"); return; }
+    e.text = ta.value; e.at = Date.now(); e.lines = lines(); e.errs = e.first ? e.first.n : 0;
+    let got = 0;
+    if(enough()){ got += pay("diary", DIARY_FISH, "일기 쓰기"); if(e.first && e.first.n === 0) got += pay("diary-bonus", DIARY_BONUS, "일기 맞춤법 보너스"); }
+    e.saved = true; e.got = (e.got || 0) + got; saveDiary(); save(); if(got) sfx("win");
+    const short = !enough();
+    modal('<img src="'+spr("both", got ? "smile" : "look")+'" alt="" style="height:84px"><h3 class="sec">일기를 저장했어요</h3>'
+      + (got ? '<p class="rfish" style="margin:0">'+FISH.replace('width="18" height="18"','width="40" height="40"')+'+'+got+'</p>' : '')
+      + '<p style="margin:0;line-height:1.45;text-align:center">'+(got ? (got > DIARY_FISH ? "처음 검사에서 틀린 곳이 없어서<br>보너스까지 받았어요!" : "오늘도 잘 썼어요!") : short ? "다섯 줄을 채우면 생선을 받을 수 있어요.<br>더 써서 다시 저장해도 돼요." : "오늘 생선은 이미 받았어요.")+'</p><button class="btn y" id="dk-ok" style="width:100%">확인</button>', () => { $("dk-ok").onclick = () => { closeModal(); hint(); }; });
+  }
+  ta.oninput = () => { e.text = ta.value; saveDiary(); count(); if(checked){ checked = null; hint(); } };
+  $("d-check").onclick = () => {
+    if(!ta.value.trim()){ toast("먼저 일기를 써 주세요"); return; }
+    checked = {text:ta.value, fs:spellCheck(ta.value)};
+    if(!e.first && enough()){ e.first = {n:checked.fs.length, at:Date.now()}; saveDiary(); }       // 보너스는 다섯 줄을 채운 뒤 처음 한 검사로 정한다
+    ta.blur(); showResult();
+  };
+  $("g-x").onclick = () => { e.text = ta.value; if(!e.text && !e.saved) delete DIARY[k]; saveDiary(); closeGame(); };
+  $("d-old").onclick = () => diaryList();
+  count(); hint();
+}
+function diaryList(open){
+  const keys = Object.keys(DIARY).filter(k => DIARY[k].saved).sort().reverse();
+  if(open && DIARY[open]){ const e = DIARY[open];
+    modal('<h3 class="sec">'+diaryDate(open)+'</h3><div class="dfixed" style="width:100%;max-height:50vh;overflow-y:auto;text-align:left">'+esc(e.text).replace(/\n/g, "<br>")+'</div><p class="small mut" style="margin:0">'+(e.lines || 0)+'줄 · 받은 생선 '+(e.got || 0)+'마리</p><button class="btn y" id="dl-back" style="width:100%">목록으로</button>', () => { $("dl-back").onclick = () => diaryList(); }); return; }
+  modal('<h3 class="sec">지난 일기</h3>'+(keys.length ? '<div class="dold">'+keys.map(k => '<button data-dk="'+k+'"><b>'+diaryDate(k)+'</b><span>'+esc((DIARY[k].text || "").replace(/\s+/g, " ").slice(0, 26))+'</span></button>').join("")+'</div>' : '<p class="mut" style="margin:0">아직 저장한 일기가 없어요.</p>')
+    + '<p class="small mut" style="margin:0">모두 '+keys.length+'편</p><button class="btn" id="dl-x" style="width:100%">닫기</button>', () => { $("dl-x").onclick = closeModal; $("modal-root").querySelectorAll("[data-dk]").forEach(b => b.onclick = () => diaryList(b.dataset.dk)); });
+}
+
+// ───────── 숫자 스톱워치: 오늘 일정이 끝나면 하루 세 번(1·2·3단계) 도전한다 ─────────
+const STOPLV = [{n:"1단계", tag:"보통", ms:70}, {n:"2단계", tag:"빠름", ms:40}, {n:"3단계", tag:"엄청 빠름", ms:22}];     // ms: 숫자 하나가 넘어가는 시간
+const stopRec = () => { const d = day(); return d.stop || (d.stop = {n:0, res:[]}); };
+const schedDone = () => { const p = prog().n; return p.done >= p.total; };
+const WATCH = ln('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.500V9.500M9.500 3h5M12 3v3M18.500 7l1.200-1.200"/>', 24);
+function stopCard(){
+  const r = stopRec(), left = STOPLV.length - r.n, open = schedDone();
+  const dots = STOPLV.map((l, i) => { const x = r.res[i]; return '<i class="sdot'+(x ? (x.got === x.target ? " hit" : " used") : "")+'" title="'+l.n+'">'+(x ? (x.got === x.target ? "★" : Math.abs(x.got - x.target)) : i + 1)+'</i>'; }).join("");
+  return '<section class="card"><div class="ch">'+WATCH+'<h2 class="sec">숫자 스톱워치</h2></div><div class="row" style="gap:10px"><span class="sdots sp">'+dots+'</span>'
+    + (!open ? '<span class="small mut" style="text-align:right;line-height:1.3">오늘 일정이<br>끝나면 열려요</span>' : left > 0 ? '<button class="btn y" id="go-stop">도전! '+left+'번 남음</button>' : '<button class="btn" id="go-stop">결과 보기</button>')+'</div></section>';
+}
+// 단계마다 쓰는 속도 그림: 계기판 + 속도 줄 (단계가 오를수록 줄이 많다)
+const speedIcon = lv => '<svg width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">'
+  + (lv > 0 ? '<path d="M2 '+(lv > 1 ? 7 : 9)+'h'+(lv > 1 ? 9 : 6)+'M'+(lv > 1 ? 1 : 4)+' 13h'+(lv > 1 ? 8 : 5)+(lv > 1 ? 'M4 17h6' : '')+'"/>' : '')
+  + '<path d="M'+(lv ? 15 : 9)+' 17a8 8 0 0116 0"/><path d="M'+(lv ? 23 : 17)+' 17l'+[2, 4, 5.500][lv]+' -'+[6, 5, 3.500][lv]+'"/></svg>';
+const HAND = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" stroke="#C2410C" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V4.500a1.500 1.500 0 013 0V10l5.200 1.200a2 2 0 011.500 2.300l-.800 4.700A3 3 0 0114.900 21H11.500a3 3 0 01-2.300-1.100L5.500 15.500a1.400 1.400 0 012-1.900L9 14.800z"/><path d="M5.500 6a5 5 0 012-3M3 7.500A7.500 7.500 0 015.800 1.500" fill="none" stroke="#fff" stroke-width="1.500" stroke-linecap="round"/></svg>';
+function stopScreen(){
+  if(!schedDone()){ toast("오늘 일정이 끝나면 열려요"); return; }
+  const r = stopRec();
+  $("game-root").innerHTML = '<div class="game deco stopw" role="dialog" aria-modal="true" aria-label="숫자 스톱워치"><img class="sw-win" src="'+art("stop_window")+'" alt="">'
+    + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><div class="sw-head"><b>'+WATCH.replace('width="24" height="24"','width="30" height="30"')+'숫자 스톱워치</b><span><i>☾</i>오늘의 야간 챌린지</span></div><span style="width:44px"></span></div>'
+    + '<div class="sw-steps" id="sw-steps"></div>'
+    + '<div class="sw-target"><span>이 숫자에서 멈춰!</span><b id="sw-target">?</b></div>'
+    + '<div class="sw-wrap"><div class="sw-clock" id="sw-clock"><i class="sw-knob"></i><i class="sw-ear l"></i><i class="sw-ear r"></i>'
+    + '<button class="sw-dial" id="sw-dial" aria-label="멈추기"><span class="sw-ring"></span><b id="sw-num">0</b><small id="sw-sub">1부터 100까지</small><span class="sw-rib">'+PAW+'딱 맞췄어요!'+PAW+'</span><span class="sw-spark" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></span></button></div></div>'
+    + '<div class="sw-msg" id="sw-msg" role="status"></div>'
+    + '<div class="sw-space" id="sw-space"></div>'
+    + '<img class="sw-scene" id="sw-scene" alt="지안이와 나옹이, 애옹이"><div class="sw-conf" id="sw-conf" aria-hidden="true"></div>'
+    + '<button class="sw-go" id="sw-go"></button></div>';
+  let state = "ready", lv = 0, target = 0, t0 = 0, start = 0, raf = 0;
+  const num = $("sw-num"), clock = $("sw-clock"), dial = $("sw-dial"), go = $("sw-go"), msg = $("sw-msg"), scene = $("sw-scene");
+  const fit = () => { const sp = $("sw-space"); if(sp && scene.offsetHeight) sp.style.height = Math.max(120, scene.offsetHeight - 26) + "px"; };
+  scene.onload = fit; addEventListener("resize", fit);
+  const setScene = n => { const u = art("stop_"+n); if(scene.getAttribute("src") !== u) scene.src = u; fit(); };
+  const steps = () => { $("sw-steps").innerHTML = STOPLV.map((l, i) => { const x = r.res[i], cur = i === lv && state !== "over";
+    return '<div class="sw-step'+(x && x.got ? (x.got === x.target ? " hit" : " used") : "")+(cur ? " now" : "")+'"><b>'+l.n+'</b><span>'+l.tag+'</span><em>'+(x && x.got ? (x.got === x.target ? "딱 맞음!" : Math.abs(x.got - x.target)+" 차이") : speedIcon(i))+'</em></div>'; }).join(""); };
+  const info = html => { msg.className = "sw-msg info"; msg.innerHTML = html; }, bubble = html => { msg.className = "sw-msg bub"; msg.innerHTML = html; };
+  const btn = (kind, html) => { go.className = "sw-go " + kind; go.innerHTML = html; };
+  const at = ts => ((start + Math.floor((ts - t0) / STOPLV[lv].ms)) % 100) + 1;
+  function ready(){
+    cancelAnimationFrame(raf); clock.classList.remove("run", "hit", "miss"); $("sw-conf").innerHTML = "";
+    if(r.n >= STOPLV.length){ state = "over"; lv = STOPLV.length - 1; steps(); const hits = r.res.filter(x => x.got === x.target).length;
+      $("sw-target").textContent = "?"; num.textContent = hits ? "★" : "끝"; $("sw-sub").textContent = "오늘 도전 끝"; setScene(hits ? "hit" : "ready");
+      info(hits ? "오늘 <b>"+hits+"번</b> 딱 맞혔어요!<br>내일 또 도전해요 "+PAW : "오늘 세 번 다 도전했어요.<br>내일 또 도전해요 "+PAW); btn("y", "닫기"); return; }
+    state = "ready"; lv = r.n; target = 1 + Math.floor(Math.random() * 100); steps(); setScene("ready");
+    $("sw-target").textContent = target; num.textContent = "0"; $("sw-sub").textContent = "1부터 100까지";
+    info("1부터 100까지 숫자가 빠르게 바뀌어요.<br><b>목표 숫자</b>일 때 화면을 <b>터치</b>하세요!<br>"+PAW+" 기회는 <b>하루 3번!</b> "+PAW);
+    btn("y", '<svg width="22" height="22" viewBox="0 0 24 24" fill="#5A3A1C" aria-hidden="true"><path d="M7 4.500v15a1 1 0 001.500.900l12-7.500a1 1 0 000-1.700l-12-7.500A1 1 0 007 4.500z"/></svg>'+STOPLV[lv].n+" 시작");
+  }
+  function run(){
+    state = "run"; r.n = lv + 1; r.res[lv] = {target:target, got:0, lv:lv}; save();        // 시작을 누르면 기회 하나를 쓴다
+    start = Math.floor(Math.random() * 100); if(((target - 1 - start + 100) % 100) < 25) start = (start + 60) % 100;          // 시작하자마자 목표가 지나가지 않게
+    t0 = performance.now(); clock.classList.add("run"); msg.className = "sw-msg"; msg.innerHTML = ""; $("sw-sub").textContent = "지금이야!"; setScene("run"); btn("o", HAND+"멈춰!"); sfx("start");
+    const loop = ts => { if(state !== "run") return; num.textContent = at(ts); raf = requestAnimationFrame(loop); }; raf = requestAnimationFrame(loop);
+  }
+  function stop(){
+    if(state !== "run") return; state = "result"; cancelAnimationFrame(raf);
+    const got = at(performance.now()); num.textContent = got; r.res[lv].got = got; save();
+    const diff = Math.abs(got - target), hit = diff === 0;
+    clock.classList.remove("run"); clock.classList.add(hit ? "hit" : "miss"); sfx(hit ? "win" : diff <= 3 ? "good" : "miss"); try{ navigator.vibrate && navigator.vibrate(hit ? [30, 40, 60] : 20); }catch(e){}
+    $("sw-sub").textContent = hit ? "" : diff+" 차이"; steps(); setScene(hit ? "hit" : diff <= 3 ? "run" : "ready");
+    bubble(hit ? "우와, <b>"+target+"</b>에 딱 멈췄어요!" : diff <= 3 ? "아깝다! <b>"+got+"</b>에서 멈췄어요." : "<b>"+got+"</b>에서 멈췄어요. 다음엔 꼭!");
+    if(hit) $("sw-conf").innerHTML = Array.from({length:22}, (_, i) => '<i style="left:'+(4 + Math.random() * 92).toFixed(1)+'%;background:'+["#FFC93C","#FF8A65","#7FD6C2","#F7A8B8","#9AD0F5"][i % 5]+';animation-delay:'+(Math.random() * 0.5).toFixed(2)+'s;transform:rotate('+Math.floor(Math.random() * 90)+'deg)"></i>').join("");
+    btn("y", (r.n >= STOPLV.length ? "결과 보기" : "다음 단계로")+' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A3A1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
+  }
+  const done = () => { cancelAnimationFrame(raf); state = "x"; removeEventListener("resize", fit); closeGame(); };
+  go.onclick = () => { if(state === "ready") run(); else if(state === "run") stop(); else if(state === "result") ready(); else done(); };
+  dial.addEventListener("pointerdown", e => { if(state === "run"){ e.preventDefault(); stop(); } });
+  $("g-x").onclick = done;
+  ready();
+}
+window.__diary = {check:t => spellCheck(t), apply:(t, f) => spellApply(t, f), rules:() => SPFIX.length};   // 점검용
 
 // ───────── 화면 전환 ─────────
 let view = "today";
