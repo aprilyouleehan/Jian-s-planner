@@ -305,6 +305,8 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .dold{width:100%;max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
 .dold button{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--edge);background:#FFFDF9}
 .dold button span{font-size:14px;color:var(--mut);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important}
+.plink{align-self:center;display:flex;align-items:center;gap:5px;min-height:40px;padding:0 14px;margin-top:2px;border-radius:99px;font-size:14px;color:var(--mut)}.plink svg{stroke:var(--mut)}
+.sheet{z-index:65}
 /* 숫자 스톱워치 */
 .alarm{position:relative;flex:none;width:48px;height:48px;margin:-8px -6px -8px 0;display:flex;align-items:center;justify-content:center;border-radius:50%}
 .alarm.ring svg{transform-origin:50% 60%;animation:alring 1.5s ease-in-out infinite}
@@ -942,7 +944,7 @@ window.JIAN_SECRET = "jian-37dPGVxOTsIKwotPnqGC-ZVd";
 })();
 
 </script>
-<script src="assets.js"></script>
+<script src="assets.js?v=63fec1fc"></script>
 <script>
 (function(){
 "use strict";
@@ -1291,13 +1293,14 @@ function renderToday(){
   const st = situation(), p = prog();
   renderHeader(); renderGarden(st, p);
   const B = $("today-body");
-  B.innerHTML = scheduleCard(st, p) + tasksCard(st, p) + diaryCard();
+  B.innerHTML = scheduleCard(st, p) + tasksCard(st, p) + diaryCard() + '<button class="plink" id="go-parent">'+LOCK+'엄빠 ONLY</button>';
   B.querySelectorAll("[data-start]").forEach(b => b.onclick = () => startTask(b.dataset.start));
   B.querySelectorAll("[data-undo]").forEach(b => b.onclick = () => { if(UI.undo === b.dataset.undo && Date.now() - UI.undoAt < 3000){ delete day().tasks[b.dataset.undo]; UI.undo = null; save(); render(); } else { UI.undo = b.dataset.undo; UI.undoAt = Date.now(); toast("한 번 더 누르면 이 기록이 지워져요"); } });
   B.querySelectorAll("[data-play]").forEach(b => b.onclick = () => tryPlay(b.dataset.play));
   const ts = $("t-stop"); if(ts) ts.onclick = () => stopTask();
   $("t-add").onclick = () => addTaskModal("");
   $("go-diary").onclick = diaryScreen;
+  $("go-parent").onclick = () => openGate();
   const gs = $("go-stop"); if(gs) gs.onclick = stopScreen;
   const gc = $("go-coupon"); if(gc) gc.onclick = () => couponModal();
   const gt = $("go-table"); if(gt) gt.onclick = () => show("table");
@@ -1611,12 +1614,15 @@ function give(id){
 }
 
 // ───────── 부모님 설정 (아이 화면에는 작은 글자 링크 하나만 보인다) ─────────
-function openGate(){
-  const a = 6 + Math.floor(Math.random()*4), b = 6 + Math.floor(Math.random()*4);
-  modal('<h3 class="sec">부모님 확인</h3><p class="mut">'+a+' × '+b+' = ?</p><input class="field" id="gate-in" inputmode="numeric" aria-label="정답 입력" style="text-align:center;font-size:20px">'
+const PARENT_PW = "55555";
+const LOCK = ln('<rect x="5" y="10.500" width="14" height="10" rx="2.500"/><path d="M8 10.500V8a4 4 0 018 0v2.500"/>', 18);
+function openGate(then){
+  modal('<h3 class="sec">엄빠 ONLY</h3><p class="mut" style="margin:0">비밀번호를 눌러 주세요</p><input class="field" id="gate-in" type="password" inputmode="numeric" autocomplete="off" maxlength="8" aria-label="비밀번호" style="text-align:center;font-size:24px;letter-spacing:.3em;font-family:var(--num)">'
+    + '<p class="small" id="gate-msg" role="status" style="min-height:18px;margin:0;color:#B42318"></p>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="gate-x">닫기</button><button class="btn y sp" id="gate-ok">확인</button></div>', () => {
-      $("gate-x").onclick = closeModal;
-      $("gate-ok").onclick = () => { if(+$("gate-in").value === a*b){ closeModal(); openSettings(); } else { $("gate-in").value = ""; $("gate-in").placeholder = "다시 입력해 주세요"; } };
+      const go = () => { if($("gate-in").value === PARENT_PW){ closeModal(); (then || openSettings)(); } else { $("gate-in").value = ""; $("gate-msg").textContent = "비밀번호가 달라요."; } };
+      $("gate-x").onclick = closeModal; $("gate-ok").onclick = go; $("gate-in").onkeydown = e => { if(e.key === "Enter") go(); };
+      try{ $("gate-in").focus(); }catch(e){}
     });
 }
 let ED = null, edDay = 1;
@@ -1625,7 +1631,11 @@ function readEd(){ ED[edDay] = [...document.querySelectorAll("#sheet-root .ed")]
 function drawSettings(msg){
   const rows = ED[edDay];
   $("sheet-root").innerHTML = '<div class="sheet"><div class="wrap">'
-    + '<div class="row"><h1 class="title sp">부모님 설정</h1><button class="btn sm" id="set-x">닫기</button></div>'
+    + '<div class="row"><h1 class="title sp">엄빠 ONLY</h1><button class="btn sm" id="set-x">닫기</button></div>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">생선</h2><div class="row"><span class="pill y sp" style="justify-content:center;height:44px;font-size:20px">'+FISH+S.fish+'</span></div>'
+    + '<div class="row" style="gap:6px">'+[-10,-1,1,10].map(n => '<button class="btn sp" data-fish="'+n+'" style="padding:0">'+(n > 0 ? "+" : "−")+Math.abs(n)+'</button>').join("")+'</div></section>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">엄빠 쿠폰</h2>'+((S.coupons || []).filter(c => !c.used).length ? (S.coupons || []).filter(c => !c.used).map(c => '<div class="row"><span class="sp" style="line-height:1.3">'+esc(c.n)+'</span><button class="btn sm" data-cdone="'+c.id+'">사용 완료</button></div>').join("") : '<p class="mut" style="margin:0">안 쓴 쿠폰이 없어요.</p>')+'<button class="btn" id="set-coupons">쿠폰함 전체 보기</button></section>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">살펴보기</h2><button class="btn" id="set-diary">지안이 일기 보기</button><button class="btn" id="set-log">최근 기록 보기</button><button class="btn" id="set-replay">오늘 놀이·스톱워치 다시 열기</button></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">일정 관리</h2>'
     + '<div class="days">'+[1,2,3,4,5,6,0].map(w => '<button class="day'+(w===edDay?" on":"")+'" data-ed="'+w+'">'+DAYS[w]+'</button>').join("")+'</div>'
     + (rows.length ? rows.map((e,i) => '<div class="ed"><label>시작<input class="field" type="time" data-k="0" value="'+e[0]+'"></label><label>끝<input class="field" type="time" data-k="1" value="'+e[1]+'"></label>'
@@ -1633,10 +1643,7 @@ function drawSettings(msg){
         + '<label>종류<select class="field" data-k="4">'+Object.keys(TYPES).map(t => '<option value="'+t+'"'+(t===e[4]?" selected":"")+'>'+TYPES[t]+'</option>').join("")+'</select></label>'
         + '<button class="btn sm full" data-del="'+i+'" style="color:#B42318">이 일정 삭제</button></div>').join("") : '<p class="mut">'+DAYS[edDay]+'요일은 일정이 없어요.</p>')
     + '<button class="btn" id="ed-add">+ 일정 추가</button><button class="btn y" id="ed-save">일정 저장</button><p class="small" id="ed-msg" role="status" style="min-height:18px">'+esc(msg)+'</p></section>'
-    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">보상 설정</h2><p class="small mut">할 일을 마칠 때 받는 생선 수예요. 같은 할 일은 하루에 한 번만 받고, 일정은 생선을 주지 않아요.</p>'
-    + [["task","밥·샤워·추가한 할 일"],["timed","숙제·연습"]].map(r => '<div class="row"><span class="sp">'+r[1]+'</span><div class="step"><button data-rw="'+r[0]+'" data-d="-1" aria-label="'+r[1]+' 줄이기">−</button><b style="width:24px;text-align:center">'+S.rewards[r[0]]+'</b><button data-rw="'+r[0]+'" data-d="1" aria-label="'+r[1]+' 늘리기">+</button></div></div>').join("")+'</section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">기록 관리</h2><button class="btn" id="set-reset">모든 기록 지우기</button></section>'
-    + (PREVIEW ? '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">테스트 도구</h2><p class="small mut">미리보기에서만 보여요.</p><button class="btn" id="tt-all">오늘 일정·할 일 모두 완료</button><button class="btn" id="tt-fish">생선 +10</button><button class="btn" id="tt-play">오늘 놀이 다시 열기</button></section>' : '')
     + '</div></div>';
   const R = $("sheet-root");
   $("set-x").onclick = () => { R.innerHTML = ""; render(); };
@@ -1656,7 +1663,13 @@ function drawSettings(msg){
   };
   R.querySelectorAll("[data-rw]").forEach(b => b.onclick = () => { readEd(); const k = b.dataset.rw; S.rewards[k] = clamp(S.rewards[k] + (+b.dataset.d), 0, 9); save(); drawSettings(""); });
   $("set-reset").onclick = () => { const b = $("set-reset"); if(b.dataset.arm){ const rw = S.rewards; S = upgrade({}); S.rewards = rw; save(); drawSettings("기록을 지웠어요. 일정은 그대로예요."); } else { b.dataset.arm = "1"; b.textContent = "한 번 더 누르면 지워져요 (되돌릴 수 없어요)"; } };
-  if(PREVIEW){
+  R.querySelectorAll("[data-fish]").forEach(b => b.onclick = () => { readEd(); const n = +b.dataset.fish; S.fish = Math.max(0, S.fish + n); logAdd("엄빠가 생선 "+(n > 0 ? "+" : "−")+Math.abs(n), (n > 0 ? "+" : "−")+Math.abs(n)); save(); drawSettings(""); });
+  R.querySelectorAll("[data-cdone]").forEach(b => b.onclick = () => { readEd(); const c = S.coupons.find(x => x.id === b.dataset.cdone); if(c){ c.used = now().getTime(); save(); } drawSettings(""); });
+  $("set-coupons").onclick = () => couponModal();
+  $("set-diary").onclick = () => diaryList();
+  $("set-log").onclick = () => modal('<h3 class="sec">최근 기록</h3><div style="width:100%;max-height:56vh;overflow-y:auto;text-align:left">'+(S.log.length ? S.log.map(l => { const d = new Date(l.t); return '<div class="row" style="padding:6px 0;border-top:1px solid var(--line);gap:8px"><span class="small mut" style="flex:none;width:76px">'+(d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes())+'</span><span class="sp small">'+esc(l.text)+'</span><b class="small">'+esc(l.n)+'</b></div>'; }).join("") : '<p class="mut">아직 기록이 없어요.</p>')+'</div><button class="btn" id="lg-x" style="width:100%">닫기</button>', () => { $("lg-x").onclick = closeModal; });
+  $("set-replay").onclick = () => { readEd(); const d = day(); d.played = {}; delete d.stop; save(); drawSettings("오늘 놀이와 스톱워치를 다시 열었어요."); };
+  if($("tt-all")){
     $("tt-all").onclick = () => { const d = day(); d.forceN = true; allTasks().forEach(t => { if(!taskDone(d, t.id)){ d.tasks[t.id] = {start:Date.now()-20*60000, end:Date.now()}; pay(t.id, t.timed ? S.rewards.timed : S.rewards.task, t.n); } }); S.running = null; save(); drawSettings("모두 완료로 바꿨어요."); };
     $("tt-fish").onclick = () => { S.fish += 10; save(); drawSettings("생선 +10"); };
     $("tt-play").onclick = () => { day().played = {}; save(); drawSettings("오늘 놀이를 다시 열었어요."); };
@@ -2421,13 +2434,13 @@ function giftBox(lv, rec, done){
 function couponModal(askId){
   const list = (S.coupons || []).slice().sort((a, b) => (a.used ? 1 : 0) - (b.used ? 1 : 0) || b.at - a.at), dt = t => { const d = new Date(t); return d.getFullYear()+"년 "+(d.getMonth()+1)+"월 "+d.getDate()+"일"; };
   modal('<h3 class="sec">엄빠 쿠폰함</h3>'+(list.length ? '<div class="cpl">'+list.map(c => '<div class="cp'+(c.used ? " used" : "")+'"><b>'+esc(c.n)+'</b><span>받은 날 · '+dt(c.at)+'</span><span>쓴 날 · '+(c.used ? dt(c.used) : "아직 안 썼어요")+'</span>'
-      + (c.used ? '' : askId === c.id ? '<span class="row" style="gap:6px;margin-top:6px"><button class="btn" data-cno="1" style="padding:0 12px">아니요</button><button class="btn y sp" data-cyes="'+c.id+'" style="padding:0 8px;font-size:14px">엄빠가 확인했어요</button></span>' : '<button class="btn" data-cuse="'+c.id+'" style="margin-top:6px;min-height:38px">쿠폰 쓰기</button>')+'</div>').join("")+'</div>'
+      + (c.used ? '' : askId === c.id ? '<span class="row" style="gap:6px;margin-top:6px"><button class="btn" data-cno="1" style="padding:0 12px">아니요</button><button class="btn y sp" data-cyes="'+c.id+'" style="padding:0 8px;font-size:14px">'+LOCK+'엄빠가 확인했어요</button></span>' : '<button class="btn" data-cuse="'+c.id+'" style="margin-top:6px;min-height:38px">쿠폰 쓰기</button>')+'</div>').join("")+'</div>'
     : '<p class="mut" style="margin:0;line-height:1.5">아직 쿠폰이 없어요.<br>스톱워치 3단계를 딱 맞히면<br>금 상자에서 나와요!</p>')
     + '<button class="btn" id="cp-x" style="width:100%">닫기</button>', () => {
       $("cp-x").onclick = closeModal; const M = $("modal-root");
       M.querySelectorAll("[data-cuse]").forEach(b => b.onclick = () => couponModal(b.dataset.cuse));
       M.querySelectorAll("[data-cno]").forEach(b => b.onclick = () => couponModal());
-      M.querySelectorAll("[data-cyes]").forEach(b => b.onclick = () => { const c = S.coupons.find(x => x.id === b.dataset.cyes); if(c){ c.used = now().getTime(); save(); } couponModal(); render(); });
+      M.querySelectorAll("[data-cyes]").forEach(b => b.onclick = () => { const id = b.dataset.cyes; openGate(() => { const c = S.coupons.find(x => x.id === id); if(c){ c.used = now().getTime(); save(); } couponModal(); render(); }); });
     });
 }
 // 단계마다 쓰는 속도 그림: 계기판 + 속도 줄 (단계가 오를수록 줄이 많다)
