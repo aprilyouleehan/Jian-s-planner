@@ -285,6 +285,9 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .back{width:44px;height:44px;border-radius:50%;background:#FFFDF9;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
 .gp{height:40px;font-size:16px;font-variant-numeric:tabular-nums}
 .gright{display:flex;gap:6px;align-items:center}
+.toyi{flex:none}.act .toyi{width:42px;height:38px}
+.snack.toy{min-height:70px;padding:8px 10px}.snack.toy.sel{border-color:#3A372E;background:#FDF0B1;box-shadow:inset 0 0 0 1.5px #3A372E}
+.snack.toy.own{background:#F3FAEC}
 .g-rule{display:flex;align-items:center;justify-content:center;gap:8px;margin:0;padding:8px 12px;border-radius:14px;background:#FFF6CF;font-size:15px;line-height:1.35;text-align:left;word-break:keep-all}
 .g-rule svg{flex:none}
 .rpts{margin:0;font-size:18px}.rpts b{font-size:22px}
@@ -955,6 +958,7 @@ function upgrade(s){
   s.inv = s.inv || {};
   s.profile = s.profile || {}; ["naong","aeong"].forEach(k => { s.profile[k] = Object.assign({}, PROFILE0[k], s.profile[k] || {}); });
   s.custom = Array.isArray(s.custom) ? s.custom : [];
+  s.toys = s.toys || {}; s.toys.naong = s.toys.naong || {}; s.toys.aeong = s.toys.aeong || {};
   s.deco = s.deco || {}; s.deco.own = s.deco.own || {}; s.deco.on = s.deco.on || {};
   return s;
 }
@@ -995,7 +999,27 @@ function pay(key, amount, label){
   d.paid[key] = amount; S.fish += amount; logAdd(label, "+"+amount); return amount;
 }
 function cheer(k, mood, aff){ const c = S.cats[k]; c.mood = clamp(c.mood + mood, 0, 100); c.aff += aff; }
-function settle(){               // 하루가 지나면 기분이 조금 차분해질 뿐, 벌점은 없다
+const SKIP_COST = 10;
+function skipCheck(){            // 지나간 날 가운데 '오늘 할 일'을 다 끝내지 못한 날마다 생선을 뺀다 (이 기능이 생긴 날부터, 한 번에 최대 7일치)
+  const t = TK(), d0 = now(), back = n => keyOf(new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() - n));
+  if(!S.skip){ S.skip = {last: back(1)}; return; }                 // 처음 켠 날: 오늘부터 센다
+  if(S.skip.last >= back(1)) return;
+  const missed = [];
+  for(let n = 7; n >= 1; n--){ const k = back(n); if(k <= S.skip.last) continue;
+    const rec = S.days[k], list = TASKS.concat((S.custom || []).filter(c => c.day ? c.day === k : keyOf(new Date(+String(c.id).slice(1) || 0)) <= k));     // 그날 있던 할 일 (나중에 추가한 것은 빼고)
+    if(!list.every(t => rec && rec.tasks && rec.tasks[t.id] && rec.tasks[t.id].end)) missed.push(k); }
+  S.skip.last = back(1);
+  if(missed.length){
+    const before = S.fish; S.fish = Math.max(0, S.fish - SKIP_COST * missed.length); const lost = before - S.fish;
+    missed.forEach(k => logAdd(k.slice(5).replace("-", "/")+" 할 일을 다 못 끝냄", "−"+SKIP_COST));
+    setTimeout(() => { const txt = (missed.length === 1 ? "어제" : missed.length+"일 동안")+" 할 일을 다 끝내지 못해서<br>생선 "+lost+"마리가 줄었어요.";
+      if(!$("modal-root").innerHTML && !$("game-root").innerHTML) modal('<img src="'+spr("both","look")+'" alt="" style="height:84px"><h3 class="sec">생선이 줄었어요</h3><p style="margin:0;line-height:1.45;text-align:center">'+txt+'<br>오늘 할 일을 다 하면 다시 모을 수 있어요!</p><button class="btn y" id="sk-ok" style="width:100%">알겠어요</button>', () => { $("sk-ok").onclick = closeModal; });
+      else toast("할 일을 다 못 끝낸 날이 있어 생선 "+lost+"마리가 줄었어요"); }, 400);
+  }
+  save();
+}
+function settle(){               // 하루가 지나면 기분이 조금 차분해진다
+  skipCheck();
   const t = TK();
   ["naong","aeong"].forEach(k => { const c = S.cats[k]; if(c.day === t) return;
     const diff = Math.max(1, Math.round((new Date(t) - new Date(c.day)) / 86400000)); c.mood = Math.max(50, c.mood - 8*diff); c.day = t; });
@@ -1352,11 +1376,12 @@ function renderRoom(){
   const card = x => { const c = S.cats[x], pct = Math.round(c.aff % 20 / 20 * 100);
     return '<button class="card cc" data-prof="'+x+'" aria-label="'+CATS[x].name+' 소개 보기"><span class="row">'+face(x, 48)+'<span class="sp nmh">'+CATS[x].name+'</span>'+CHEV+'</span>'
       + '<span class="row" style="margin-top:8px;gap:6px">'+HEART+'<span class="bar y sp"><i style="width:'+pct+'%"></i></span></span>'
-      + '<span class="small mut" style="display:block;margin-top:6px;text-align:center">친밀도 Lv.'+affLv(c.aff)+' · 다음 레벨까지 ♥'+(20 - c.aff % 20)+'</span></button>'; };
+      + '<span class="small mut" style="display:block;margin-top:6px;text-align:center">친밀도 Lv.'+affLv(c.aff)+' · ♥'+(c.aff % 20)+'/20</span></button>'; };
   $("room").innerHTML = '<div class="row"><h1 class="title hd sp" style="font-size:30px">'+CATI+'MEOW</h1><span class="pill y">'+FISH+S.fish+'</span></div>'
     + '<button class="scene" id="room-cat" aria-label="고양이 쓰다듬기">'+sceneLayers()+'<span class="say '+(roomFx && roomFx.who ? roomFx.who : "")+'" role="status">'+esc(roomFx ? roomFx.say : "")+'</span><span class="cw"><img id="room-img" src="'+img+'" alt="나옹이와 애옹이"></span></button>'
     + '<div class="grid2 cats2">'+card("naong")+card("aeong")+'</div>'
     + '<div class="grid2">'+["naong","aeong"].map(x => '<button class="act" data-snack="'+x+'"><img src="'+art(x === "naong" ? "snack_milk" : "snack_can")+'" alt="">'+CATS[x].name+'<br>간식 주기</button>').join("")
+    + ["naong","aeong"].map(x => '<button class="act" data-toys="'+x+'">'+toyIcon(TOYS[x === "naong" ? 1 : 3], 40)+CATS[x].name+'<br>장난감 사주기</button>').join("")
     + ["naong","aeong"].map(x => '<button class="act" data-with="'+x+'"><img src="'+spr(x, x === "naong" ? "yarn" : "paw")+'" alt="">'+CATS[x].name+'랑<br>놀기</button>').join("")+'</div>'
     + '<button class="act talkbtn" id="open-talk">'+MIC+'나옹이·애옹이와 대화하기</button>'
     ;
@@ -1365,6 +1390,7 @@ function renderRoom(){
   R.querySelectorAll("[data-prof]").forEach(b => b.onclick = () => profileModal(b.dataset.prof, false));
   R.querySelectorAll("[data-snack]").forEach(b => b.onclick = () => snackModal(b.dataset.snack, ""));
   R.querySelectorAll("[data-with]").forEach(b => b.onclick = () => playModal(b.dataset.with));
+  R.querySelectorAll("[data-toys]").forEach(b => b.onclick = () => toyModal(b.dataset.toys, "", ""));
   $("room-cat").onclick = () => { const t = TK(); ["naong","aeong"].forEach(k => { const c = S.cats[k]; if(c.pets.d !== t) c.pets = {d:t, n:0}; if(c.pets.n < 5){ c.pets.n++; cheer(k, 2, 1); } }); save(); const who = Math.random() < 0.5 ? "naong" : "aeong"; roomJoy(pickOne(who === "naong" ? ["골골골… 좋아옹!", "제일 좋아옹!", "또 쓰다듬어 줘옹", "손이 따뜻해옹~", "오늘도 반가워옹!", "기분 좋다냥~", "더 놀아 줘냥!"] : ["애옹~ 좋아!", "애옹, 제일 좋아!", "또 쓰다듬어 줘, 애옹", "손이 따뜻해, 애옹~", "오늘도 반가워, 애옹!", "기분 좋아 애오옹~", "더 놀아 줘, 애옹!"]), spr("both", pickOne(["nuzzle","lick","kiss","smile","wave","sing"])), who); };
 }
 // 고양이 소개: 카드를 누르면 이름·나이·MBTI·성격·생일·좋아하는 것·기분·체중이 보인다
@@ -1380,10 +1406,48 @@ function profileModal(k, edit){
     return;
   }
   modal(head+'<dl class="pf">'+PFIELDS.map(f => '<div'+(f[0] === "nature" || f[0] === "likes" ? ' class="wide"' : '')+'><dt>'+f[1]+'</dt><dd>'+esc(pfVal(k, f[0]))+'</dd></div>').join("")
+    + '<div class="wide"><dt>장난감</dt><dd>'+(TOYS.filter(t => hasToy(k, t.id)).map(t => '<span title="'+t.n+'">'+toyIcon(t, 34)+'</span>').join("") || "아직 없어요")+'</dd></div>'
     + '<div class="wide"><dt>기분</dt><dd>'+moodTxt(c.mood)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+c.mood+'%"></i></span></dd></div>'
     + '<div class="wide"><dt>친밀도</dt><dd>Lv.'+affLv(c.aff)+' · 모은 하트 ♥'+c.aff+' · 다음 레벨까지 ♥'+(20 - c.aff % 20)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+pct+'%"></i></span></dd></div></dl>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="pf-edit">고치기</button><button class="btn y sp" id="pf-x">닫기</button></div>', () => {
       $("pf-x").onclick = closeModal; $("pf-edit").onclick = () => profileModal(k, true);
+    });
+}
+// ───────── 장난감 (간식보다 비싸고, 한 번 사 주면 계속 가지고 있다) ─────────
+const TOYO = 'stroke="#4A3B2A" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"';
+const TOYS = [
+  {id:"yarn", n:"털실 공", price:10, svg:'<circle cx="24" cy="25" r="15" fill="#F7A8B8" '+TOYO+'/><path d="M12 20c8 2 16 8 20 17M10 28c7 0 14 4 18 11M17 12c7 3 14 10 18 20M27 10c4 3 8 8 10 14" fill="none" '+TOYO+'/><path d="M36 36c4 2 6 5 5 8" fill="none" '+TOYO+'/>'},
+  {id:"bell", n:"방울 공", price:12, svg:'<circle cx="24" cy="26" r="14" fill="#FFD95A" '+TOYO+'/><path d="M10 26h28" fill="none" '+TOYO+'/><circle cx="24" cy="31" r="2.6" fill="#4A3B2A"/><path d="M24 33.500v5" '+TOYO+'/><path d="M20 12c0-4 8-4 8 0" fill="none" '+TOYO+'/>'},
+  {id:"wand", n:"깃털 낚싯대", price:15, svg:'<path d="M8 42L30 14" fill="none" '+TOYO+'/><path d="M30 14c2-5 6-7 9-5" fill="none" '+TOYO+'/><path d="M39 9c5 4 4 13-2 16c-3-2-5-10 2-16z" fill="#9AD0F5" '+TOYO+'/><path d="M35 12c-5 3-6 10-2 14c3-3 4-9 2-14z" fill="#F7A8B8" '+TOYO+'/>'},
+  {id:"mouse", n:"생쥐 인형", price:15, svg:'<path d="M8 32c0-9 8-15 17-15s15 6 15 13c0 3-2 5-5 5H12c-3 0-4-1-4-3z" fill="#C9C4BC" '+TOYO+'/><circle cx="29" cy="17" r="5.500" fill="#F7A8B8" '+TOYO+'/><circle cx="33" cy="27" r="1.600" fill="#4A3B2A"/><circle cx="40.500" cy="31" r="1.500" fill="#F08A8A"/><path d="M8 33c-4 1-5 5-2 8" fill="none" '+TOYO+'/>'},
+  {id:"fishtoy", n:"물고기 인형", price:18, svg:'<path d="M6 25c6-10 20-12 28-1c-8 11-22 9-28 1z" fill="#8FC8F0" '+TOYO+'/><path d="M33 24l9-7v15z" fill="#8FC8F0" '+TOYO+'/><circle cx="14" cy="23" r="1.800" fill="#4A3B2A"/><path d="M21 19c2 3 2 8 0 11" fill="none" '+TOYO+'/>'},
+  {id:"cushion", n:"캣닢 쿠션", price:18, svg:'<rect x="8" y="14" width="32" height="24" rx="9" fill="#BFE3A8" '+TOYO+'/><path d="M24 31c-6-1-8-7-5-11c5 1 7 6 5 11zM24 31c6-1 8-7 5-11c-5 1-7 6-5 11z" fill="#7DBE6B" '+TOYO+'/>'},
+  {id:"tunnel", n:"놀이 터널", price:20, svg:'<path d="M14 12h22c4 0 6 6 6 12s-2 12-6 12H14z" fill="#FFC98A" '+TOYO+'/><ellipse cx="14" cy="24" rx="7" ry="12" fill="#6B5440" '+TOYO+'/><path d="M26 12c3 3 3 21 0 24M34 12c3 3 3 21 0 24" fill="none" '+TOYO+'/>'},
+  {id:"scratch", n:"스크래처", price:22, svg:'<rect x="19" y="8" width="10" height="28" rx="3" fill="#E8C79A" '+TOYO+'/><path d="M19 14h10M19 19h10M19 24h10M19 29h10" fill="none" '+TOYO+'/><rect x="8" y="35" width="32" height="6" rx="3" fill="#C59A6A" '+TOYO+'/><circle cx="24" cy="7" r="4" fill="#F7A8B8" '+TOYO+'/>'},
+  {id:"house", n:"숨숨집", price:28, svg:'<path d="M6 24L24 9l18 15v15H6z" fill="#FFE1A8" '+TOYO+'/><path d="M4 25L24 8l20 17" fill="none" '+TOYO+'/><path d="M17 39V29a7 7 0 0114 0v10z" fill="#6B5440" '+TOYO+'/>'},
+  {id:"tower", n:"캣타워", price:30, svg:'<rect x="21" y="10" width="6" height="30" fill="#E8C79A" '+TOYO+'/><rect x="6" y="38" width="36" height="5" rx="2.500" fill="#C59A6A" '+TOYO+'/><rect x="8" y="24" width="18" height="5" rx="2.500" fill="#BFE3A8" '+TOYO+'/><rect x="20" y="8" width="20" height="5" rx="2.500" fill="#F7A8B8" '+TOYO+'/><path d="M34 13v7" fill="none" '+TOYO+'/><circle cx="34" cy="22" r="2.400" fill="#FFD95A" '+TOYO+'/>'}
+];
+const toyIcon = (t, size) => '<svg class="toyi" width="'+(size || 46)+'" height="'+(size || 46)+'" viewBox="0 0 48 48" aria-hidden="true">'+t.svg+'</svg>';
+const hasToy = (cat, id) => !!(S.toys && S.toys[cat] && S.toys[cat][id]);
+function toyModal(cat, sel, msg){
+  const list = TOYS.map(t => { const own = hasToy(cat, t.id);
+    return '<button class="snack toy'+(own ? " own" : "")+(sel === t.id ? " sel" : "")+'" data-toy="'+t.id+'" aria-pressed="'+(sel === t.id)+'" aria-label="'+t.n+(own ? " 가지고 있어요" : " 생선 "+t.price+"마리")+'">'+toyIcon(t)+'<span style="min-width:0"><b style="display:block;font-size:16px;white-space:normal;word-break:keep-all;line-height:1.15">'+t.n+'</b><span class="row" style="gap:4px">'+(own ? '<span class="tag g">있어요</span>' : FISH+t.price)+'</span></span></button>'; }).join("");
+  const st = TOYS.find(t => t.id === sel), own = st && hasToy(cat, st.id);
+  modal('<h3 class="sec">'+CATS[cat].name+' 장난감 사주기</h3><span class="pill y">'+FISH+S.fish+'</span>'
+    + '<div class="grid2" style="width:100%">'+list+'</div>'
+    + '<p class="small" id="ty-msg" role="status" style="min-height:20px;margin:0;color:#9A5B00">'+esc(msg || (st ? "" : "한 번 사 주면 계속 가지고 놀아요."))+'</p>'
+    + '<div class="row" style="width:100%"><button class="btn sp" id="ty-x">닫기</button>'+(st ? '<button class="btn y sp" id="ty-ok" style="flex:2">'+(own ? "가지고 놀기" : FISH+st.price+"마리로 사주기")+'</button>' : '')+'</div>', () => {
+      $("ty-x").onclick = closeModal;
+      $("modal-root").querySelectorAll("[data-toy]").forEach(b => b.onclick = () => toyModal(cat, b.dataset.toy, ""));
+      if(!st) return;
+      $("ty-ok").onclick = () => {
+        const pose = cat === "naong" ? pickOne(["play","reach","laugh","roll"]) : pickOne(["cheer","reach","roll","laugh"]);
+        if(own){ cheer(cat, 3, 0); save(); closeModal(); roomJoy(cat === "naong" ? st.n+" 갖고 놀래옹!" : "애옹~ "+st.n+" 재밌어!", spr(cat, pose), cat); return; }
+        if(S.fish < st.price){ toyModal(cat, sel, "생선 "+(st.price - S.fish)+"마리만 더 모으면 돼요."); return; }
+        S.fish -= st.price; S.toys = S.toys || {}; (S.toys[cat] = S.toys[cat] || {})[st.id] = Date.now();
+        cheer(cat, 20, Math.round(st.price / 2)); logAdd(st.n+" → "+CATS[cat].name, "−"+st.price); save(); closeModal(); sfx("win");
+        roomJoy(cat === "naong" ? "우와, "+st.n+"다옹! 고마워옹!" : "애옹! "+st.n+" 너무 좋아!", spr(cat, pose), cat);
+      };
     });
 }
 // 간식 주기: 고르면 바로 생선으로 사서 그 고양이에게 준다 (예전에 사 둔 간식이 있으면 그것부터 쓴다)
@@ -1412,7 +1476,7 @@ function playModal(cat){
   PLAYCAT = cat; const ids = ["spell", "match", "slice", "tower"];
   modal('<h3 class="sec">'+CATS[cat].name+'랑 놀기</h3><div style="width:100%;display:flex;flex-direction:column;gap:10px">'+ids.map(id => { const g = GAMES[id], st = gameState(id);
       return '<button class="snack'+(st !== "open" ? " off" : "")+'" data-game="'+id+'"><img src="'+gicon(g)+'" alt="" style="width:56px;height:48px;object-fit:contain;flex:none"><span style="text-align:left"><b style="display:block">'+g.n+'</b>'
-        + '<span class="mut" style="font-size:14px">'+(st === "locked" ? "맞춤법 퀴즈를 먼저 하면 열려요" : st === "done" ? "오늘은 했어요. 내일 또 해요" : "생선 최대 "+PRIZE[id]+"마리")+'</span></span></button>'; }).join("")+'</div>'
+        + '<span class="mut" style="font-size:14px">'+(st === "locked" ? "맞춤법 퀴즈를 먼저 하면 열려요" : st === "done" ? "오늘 두 번 다 했어요. 내일 또 해요" : "생선 최대 "+PRIZE[id]+"마리 · 오늘 "+playN(id)+"/"+PLAYMAX+"번")+'</span></span></button>'; }).join("")+'</div>'
     + '<button class="btn" id="pl-x" style="width:100%">닫기</button>', () => {
       $("pl-x").onclick = closeModal;
       $("modal-root").querySelectorAll("[data-game]").forEach(b => b.onclick = () => { const id = b.dataset.game; if(gameState(id) === "open") closeModal(); openGame(id); });
@@ -1505,17 +1569,19 @@ const gicon = g => g.img ? R(g.img) : art(g.ic);
 let PLAYCAT = "naong";                                   // 지금 누구랑 노는지
 const pkey = id => GAMES[id].key + "_" + PLAYCAT;        // 놀이마다, 고양이마다 하루 한 번
 const PRIZE = {spell:7, match:2, slice:1, tower:1};       // 놀이별 최대 생선
-const quizDone = () => { const p = day().played; return !!(p.spell_naong || p.spell_aeong); };
+const PLAYMAX = 2;                                        // 놀이마다, 고양이마다 하루에 할 수 있는 횟수
+const playN = id => { const r = day().played[pkey(id)]; return r ? (r.n || 1) : 0; };
+const quizDone = () => playN("spell") > 0;                // 지금 같이 노는 고양이와 오늘 맞춤법 퀴즈를 했는지
 function gameState(id){
   if(id === "deco") return "open";
-  const g = GAMES[id]; if(day().played[pkey(id)]) return "done";
+  const g = GAMES[id]; if(playN(id) >= PLAYMAX) return "done";
   if(id === "spell") return "open";
   if(FREE.includes(id)) return quizDone() ? "open" : "locked";       // 맞춤법 퀴즈를 먼저 해야 다른 놀이가 열린다
   return unlocked(g.cat) ? "open" : "locked";
 }
 // 보상: 놀이를 끝까지 하면 정해진 수만큼 준다 (간식 슬라이스·츄르 타워 1, 같은 그림 찾기 2, 맞춤법 퀴즈 5)
 function rewardOf(id, score){
-  if(day().played[pkey(id)]) return 0;
+  if(playN(id) >= PLAYMAX) return 0;
   if(id === "spell") return Math.min(5, Math.floor(score / 2)) + (score >= 10 ? 2 : 0);    // 2개당 1마리, 다 맞히면 +2
   if(id === "match") return score >= 6 ? 2 : score >= 3 ? 1 : 0;
   if(id === "slice") return score >= 10 ? 1 : 0;
@@ -1528,8 +1594,8 @@ function tryPlay(cat){ PLAYCAT = cat; openGame(cat === "naong" ? "fish" : "fly")
 function openGame(id){
   if(id === "deco") return decoScreen();
   const g = GAMES[id], st = gameState(id);
-  if(st === "done"){ toast("오늘 "+CATS[PLAYCAT].name+"랑은 했어요. 내일 또 해요!"); return; }
-  if(st === "locked"){ toast(FREE.includes(id) ? "맞춤법 퀴즈를 먼저 하면 열려요" : g.cat === "naong" ? "오늘 일정이 모두 끝나면 열려요" : "오늘 할 일을 모두 마치면 열려요"); return; }
+  if(st === "done"){ toast("오늘 "+CATS[PLAYCAT].name+"랑은 두 번 다 했어요. 내일 또 해요!"); return; }
+  if(st === "locked"){ toast(FREE.includes(id) ? CATS[PLAYCAT].name+"랑 맞춤법 퀴즈를 먼저 하면 열려요" : g.cat === "naong" ? "오늘 일정이 모두 끝나면 열려요" : "오늘 할 일을 모두 마치면 열려요"); return; }
   ({fish:fishGame, yarn:yarnGame, fly:flyGame, match:matchGame, slice:sliceGame, band:bandGame, tower:towerGame, spell:spellGame})[id]();
 }
 function fx(area, x, y, text){ const e = document.createElement("span"); e.className = "gfx"; e.textContent = text; e.style.left = (x-14)+"px"; e.style.top = (y-20)+"px"; area.appendChild(e); setTimeout(() => e.remove(), 850); }
@@ -1555,8 +1621,8 @@ function runGame(id, setup){
 }
 function gameEnd(id, score){
   const g = GAMES[id], d = day(), got = rewardOf(id, score);
-  if(!d.played[pkey(id)]){            // 완료 한 번에 한 번만 지급
-    d.played[pkey(id)] = {score:score, at:Date.now()};
+  if(playN(id) < PLAYMAX){            // 하루 두 번까지 지급
+    d.played[pkey(id)] = {n:playN(id) + 1, score:score, at:Date.now()};
     if(got){ S.fish += got; logAdd(g.n+" 놀이", "+"+got); }
     ["naong","aeong"].forEach(k => cheer(k, 15, 3));
   } else ["naong","aeong"].forEach(k => cheer(k, 5, 0));
