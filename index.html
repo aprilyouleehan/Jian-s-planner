@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Jian’s Planner">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#FAF9F5">
 <title>Jian’s Planner</title>
 <meta property="og:type" content="website">
@@ -1970,5 +1971,6 @@ setInterval(sync, 60000);
 document.addEventListener("visibilitychange", () => { if(!document.hidden){ render(); sync(); } });
 })();
 </script>
+<script>if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){ addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }</script>
 </body>
 </html>
