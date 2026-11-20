@@ -306,6 +306,14 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .dold button{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--edge);background:#FFFDF9}
 .dold button span{font-size:14px;color:var(--mut);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important}
 /* 숫자 스톱워치 */
+.alarm{position:relative;flex:none;width:48px;height:48px;margin:-8px -6px -8px 0;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.alarm.ring svg{transform-origin:50% 60%;animation:alring 1.5s ease-in-out infinite}
+.alarm.ring::before,.alarm.ring::after{content:"";position:absolute;top:6px;width:9px;height:9px;border:2.2px solid #F08C00;border-bottom:0;border-radius:9px 9px 0 0;opacity:0;animation:alwave 1.5s ease-out infinite}
+.alarm.ring::before{left:-1px;transform:rotate(-55deg);border-right:0}.alarm.ring::after{right:-1px;transform:rotate(55deg);border-left:0}
+.alarm i{position:absolute;right:-2px;bottom:-1px;min-width:19px;height:19px;padding:0 4px;border-radius:99px;background:#E8590C;color:#fff;font-style:normal;font-family:var(--num)!important;font-size:12px;line-height:19px;text-align:center;border:1.5px solid #fff}
+@keyframes alring{0%,46%,100%{transform:rotate(0)}5%,17%,29%,41%{transform:rotate(-13deg)}11%,23%,35%{transform:rotate(13deg)}}
+@keyframes alwave{0%,46%,100%{opacity:0}8%,40%{opacity:1}}
+.cpbtn{flex:none;height:30px;padding:0 10px;border-radius:99px;background:#FFF6C9;border:1.5px dashed #E8A91E;font-size:14px;color:#8A5A00}
 .sdots{display:flex;gap:8px}.sdot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--edge);background:#FFFDF9;display:flex;align-items:center;justify-content:center;font-style:normal;font-family:var(--num);font-size:15px;color:var(--mut)}
 .sdot.used{background:#F0EDE6;color:#8A8377}.sdot.hit{background:var(--y);border-color:#3A372E;color:#3A372E}
 .game.stopw{display:flex;flex-direction:column;align-items:center;gap:9px;overflow:hidden;padding:0 16px;background:linear-gradient(#FEF6E8,#FDECE0 55%,#FEEFDB);color:#5A3A1C}
@@ -1275,7 +1283,7 @@ function tasksCard(st, p){
     return '<div class="item"><span class="chk sq"></span><span class="nm sp">'+esc(t.n)+'</span>'+rw+'<button class="btn sm" data-start="'+t.id+'"'+(S.running ? ' disabled' : '')+'>'+PLAY+'시작</button></div>';
   }).join("");
   const foot = "";
-  return '<section class="card"><div class="ch">'+TODO+'<h2 class="sec">오늘 할 일</h2></div>'
+  return '<section class="card"><div class="ch">'+TODO+'<h2 class="sec sp">오늘 할 일</h2>'+stopBadge()+'</div>'
     + '<div class="list">'+rows+'</div>'
     + '<button class="addrow" id="t-add">'+ln('<path d="M12 6v12M6 12h12"/>', 20)+'할 일 추가</button>' + foot + '</section>';
 }
@@ -1283,7 +1291,7 @@ function renderToday(){
   const st = situation(), p = prog();
   renderHeader(); renderGarden(st, p);
   const B = $("today-body");
-  B.innerHTML = scheduleCard(st, p) + stopCard() + tasksCard(st, p) + diaryCard();
+  B.innerHTML = scheduleCard(st, p) + tasksCard(st, p) + diaryCard();
   B.querySelectorAll("[data-start]").forEach(b => b.onclick = () => startTask(b.dataset.start));
   B.querySelectorAll("[data-undo]").forEach(b => b.onclick = () => { if(UI.undo === b.dataset.undo && Date.now() - UI.undoAt < 3000){ delete day().tasks[b.dataset.undo]; UI.undo = null; save(); render(); } else { UI.undo = b.dataset.undo; UI.undoAt = Date.now(); toast("한 번 더 누르면 이 기록이 지워져요"); } });
   B.querySelectorAll("[data-play]").forEach(b => b.onclick = () => tryPlay(b.dataset.play));
@@ -2357,11 +2365,22 @@ function diaryList(open){
     + '<p class="small mut" style="margin:0">모두 '+keys.length+'편</p><button class="btn" id="dl-x" style="width:100%">닫기</button>', () => { $("dl-x").onclick = closeModal; $("modal-root").querySelectorAll("[data-dk]").forEach(b => b.onclick = () => diaryList(b.dataset.dk)); });
 }
 
-// ───────── 숫자 스톱워치: 오늘 일정이 끝나면 하루 세 번(1·2·3단계) 도전한다 ─────────
+// ───────── 숫자 스톱워치: 오늘 할 일을 다 끝내면 하루 세 번(1·2·3단계) 도전한다 ─────────
 const STOPLV = [{n:"1단계", tag:"보통", ms:70}, {n:"2단계", tag:"빠름", ms:40}, {n:"3단계", tag:"엄청 빠름", ms:15}];     // ms: 숫자 하나가 넘어가는 시간
 const stopRec = () => { const d = day(); return d.stop || (d.stop = {n:0, res:[]}); };
-const schedDone = () => { const p = prog().n; return p.done >= p.total; };
+const schedDone = () => { const d = day(), ts = allTasks(); return ts.length > 0 && ts.every(t => taskDone(d, t.id)); };      // 오늘 할 일을 모두 끝내야 열린다
 const WATCH = ln('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.500V9.500M9.500 3h5M12 3v3M18.500 7l1.200-1.200"/>', 24);
+// 오늘 할 일 칸 오른쪽 위 알람 시계: 평소엔 검은 선 그림, 할 일을 다 끝내면 색이 들어오고 알람처럼 흔들린다
+const alarmSvg = on => { const k = on ? "#8A5A00" : "#2B2620";
+  return '<svg viewBox="0 0 40 40" width="40" height="40" fill="none" stroke="'+k+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+    + '<path d="M6.500 12a5.500 5.500 0 018-6.500z" fill="'+(on ? "#FF8A3D" : "none")+'"/><path d="M33.500 12a5.500 5.500 0 00-8-6.500z" fill="'+(on ? "#FF8A3D" : "none")+'"/>'
+    + '<path d="M11.500 32l-3 4M28.500 32l3 4"/><circle cx="20" cy="22" r="13" fill="'+(on ? "#FFD54A" : "none")+'"/>'+(on ? '<circle cx="20" cy="22" r="9.200" fill="#FFFDF5" stroke="none"/>' : '')
+    + '<path d="M20 15v7l4.500 3" stroke="'+(on ? "#5A3A1C" : k)+'"/></svg>'; };
+function stopBadge(){
+  const r = stopRec(), open = schedDone(), left = STOPLV.length - r.n, pend = r.res.some(x => x && x.got && x.got === x.target && !x.gift), ring = open && (left > 0 || pend), cp = (S.coupons || []);
+  return (cp.length ? '<button class="cpbtn" id="go-coupon" aria-label="엄빠 쿠폰함">쿠폰함 '+cp.filter(c => !c.used).length+'</button>' : '')
+    + '<button class="alarm'+(open ? " on" : "")+(ring ? " ring" : "")+'" id="go-stop" aria-label="숫자 스톱워치'+(ring ? ", 도전 "+left+"번 남음" : open ? ", 오늘 도전 끝" : ", 오늘 할 일을 다 끝내면 열려요")+'">'+alarmSvg(open)+(ring && left > 0 ? '<i>'+left+'</i>' : '')+'</button>';
+}
 function stopCard(){
   const r = stopRec(), left = STOPLV.length - r.n, open = schedDone();
   const dots = STOPLV.map((l, i) => { const x = r.res[i]; return '<i class="sdot'+(x ? (x.got === x.target ? " hit" : " used") : "")+'" title="'+l.n+'">'+(x ? (x.got === x.target ? "★" : Math.abs(x.got - x.target)) : i + 1)+'</i>'; }).join("");
@@ -2417,7 +2436,7 @@ const speedIcon = lv => '<svg width="34" height="20" viewBox="0 0 34 20" fill="n
   + '<path d="M'+(lv ? 15 : 9)+' 17a8 8 0 0116 0"/><path d="M'+(lv ? 23 : 17)+' 17l'+[2, 4, 5.500][lv]+' -'+[6, 5, 3.500][lv]+'"/></svg>';
 const HAND = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" stroke="#C2410C" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V4.500a1.500 1.500 0 013 0V10l5.200 1.200a2 2 0 011.500 2.300l-.800 4.700A3 3 0 0114.900 21H11.500a3 3 0 01-2.300-1.100L5.500 15.500a1.400 1.400 0 012-1.900L9 14.800z"/><path d="M5.500 6a5 5 0 012-3M3 7.500A7.500 7.500 0 015.800 1.500" fill="none" stroke="#fff" stroke-width="1.500" stroke-linecap="round"/></svg>';
 function stopScreen(){
-  if(!schedDone()){ toast("오늘 일정이 끝나면 열려요"); return; }
+  if(!schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
   const r = stopRec();
   $("game-root").innerHTML = '<div class="game deco stopw" role="dialog" aria-modal="true" aria-label="숫자 스톱워치"><img class="sw-win" src="'+art("stop_window")+'" alt="">'
     + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><div class="sw-head"><b>'+WATCH.replace('width="24" height="24"','width="30" height="30"')+'숫자 스톱워치</b><span><i>☾</i>오늘의 야간 챌린지</span></div><span style="width:44px"></span></div>'
