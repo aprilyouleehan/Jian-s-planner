@@ -284,6 +284,10 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .gtop>*{pointer-events:auto}
 .back{width:44px;height:44px;border-radius:50%;background:#FFFDF9;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
 .gp{height:40px;font-size:16px;font-variant-numeric:tabular-nums}
+.gright{display:flex;gap:6px;align-items:center}
+.g-rule{display:flex;align-items:center;justify-content:center;gap:8px;margin:0;padding:8px 12px;border-radius:14px;background:#FFF6CF;font-size:15px;line-height:1.35;text-align:left;word-break:keep-all}
+.g-rule svg{flex:none}
+.rpts{margin:0;font-size:18px}.rpts b{font-size:22px}
 .gfish,.gfly{position:absolute;left:0;top:0;padding:10px;will-change:transform}
 .gfish.pop,.gfly.pop{transition:opacity .25s;opacity:0}
 .gfly img{width:54px;animation:flap .22s ease-in-out infinite alternate}
@@ -357,6 +361,22 @@ nav button{font-family:var(--hand);font-size:15px;color:#3A352F}
 .actor img{width:152px;height:138px}
 .actor{width:152px;margin-left:-76px}
 #pair{bottom:12px;width:300px}#pair img{width:290px;height:140px}
+/* 밤 배경: 정원 그림을 어둡게 하고 달과 별을 띄운다 */
+#garden.night #garden-bg{filter:brightness(.5) saturate(.7)}
+#garden.night #stage::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(circle at 84% 20%,#FFF4C2 0 14px,rgba(255,244,194,.3) 15px 30px,transparent 31px),
+  radial-gradient(circle at 10% 16%,#fff 0 1.4px,transparent 2px),radial-gradient(circle at 24% 34%,#fff 0 1px,transparent 1.6px),
+  radial-gradient(circle at 38% 12%,#fff 0 1.6px,transparent 2.2px),radial-gradient(circle at 52% 28%,#fff 0 1px,transparent 1.6px),
+  radial-gradient(circle at 64% 10%,#fff 0 1.3px,transparent 2px),radial-gradient(circle at 72% 38%,#fff 0 1px,transparent 1.6px),
+  radial-gradient(circle at 93% 44%,#fff 0 1.2px,transparent 1.8px),radial-gradient(circle at 4% 42%,#fff 0 1px,transparent 1.6px),
+  linear-gradient(rgba(22,32,78,.78),rgba(38,52,104,.55) 55%,rgba(30,42,84,.35))}
+#garden.night #pair img{filter:brightness(.86) saturate(.9)}
+#garden.night #pair.asleep::after{color:#E6ECFF}
+/* 밤(10시 반~아침 6시)에는 둘이 잔다: 멈춘 것처럼 보이지 않게 숨 쉬는 움직임과 쿨쿨 표시 */
+#pair.asleep img{animation:breathe 3.4s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes breathe{50%{transform:scale(1.025,1.05)}}
+#pair.asleep::after{content:"z Z z";position:absolute;right:34px;top:-2px;font-family:var(--hand);font-size:24px;color:#6E7FA8;animation:zz 3.4s ease-in-out infinite;pointer-events:none}
+@keyframes zz{0%{opacity:0;transform:translateY(10px)}35%{opacity:1}100%{opacity:0;transform:translateY(-16px)}}
 #bub{top:-18px;z-index:8}
 .now{margin-top:-18px}
 /* 고양이방 */
@@ -486,10 +506,14 @@ button.cc{cursor:pointer}
 .tscene .rbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0}
 .tcat{position:absolute;bottom:7%;width:44%;display:flex;flex-direction:column;align-items:center;gap:8px}
 .tcat.l{left:5%}.tcat.r{right:5%}
+.tscene.solo .tcat{left:50%;right:auto;width:56%;transform:translateX(-50%)}
+.tscene.only-naong #tc-aeong,.tscene.only-aeong #tc-naong{display:none}
+.twho{margin:8px 16px 0;flex:none}
 .tcat img{width:100%;max-height:190px;object-fit:contain;object-position:50% 100%;transform-origin:50% 100%;filter:drop-shadow(0 3px 2px rgba(120,90,40,.25))}
 .tcat.say img{animation:joy .6s cubic-bezier(.3,.7,.4,1)}
 .tbub{position:relative;max-width:100%;padding:6px 14px;border-radius:18px;background:#fff;border:1.5px solid #3A372E;font-size:20px;line-height:1.25;text-align:center;word-break:keep-all;-webkit-text-stroke:.4px currentColor}
 .tbub:empty{visibility:hidden}
+.tbub{z-index:2}
 .tbub::after{content:"";position:absolute;left:50%;bottom:-7px;width:11px;height:11px;margin-left:-6px;background:#fff;border-right:1.5px solid #3A372E;border-bottom:1.5px solid #3A372E;transform:rotate(45deg)}
 .tmsg{margin:0;text-align:center;font-size:22px;min-height:30px;-webkit-text-stroke:.5px currentColor}
 .micbtn{position:relative;align-self:center;width:104px;height:104px;border-radius:50%;background:var(--y);border:2px solid #3A372E;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(150,110,0,.25)}
@@ -710,6 +734,9 @@ button.cc{cursor:pointer}
 .sq-pick.p1 .sq-word,.sq-pick.p1 .sq-tint{left:3%;right:13%}
 .sq-pick.good,.sq-pick.bad{background:none;border:0;box-shadow:none}
 .sq-pick.good .sq-tint{opacity:1;background:#BDEB9E;mix-blend-mode:multiply}
+.area.sq .sq-word,.area.sq .sq-why b,.area.sq .sq-why span{font-family:'Noto Sans KR',sans-serif!important}
+.area.sq .sq-word,.area.sq .sq-why b{font-weight:700!important}
+.area.sq .sq-why span{font-weight:500!important}
 .sq-pick.good .sq-word{color:#2F7A22}
 .sq-pick.good::after{right:6%;top:50%}
 .sq-pick.p1.good::after{right:15%}
@@ -889,6 +916,9 @@ const PROFILE0 = {
   aeong:{age:"2살", mbti:"ISFJ", birth:"5월 5일", weight:"3.6kg", nature:"다정한 애교쟁이", likes:"털실 공, 츄르"}
 };
 const PFIELDS = [["age","나이"],["mbti","MBTI"],["birth","생일"],["weight","체중"],["nature","성격"],["likes","좋아하는 것"]];
+const BASEW = {naong:4.2, aeong:3.6}, SNACKG = {milk:20, chur:30, can:50, salmon:80};       // 처음 체중(kg), 간식 하나에 느는 무게(g)
+const weightOf = k => (BASEW[k] + (S.cats[k].gain || 0) / 1000).toFixed(2) + "kg";
+const pfVal = (k, f) => f === "weight" ? weightOf(k) : S.profile[k][f];
 
 // ───────── 시간 ─────────
 const pad = n => String(n).padStart(2,"0");
@@ -910,12 +940,16 @@ const BE = window.JIAN_BACKEND, PREVIEW = !!window.JIAN_PREVIEW;
 let FIXED = DEFAULT_FIXED;
 function norm(x){ const o = {}; for(let i=0;i<7;i++) o[i] = (x && Array.isArray(x[i])) ? x[i] : []; return o; }
 try{ const sc = localStorage.getItem(KEY+"-schedule"); if(sc) FIXED = norm(JSON.parse(sc)); }catch(e){}
+// 이번 주만 있는 일정: 날짜별로 따로 둔다 (매주 반복 일정 FIXED는 건드리지 않는다)
+let ONCE = {}; try{ ONCE = JSON.parse(localStorage.getItem(KEY+"-once") || "{}") || {}; }catch(e){ ONCE = {}; }
+function weekDateKey(w){ const d = now(), diff = ((w + 6) % 7) - ((d.getDay() + 6) % 7); return keyOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff)); }     // 월~일 한 주 안에서 그 요일의 날짜
+const EV = w => (FIXED[w] || []).concat(ONCE[weekDateKey(w)] || []).sort((a, b) => a[0] < b[0] ? -1 : 1);
 function fresh(){ return {v:2, fish:0, cats:{}, inv:{}, rewards:{cls:1, task:1, timed:2}, days:{}, running:null, log:[], updatedAt:0, sel:"naong"}; }
 function upgrade(s){
   s = Object.assign(fresh(), s);
   ["naong","aeong"].forEach(k => {       // 예전 '몸무게' 기록은 '기분·친밀도'로 바꾼다
     const c = s.cats[k] || {};
-    s.cats[k] = {mood: typeof c.mood === "number" ? c.mood : 60, aff: typeof c.aff === "number" ? c.aff : 0, day: c.day || keyOf(now()), pets: c.pets || {d:"", n:0}};
+    s.cats[k] = Object.assign({}, c, {mood: typeof c.mood === "number" ? c.mood : 60, aff: typeof c.aff === "number" ? c.aff : 0, day: c.day || keyOf(now()), pets: c.pets || {d:"", n:0}, gain: typeof c.gain === "number" ? c.gain : 0});
   });
   s.rewards = {cls:0, task:1, timed:3};
   s.inv = s.inv || {};
@@ -951,7 +985,7 @@ function sync(){
 // ───────── 하루 상태 ─────────
 const TK = () => keyOf(now());
 function day(k){ k = k || TK(); const d = S.days[k] || (S.days[k] = {cls:{}, tasks:{}, played:{}}); d.paid = d.paid || {}; d.played = d.played || {}; return d; }
-const todayEvents = () => FIXED[now().getDay()] || [];
+const todayEvents = () => EV(now().getDay());
 const taskDone = (d, id) => !!(d.tasks[id] && d.tasks[id].end);
 function prog(){ const ev = todayEvents(), d = day(); return {n:{done: d.forceN ? ev.length : ev.filter(e => toMin(e[1]) <= nowMin()).length, total: ev.length}, a:{done: allTasks().filter(t => taskDone(d, t.id)).length, total: allTasks().length}}; }
 function unlocked(cat){ const p = prog()[cat === "naong" ? "n" : "a"]; return cat === "naong" ? p.done >= p.total : p.total > 0 && p.done >= p.total; }
@@ -1007,6 +1041,7 @@ function stageApply(){
   $("pair").classList.toggle("hidden", !showPair);
   ["naong","aeong"].forEach(k => $("act-"+k).classList.toggle("hidden", showPair));
   if(showPair) $("img-pair").src = spr("both", STAGE.night ? "nap" : STAGE.pairPose);
+  $("pair").classList.toggle("asleep", showPair && STAGE.night);
   if(STAGE.watch && STAGE.pose.aeong !== "curious") setPose("aeong", "curious");
   showBubble();
 }
@@ -1077,7 +1112,7 @@ function renderHeader(){
   $("h-fish").innerHTML = FISH + S.fish;
 }
 function renderGarden(st, p){
-  STAGE.night = st.m >= 22*60 || st.m < 6*60; STAGE.watch = !!S.running;
+  STAGE.night = st.m >= 22*60 + 30 || st.m < 6*60; $("garden").classList.toggle("night", STAGE.night); STAGE.watch = !!S.running;
   if(Date.now() > STAGE.sayUntil) STAGE.say = {who:"naong", text:""};
   stageApply();
 }
@@ -1204,15 +1239,19 @@ function checkIn(){
 // ───────── 시간표 ─────────
 // 일주일 보기에서 일정 추가: 요일(여러 개 가능)·시간·이름·종류를 정해 시간표에 넣는다
 function addEventModal(keep){
-  const v = keep || {n:"", s:"15:00", e:"16:00", type:"study", days:[now().getDay()], msg:""};
+  const v = keep || {n:"", s:"15:00", e:"16:00", type:"study", days:[now().getDay()], msg:"", rep:"week"};
   modal('<h3 class="sec">일정 추가</h3><input class="field" id="ne-name" maxlength="14" placeholder="예: 미술학원" aria-label="일정 이름" value="'+esc(v.n)+'">'
     + '<div class="days" role="group" aria-label="요일 (여러 개 고를 수 있어요)" style="width:100%;margin:0">'+[1,2,3,4,5,6,0].map(w => '<button class="day'+(v.days.includes(w) ? " on" : "")+'" data-nd="'+w+'" aria-pressed="'+v.days.includes(w)+'">'+DAYS[w]+'</button>').join("")+'</div>'
+    + '<div class="seg" role="group" aria-label="반복" style="width:100%">'+[["week","매주 반복"],["once","이번 주만"]].map(r => '<button data-rep="'+r[0]+'" class="'+(v.rep === r[0] ? "on" : "")+'" aria-pressed="'+(v.rep === r[0])+'">'+r[1]+'</button>').join("")+'</div>'
+    + '<p class="small mut" id="ne-rep" style="margin:0;width:100%;text-align:left"></p>'
     + '<div class="row" style="width:100%"><label class="sp small" style="text-align:left">시작<input class="field" type="time" id="ne-s" value="'+v.s+'"></label><label class="sp small" style="text-align:left">끝<input class="field" type="time" id="ne-e" value="'+v.e+'"></label></div>'
     + '<label class="small" style="width:100%;text-align:left">종류<select class="field" id="ne-type">'+Object.keys(TYPES).map(t => '<option value="'+t+'"'+(t === v.type ? " selected" : "")+'>'+TYPES[t]+'</option>').join("")+'</select></label>'
     + '<p class="small" id="ne-msg" role="status" style="min-height:20px;color:#9A5B00">'+esc(v.msg)+'</p>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="ne-x">닫기</button><button class="btn y sp" id="ne-ok">추가</button></div>', () => {
       const M = $("modal-root");
       M.querySelectorAll("[data-nd]").forEach(b => b.onclick = () => { const on = !b.classList.contains("on"); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+      const repNote = () => { $("ne-rep").textContent = v.rep === "once" ? "이번 주(월~일)에만 보이고, 다음 주에는 사라져요." : "고른 요일마다 매주 계속 나와요."; }; repNote();
+      M.querySelectorAll("[data-rep]").forEach(b => b.onclick = () => { v.rep = b.dataset.rep; M.querySelectorAll("[data-rep]").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); }); repNote(); });
       $("ne-x").onclick = closeModal;
       M.querySelectorAll("input,select,[data-nd]").forEach(el => el.addEventListener(el.tagName === "BUTTON" ? "click" : "input", () => { $("ne-msg").textContent = ""; }));
       $("ne-ok").onclick = () => {
@@ -1222,13 +1261,19 @@ function addEventModal(keep){
         if(!days.length) return fail("요일을 하나 이상 골라 주세요.");
         if(!st || !en) return fail("시작과 끝 시간을 정해 주세요.");
         if(en <= st) return fail("끝 시간이 시작보다 늦어야 해요.");
-        for(const w of days){ const hit = (FIXED[w] || []).find(e => st < e[1] && e[0] < en); if(hit) return fail(DAYS[w]+"요일 그 시간에 이미 '"+hit[2]+"'이(가) 있어요."); }
+        for(const w of days){ const hit = EV(w).find(e => st < e[1] && e[0] < en); if(hit) return fail(DAYS[w]+"요일 그 시간에 이미 '"+hit[2]+"'이(가) 있어요."); }
+        if(v.rep === "once"){            // 이번 주만: 날짜에 붙여 따로 저장한다
+          days.forEach(w => { const dk = weekDateKey(w); (ONCE[dk] = ONCE[dk] || []).push([st, en, n, "", type]); });
+          const mon = weekDateKey(1); Object.keys(ONCE).forEach(dk => { if(dk < mon) delete ONCE[dk]; });      // 지난 주 것은 정리
+          try{ localStorage.setItem(KEY+"-once", JSON.stringify(ONCE)); }catch(e){}
+          closeModal(); render(); toast(n+" 일정을 이번 주에만 넣었어요"); return;
+        }
         const next = norm(JSON.parse(JSON.stringify(FIXED)));          // 기존 일정은 그대로 두고 새 일정만 끼워 넣는다
         days.forEach(w => { next[w].push([st, en, n, "", type]); next[w].sort((a, b) => a[0] < b[0] ? -1 : 1); });
         FIXED = next;
         try{ localStorage.setItem(KEY+"-schedule", JSON.stringify(FIXED)); }catch(e){}
         if(BE) try{ BE.post({action:"schedule", schedule:FIXED}).catch(()=>{}); }catch(e){}
-        closeModal(); render(); toast(n+" 일정을 넣었어요");
+        closeModal(); render(); toast(n+" 일정을 매주 반복으로 넣었어요");
       };
     });
 }
@@ -1249,7 +1294,7 @@ function renderTable(){
   const head = '<div class="row"><h1 class="title hd sp" style="font-size:30px">'+CAL+'시간표</h1><div class="seg" style="width:200px" role="tablist"><button role="tab" aria-selected="'+(UI.tableMode==="day")+'" class="'+(UI.tableMode==="day"?"on":"")+'" data-mode="day">하루 보기</button><button role="tab" aria-selected="'+(UI.tableMode==="week")+'" class="'+(UI.tableMode==="week"?"on":"")+'" data-mode="week">일주일 보기</button></div></div>';
   let body;
   if(UI.tableMode === "day"){
-    const w = UI.tableDay, ev = FIXED[w] || [], m = nowMin(), isT = w === today, hmNow = pad(d0.getHours())+':'+pad(d0.getMinutes());
+    const w = UI.tableDay, ev = EV(w), m = nowMin(), isT = w === today, hmNow = pad(d0.getHours())+':'+pad(d0.getMinutes());
     const chips = '<div class="days" role="tablist" aria-label="요일">'+order.map(x => '<button role="tab" aria-selected="'+(x===w)+'" class="day'+(x===w?" on":"")+(x===today?" today":"")+'" data-day="'+x+'" aria-label="'+DAYS[x]+'요일'+(x===today?" (오늘)":"")+'">'+DAYS[x]+'</button>').join("")+'</div>';
     const free = '<div class="nowmark free"><b>'+hmNow+'</b><i></i></div>';
     let list = "", lined = !isT;
@@ -1267,7 +1312,7 @@ function renderTable(){
   } else {
     // 일주일 한 화면 표: 가로는 요일, 세로는 시간. 칸 높이는 화면 높이에 맞춰 정한다.
     let START = 8*60+30, END = 22*60; const V = $("v-table"), m = nowMin();
-    order.forEach(w => (FIXED[w] || []).forEach(e => { if(toMin(e[0]) < START) START = Math.floor(toMin(e[0]) / 60) * 60 - 30; END = Math.max(END, Math.ceil(toMin(e[1]) / 60) * 60); }));
+    order.forEach(w => EV(w).forEach(e => { if(toMin(e[0]) < START) START = Math.floor(toMin(e[0]) / 60) * 60 - 30; END = Math.max(END, Math.ceil(toMin(e[1]) / 60) * 60); }));
     START = Math.max(0, START); const H0 = Math.ceil((START + 1) / 60), H1 = Math.floor(END / 60);
     const pxh = clamp((V.clientHeight - 212) / ((END - START) / 60), 33, 52), PXM = pxh / 60, gh = Math.round((END - START) * PXM);
     let headRow = '<span></span>', cols = '', labels = '', lines = '';
@@ -1275,7 +1320,7 @@ function renderTable(){
     order.forEach(w => {
       headRow += '<button class="wd'+(w===today?" today":"")+'" data-go="'+w+'" aria-label="'+DAYS[w]+'요일 하루 보기">'+DAYS[w]+'</button>';
       let b = '';
-      (FIXED[w] || []).forEach(e => {
+      EV(w).forEach(e => {
         const top = Math.round((toMin(e[0]) - START) * PXM), h = Math.max(18, Math.round((toMin(e[1]) - toMin(e[0])) * PXM) - 2), f = fitName(e[2], h);
         b += '<button class="blk t-'+(e[4]||"study")+'" data-go="'+w+'" style="top:'+top+'px;height:'+h+'px;font-size:'+f.fs+'px;line-height:'+f.lh+'px" aria-label="'+DAYS[w]+'요일 '+e[0]+'부터 '+e[1]+'까지 '+esc(e[2])+'">'+f.lines.map(esc).join("<br>")+'</button>';
       });
@@ -1307,7 +1352,7 @@ function renderRoom(){
   const card = x => { const c = S.cats[x], pct = Math.round(c.aff % 20 / 20 * 100);
     return '<button class="card cc" data-prof="'+x+'" aria-label="'+CATS[x].name+' 소개 보기"><span class="row">'+face(x, 48)+'<span class="sp nmh">'+CATS[x].name+'</span>'+CHEV+'</span>'
       + '<span class="row" style="margin-top:8px;gap:6px">'+HEART+'<span class="bar y sp"><i style="width:'+pct+'%"></i></span></span>'
-      + '<span class="small mut" style="display:block;margin-top:6px;text-align:center">친밀도 Lv.'+affLv(c.aff)+' · '+pct+'%</span></button>'; };
+      + '<span class="small mut" style="display:block;margin-top:6px;text-align:center">친밀도 Lv.'+affLv(c.aff)+' · 다음 레벨까지 ♥'+(20 - c.aff % 20)+'</span></button>'; };
   $("room").innerHTML = '<div class="row"><h1 class="title hd sp" style="font-size:30px">'+CATI+'MEOW</h1><span class="pill y">'+FISH+S.fish+'</span></div>'
     + '<button class="scene" id="room-cat" aria-label="고양이 쓰다듬기">'+sceneLayers()+'<span class="say '+(roomFx && roomFx.who ? roomFx.who : "")+'" role="status">'+esc(roomFx ? roomFx.say : "")+'</span><span class="cw"><img id="room-img" src="'+img+'" alt="나옹이와 애옹이"></span></button>'
     + '<div class="grid2 cats2">'+card("naong")+card("aeong")+'</div>'
@@ -1327,16 +1372,16 @@ function profileModal(k, edit){
   const c = S.cats[k], p = S.profile[k], pct = Math.round(c.aff % 20 / 20 * 100);
   const head = '<img src="'+spr(k, k === "naong" ? "sit" : "sit2")+'" alt="'+CATS[k].name+'" style="height:92px"><h3 class="sec" style="font-size:28px">'+CATS[k].name+'</h3>';
   if(edit){
-    modal(head+'<div class="pf">'+PFIELDS.map(f => '<label class="small">'+f[1]+'<input class="field" data-pf="'+f[0]+'" maxlength="'+(f[0] === "nature" || f[0] === "likes" ? 20 : 8)+'" value="'+esc(p[f[0]])+'"></label>').join("")+'</div>'
+    modal(head+'<div class="pf">'+PFIELDS.filter(f => f[0] !== "weight").map(f => '<label class="small">'+f[1]+'<input class="field" data-pf="'+f[0]+'" maxlength="'+(f[0] === "nature" || f[0] === "likes" ? 20 : 8)+'" value="'+esc(p[f[0]])+'"></label>').join("")+'</div><p class="small mut" style="margin:0">체중은 간식을 먹으면 저절로 늘어요</p>'
       + '<div class="row" style="width:100%"><button class="btn sp" id="pf-x">취소</button><button class="btn y sp" id="pf-ok">저장</button></div>', () => {
         $("pf-x").onclick = () => profileModal(k, false);
         $("pf-ok").onclick = () => { $("modal-root").querySelectorAll("[data-pf]").forEach(i => { const v = i.value.trim(); if(v) p[i.dataset.pf] = v; }); save(); profileModal(k, false); };
       });
     return;
   }
-  modal(head+'<dl class="pf">'+PFIELDS.map(f => '<div'+(f[0] === "nature" || f[0] === "likes" ? ' class="wide"' : '')+'><dt>'+f[1]+'</dt><dd>'+esc(p[f[0]])+'</dd></div>').join("")
+  modal(head+'<dl class="pf">'+PFIELDS.map(f => '<div'+(f[0] === "nature" || f[0] === "likes" ? ' class="wide"' : '')+'><dt>'+f[1]+'</dt><dd>'+esc(pfVal(k, f[0]))+'</dd></div>').join("")
     + '<div class="wide"><dt>기분</dt><dd>'+moodTxt(c.mood)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+c.mood+'%"></i></span></dd></div>'
-    + '<div class="wide"><dt>친밀도</dt><dd>Lv.'+affLv(c.aff)+' · '+pct+'%<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+pct+'%"></i></span></dd></div></dl>'
+    + '<div class="wide"><dt>친밀도</dt><dd>Lv.'+affLv(c.aff)+' · 모은 하트 ♥'+c.aff+' · 다음 레벨까지 ♥'+(20 - c.aff % 20)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+pct+'%"></i></span></dd></div></dl>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="pf-edit">고치기</button><button class="btn y sp" id="pf-x">닫기</button></div>', () => {
       $("pf-x").onclick = closeModal; $("pf-edit").onclick = () => profileModal(k, true);
     });
@@ -1346,7 +1391,7 @@ function snackModal(cat, msg){
   const order = ["can","milk","chur","salmon"].map(id => SNACKS.find(s => s.id === id));
   modal('<h3 class="sec">'+CATS[cat].name+' 간식 주기</h3><span class="pill y">'+FISH+S.fish+'</span>'
     + '<div class="grid2" style="width:100%">'+order.map(s => { const have = S.inv[s.id] > 0;
-        return '<button class="snack" data-feed="'+s.id+'" aria-label="'+s.n+(have ? " 가지고 있는 것 주기" : " 생선 "+s.price+"마리")+'"><img src="'+art(s.img)+'" alt="" style="width:52px;height:48px;object-fit:contain;flex:none"><span><b style="display:block;font-size:17px">'+s.n+'</b><span class="row" style="gap:4px">'+(have ? '<span class="tag g">있어요 ×'+S.inv[s.id]+'</span>' : FISH+s.price)+'</span></span></button>'; }).join("")+'</div>'
+        return '<button class="snack" data-feed="'+s.id+'" aria-label="'+s.n+(have ? " 가지고 있는 것 주기" : " 생선 "+s.price+"마리")+'"><img src="'+art(s.img)+'" alt="" style="width:52px;height:48px;object-fit:contain;flex:none"><span style="min-width:0"><b style="display:block;font-size:17px;white-space:normal;word-break:keep-all;line-height:1.15">'+s.n+'</b><span class="row" style="gap:4px">'+(have ? '<span class="tag g">있어요 ×'+S.inv[s.id]+'</span>' : FISH+s.price)+'</span></span></button>'; }).join("")+'</div>'
     + '<p class="small" id="sn-msg" role="status" style="min-height:20px;color:#9A5B00">'+esc(msg)+'</p><button class="btn" id="sn-x" style="width:100%">닫기</button>', () => {
       $("sn-x").onclick = closeModal;
       $("modal-root").querySelectorAll("[data-feed]").forEach(b => b.onclick = () => {
@@ -1356,6 +1401,7 @@ function snackModal(cat, msg){
         else { $("sn-msg").textContent = "생선 "+(s.price - S.fish)+"마리만 더 모으면 돼요."; return; }
         const c = S.cats[cat], t = TK(); c.fed = c.fed && c.fed.d === t ? c.fed : {d:t, n:0}; c.fed.n++; const full = c.fed.n > 3;
         if(full) cheer(cat, 0, 1); else cheer(cat, s.mood, s.aff);
+        c.gain = (c.gain || 0) + (SNACKG[s.id] || 20);
         logAdd(s.n+" → "+CATS[cat].name, "♥"); save(); closeModal();
         if(full){ roomJoy(cat === "naong" ? "배불러옹… 이제 그만 먹을래" : "애옹… 배가 빵빵해!", spr(cat, "loaf"), cat); return; }
         roomJoy(cat === "naong" ? "냠냠! "+s.n+" 맛있다옹" : "애옹~ "+s.n+" 최고야", spr(cat, cat === "naong" ? "eat" : "eat2"), cat);
@@ -1445,11 +1491,11 @@ function drawSettings(msg){
 // ───────── 놀이 ─────────
 const GAMES = {
   fish:{n:"생선 잡기", ic:"game_fish", cat:"naong", key:"naong", bg:"bg_pond", how:"연못에서 헤엄치는 생선을 톡톡 눌러 잡아요!"},
-  match:{n:"같은 그림 찾기", img:"sprites/both_smile.webp", key:"match", secs:60, how:"카드를 두 장씩 뒤집어<br>같은 모습의 고양이를 찾아요.<br>여섯 쌍을 모두 찾으면 끝!"},
-  slice:{n:"간식 슬라이스", img:"art/snack_can.webp", key:"slice", bg:"bg_game_garden", how:"날아오르는 간식을<br>손가락으로 쓱 그어요.<br>털실 공은 건드리면 안 돼요!"},
+  match:{n:"같은 그림 찾기", img:"sprites/both_smile.webp", key:"match", secs:60, unit:["찾은 짝","쌍"], rule:"3쌍 찾으면 생선 1마리,<br>6쌍 다 찾으면 2마리!", how:"카드를 두 장씩 뒤집어<br>같은 모습의 고양이를 찾아요."},
+  slice:{n:"간식 슬라이스", img:"art/snack_can.webp", key:"slice", bg:"bg_game_garden", unit:["자른 간식","개"], rule:"10개 자르면 생선 1마리!<br>털실 공을 건드리면 2개 줄어요.", how:"날아오르는 간식을<br>손가락으로 쓱 그어요.<br>털실 공은 건드리면 안 돼요!"},
   band:{n:"고양이 밴드", img:"sprites/both_sing.webp", key:"band", secs:34, how:"내려오는 음표가 까만 줄에 닿을 때 그 칸을 눌러요. 박자를 맞추면 노래가 돼요!"},
-  tower:{n:"츄르 타워", img:"art/snack_chur.webp", key:"tower", bg:"bg_churu_room", secs:90, custom:true, how:"좌우로 움직이는 츄르가 아래 츄르 위에 왔을 때 화면을 눌러요!"},
-  spell:{n:"맞춤법 퀴즈", img:"sprites/naong_wonder.webp", key:"spell", secs:180, how:"두 가지 중에서<br>맞춤법이 맞는 쪽을 골라요.<br>2개 맞힐 때마다 생선 1마리,<br>다 맞히면 2마리 더!"},
+  tower:{n:"츄르 타워", img:"art/snack_chur.webp", key:"tower", bg:"bg_churu_room", secs:90, custom:true, unit:["쌓은 츄르","층"], rule:"5층까지 쌓으면 생선 1마리!", how:"좌우로 움직이는 츄르가 아래 츄르 위에 왔을 때 화면을 눌러요!"},
+  spell:{n:"맞춤법 퀴즈", img:"sprites/naong_wonder.webp", key:"spell", secs:180, unit:["맞힌 문제","개"], rule:"2개 맞힐 때마다 생선 1마리,<br>10개 다 맞히면 2마리 더!", how:"두 가지 중에서<br>맞춤법이 맞는 쪽을 골라요."},
   yarn:{n:"털실 공놀이", ic:"game_yarn", key:"yarn", bg:"bg_game_garden", how:"털실 공을 누르거나 끌어서 던져요. 나옹이와 애옹이가 쫓아가서 톡 쳐요!"},
   fly:{n:"나비 잡기", ic:"game_butterfly", cat:"aeong", key:"aeong", bg:"bg_game_garden", how:"날아다니는 나비를 누르면 애옹이가 폴짝 뛰어 잡아요!"},
   deco:{n:"고양이 꾸미기", ic:"game_sofa"}
@@ -1491,13 +1537,13 @@ function closeGame(){ $("game-root").innerHTML = ""; render(); }
 function runGame(id, setup){
   const g = GAMES[id], again = false, SECS = g.secs || GAME_SECS, mmss = n => pad(Math.floor(n/60))+":"+pad(n%60);
   $("game-root").innerHTML = '<div class="game" role="dialog" aria-modal="true" aria-label="'+g.n+'">'+(g.bg ? '<img class="gbg" src="'+art(g.bg)+'" alt="">' : '')+'<div class="area" id="g-area"></div><div class="gsay" id="g-say" role="status"></div>'
-    + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><span class="pill gp" role="timer" aria-label="남은 시간">'+CLOCK+'<span id="g-time">'+mmss(SECS)+'</span></span><span class="pill y gp" aria-label="받을 생선">'+FISH+'+<span id="g-score">0</span></span></div>'
-    + (g.custom ? churuIntro(again) : '<div class="modal-bg" id="g-intro"><div class="modal"><img src="'+gicon(g)+'" alt="" style="height:72px"><h3 class="sec" style="font-size:28px">'+g.n+'</h3><p class="g-how">'+g.how+'</p>'+(again ? '<p class="g-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '')+'<button class="btn y" id="g-start" style="width:100%">시작!</button></div></div>')+'</div>';
+    + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><span class="pill gp" role="timer" aria-label="남은 시간">'+CLOCK+'<span id="g-time">'+mmss(SECS)+'</span></span><span class="gright">'+(g.unit ? '<span class="pill gp" aria-label="'+g.unit[0]+'"><span id="g-pts">0</span>'+g.unit[1]+'</span>' : '')+'<span class="pill y gp" aria-label="받을 생선">'+FISH+'+<span id="g-score">0</span></span></span></div>'
+    + (g.custom ? churuIntro(again) : '<div class="modal-bg" id="g-intro"><div class="modal"><img src="'+gicon(g)+'" alt="" style="height:72px"><h3 class="sec" style="font-size:28px">'+g.n+'</h3><p class="g-how">'+g.how+'</p>'+(g.rule ? '<p class="g-rule">'+FISH+'<span>'+g.rule+'</span></p>' : '')+(again ? '<p class="g-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '')+'<button class="btn y" id="g-start" style="width:100%">시작!</button></div></div>')+'</div>';
   let score = 0, running = false, t0 = 0, last = 0, raf = 0;
-  const api = {area:$("g-area"), say:t => { $("g-say").textContent = t; }, add:n => { score = Math.max(0, score + n); $("g-score").textContent = rewardOf(id, score); }, _init:(() => { setTimeout(() => { const e = $("g-score"); if(e) e.textContent = rewardOf(id, 0); }, 0); })(), isOn:() => running, finish:() => { if(running){ running = false; cancelAnimationFrame(raf); setTimeout(() => gameEnd(id, score), 600); } }};
+  const api = {area:$("g-area"), say:t => { $("g-say").textContent = t; }, add:n => { score = Math.max(0, score + n); $("g-score").textContent = rewardOf(id, score); const pe = $("g-pts"); if(pe) pe.textContent = score; }, _init:(() => { setTimeout(() => { const e = $("g-score"); if(e) e.textContent = rewardOf(id, 0); }, 0); })(), isOn:() => running, finish:() => { if(running){ running = false; cancelAnimationFrame(raf); setTimeout(() => gameEnd(id, score), 600); } }};
   const game = setup(api);
   $("g-x").onclick = () => { running = false; cancelAnimationFrame(raf); closeGame(); };      // 중간에 나가면 보상 없이 닫히고, 오늘 기회는 그대로 남는다
-  $("g-start").onclick = () => { $("g-intro").remove(); running = true; t0 = last = performance.now(); raf = requestAnimationFrame(loop); };
+  $("g-start").onclick = () => { sfx("start"); $("g-intro").remove(); running = true; t0 = last = performance.now(); raf = requestAnimationFrame(loop); };
   function loop(ts){
     if(!running) return;
     const dt = Math.min(50, ts - last) / 1000, el = (ts - t0) / 1000; last = ts;
@@ -1514,10 +1560,10 @@ function gameEnd(id, score){
     if(got){ S.fish += got; logAdd(g.n+" 놀이", "+"+got); }
     ["naong","aeong"].forEach(k => cheer(k, 15, 3));
   } else ["naong","aeong"].forEach(k => cheer(k, 5, 0));
-  save();
+  save(); sfx(got ? "win" : "end");
   const box = document.createElement("div"); box.className = "modal-bg result";
   box.innerHTML = '<div class="rays"></div><div class="modal rcard" role="alertdialog" aria-label="놀이 끝"><h3 class="sec" style="font-size:28px">잘 놀았어요! '+PAW+'</h3><p class="rfish">'+FISH.replace('width="18" height="18"','width="44" height="44"')+'+'+got+'</p>'
-    + (got ? '' : '<p class="small mut">'+"다음엔 더 많이 놀아 봐요!"+'</p>')+''+'<button class="btn y" id="g-home" style="width:100%">확인</button>'+'</div>'
+    + (g.unit ? '<p class="rpts">'+g.unit[0]+' <b>'+score+g.unit[1]+'</b></p>' : '')+(g.rule ? '<p class="small mut" style="margin:0;line-height:1.35">'+g.rule+'</p>' : '')+''+'<button class="btn y" id="g-home" style="width:100%">확인</button>'+'</div>'
     + '<img class="rc l joy" src="'+spr("naong","laugh")+'" alt=""><img class="rc r joy" src="'+spr("aeong","cheer")+'" alt="">';
   $("game-root").querySelector(".game").appendChild(box);
   $("g-home").onclick = () => { $("game-root").innerHTML = ""; show("room"); };
@@ -1536,11 +1582,11 @@ function matchGame(){ runGame("match", api => {
     b.innerHTML = '<span class="mb">'+PAW+'</span><span class="mf"><img src="'+R("sprites/"+name+".webp")+'" alt=""></span>';
     b.onclick = () => {
       if(!api.isOn() || lock || b.classList.contains("open") || b.classList.contains("ok")) return;
-      b.classList.add("open"); b.setAttribute("aria-label", "카드 "+(i+1)+" 열림"); open.push({b:b, name:name}); flips++; info.textContent = "뒤집은 횟수 "+flips+"번";
+      b.classList.add("open"); sfx("flip"); b.setAttribute("aria-label", "카드 "+(i+1)+" 열림"); open.push({b:b, name:name}); flips++; info.textContent = "뒤집은 횟수 "+flips+"번";
       if(open.length < 2) return;
       const [x, y] = open; open = [];
-      if(x.name === y.name){ [x, y].forEach(c => c.b.classList.add("ok")); found++; api.add(1); api.say(found === 6 ? "다 찾았다! 최고야" : "찾았다!"); try{ navigator.vibrate && navigator.vibrate(20); }catch(e){} if(found === 6) api.finish(); }
-      else { lock = true; setTimeout(() => { [x, y].forEach(c => { c.b.classList.remove("open"); }); lock = false; }, 750); }
+      if(x.name === y.name){ [x, y].forEach(c => c.b.classList.add("ok")); found++; api.add(1); setTimeout(() => sfx("good"), 120); api.say(found === 6 ? "다 찾았다! 최고야" : "찾았다!"); try{ navigator.vibrate && navigator.vibrate(20); }catch(e){} if(found === 6) api.finish(); }
+      else { lock = true; setTimeout(() => sfx("miss"), 160); setTimeout(() => { [x, y].forEach(c => { c.b.classList.remove("open"); }); lock = false; }, 750); }
     };
     grid.appendChild(b);
   });
@@ -1564,8 +1610,8 @@ function sliceGame(){ runGame("slice", api => {
       const vx = q.x - p.x, vy = q.y - p.y, t = clamp(((it.x - p.x) * vx + (it.y - p.y) * vy) / (vx * vx + vy * vy || 1), 0, 1), dist = Math.hypot(it.x - (p.x + vx * t), it.y - (p.y + vy * t));
       if(dist > 40) return;
       it.dead = true; it.el.classList.add("cut"); setTimeout(() => it.el.remove(), 260);
-      if(it.bad){ api.add(-2); fx(area, it.x, it.y - 20, "앗!"); api.say("털실은 건드리면 안 돼!"); }
-      else { api.add(1); fx(area, it.x, it.y - 20, "+1"); api.say(""); cats.forEach((c, i) => { c.src = spr(i ? "aeong" : "naong", i ? "cheer" : "laugh"); }); cheerT = 0.5; try{ navigator.vibrate && navigator.vibrate(10); }catch(e){} }
+      if(it.bad){ api.add(-2); sfx("oops"); fx(area, it.x, it.y - 20, "앗!"); api.say("털실은 건드리면 안 돼!"); }
+      else { api.add(1); sfx("cut"); fx(area, it.x, it.y - 20, "+1"); api.say(""); cats.forEach((c, i) => { c.src = spr(i ? "aeong" : "naong", i ? "cheer" : "laugh"); }); cheerT = 0.5; try{ navigator.vibrate && navigator.vibrate(10); }catch(e){} }
     });
   }
   area.addEventListener("pointerdown", e => { if(!api.isOn()) return; down = true; lp = pos(e); cut(lp, {x:lp.x + 1, y:lp.y}); try{ area.setPointerCapture(e.pointerId); }catch(_){} });
@@ -1582,6 +1628,21 @@ function sliceGame(){ runGame("slice", api => {
 // 고양이 밴드: 네 칸으로 내려오는 음표를 줄에 닿을 때 누른다. 누를 때마다 '작은 별' 가락의 음이 난다
 const SONG = "C C G G A A G - F F E E D D C - G G F F E E D - G G F F E E D - C C G G A A G - F F E E D D C -".split(" ");
 const NOTEHZ = {C:261.630, D:293.660, E:329.630, F:349.230, G:392, A:440}, NOTELANE = {C:0, D:1, E:2, F:3, G:1, A:2};
+// 놀이 효과음 (짧은 음 몇 개를 이어 낸다)
+function sfx(kind){
+  try{ AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); const t = AC.currentTime;
+    const note = (hz, at, dur, type, vol, to) => { const o = AC.createOscillator(), g = AC.createGain(); o.type = type || "triangle"; o.frequency.setValueAtTime(hz, t + at); if(to) o.frequency.exponentialRampToValueAtTime(to, t + at + dur);
+      g.gain.setValueAtTime(0, t + at); g.gain.linearRampToValueAtTime(vol || 0.22, t + at + 0.012); g.gain.exponentialRampToValueAtTime(0.001, t + at + dur); o.connect(g); g.connect(AC.destination); o.start(t + at); o.stop(t + at + dur + 0.03); };
+    if(kind === "start"){ note(523, 0, 0.12); note(784, 0.11, 0.2); }
+    else if(kind === "flip") note(620, 0, 0.07, "triangle", 0.16, 820);
+    else if(kind === "good"){ note(659, 0, 0.13); note(988, 0.1, 0.24); }
+    else if(kind === "miss") note(300, 0, 0.2, "sine", 0.2, 210);
+    else if(kind === "cut") note(1250, 0, 0.11, "triangle", 0.2, 520);
+    else if(kind === "oops"){ note(260, 0, 0.14, "sine", 0.22, 180); note(200, 0.13, 0.2, "sine", 0.2, 150); }
+    else if(kind === "win") [523, 659, 784, 1047].forEach((hz, i) => note(hz, i * 0.11, i === 3 ? 0.42 : 0.16, "triangle", 0.24));
+    else if(kind === "end"){ note(659, 0, 0.16); note(523, 0.14, 0.3); }
+  }catch(e){}
+}
 function ding(hz){
   try{ AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); const t = AC.currentTime, o = AC.createOscillator(), o2 = AC.createOscillator(), g = AC.createGain();
     o.type = "triangle"; o2.type = "sine"; o.frequency.value = hz; o2.frequency.value = hz * 2; const g2 = AC.createGain(); g2.gain.value = 0.25;
@@ -1625,7 +1686,7 @@ function churuIntro(again){
     + '<p class="cz-txt">좌우로 움직이는 츄르가<br>아래 츄르 위에 왔을 때<br>화면을 눌러요!</p>'
     + '<div class="cz-demo" aria-hidden="true"><span class="mvr">'+churuEl(0, 120)+'</span><i></i><span>'+churuEl(0, 120)+'</span></div>'
     + '<p class="cz-txt sm">'+PAW+'딱 맞출수록 츄르를 더 높이<br>쌓을 수 있어요!</p>'
-    + (again ? '<p class="cz-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '<p class="cz-note">5층 넘게 쌓으면 생선 1마리!</p>')
+    + (again ? '<p class="cz-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '<p class="cz-note">5층까지 쌓으면 생선 1마리!</p>')
     + '<button class="cz-btn" id="g-start">시작하기 ›</button></div></div>';
 }
 function towerGame(){ runGame("tower", api => {
@@ -1648,7 +1709,7 @@ function towerGame(){ runGame("tower", api => {
   area.addEventListener("pointerdown", e => {
     if(!api.isOn() || over || !cur) return; e.preventDefault();
     const top = stack[stack.length - 1]; let l = Math.max(cur.x, top.x), r = Math.min(cur.x + cur.w, top.x + top.w), ov = r - l;
-    if(ov <= 4){ over = true; cur.el.classList.remove("mv"); cur.el.classList.add("fall"); ghost.style.opacity = 0; api.say("앗! "+(n - 1)+"층까지 쌓았어요"); pose("wonder", "curious"); api.finish(); return; }
+    if(ov <= 4){ over = true; cur.el.classList.remove("mv"); cur.el.classList.add("fall"); ghost.style.opacity = 0; api.say("앗! "+(n - 1)+"층까지 쌓았어요"); sfx("oops"); pose("wonder", "curious"); api.finish(); return; }
     const perfect = Math.abs(cur.x - top.x) < 7; if(perfect){ l = top.x; ov = top.w; }
     else {                                                                   // 삐져나온 쪽은 잘려서 떨어진다
       const cx = cur.x < top.x ? cur.x : top.x + top.w, cw = cur.w - ov;
@@ -1723,7 +1784,7 @@ function spellGame(){ runGame("spell", api => {
       if(ok) delete wrong[q[1]]; else wrong[q[1]] = today;
       if(!asked.includes(q[1])) asked.push(q[1]);
       saveLocal();
-      if(ok){ right++; api.add(1); sparkle(b.querySelector(".sq-word")); }
+      if(ok){ right++; api.add(1); sfx("good"); sparkle(b.querySelector(".sq-word")); } else sfx("miss");
       why.className = "sq-why show "+(ok ? "ok" : "no");
       why.innerHTML = '<b>'+(ok ? "딩동댕! 맞았어요" : "괜찮아, 이제 알았지!")+'</b><span>'+esc((ok || q[3].indexOf("'"+q[1]+"'") === 0 ? "" : "정답은 '"+q[1]+"'! ")+q[3])+'</span>';
       try{ navigator.vibrate && navigator.vibrate(ok ? 20 : 8); }catch(e){}
@@ -1886,26 +1947,36 @@ function meowAt(ctx, out, t, cat, kind){
   return playClip(ctx, out, t, pickOne(v.clips), r);
 }
 // 말한 길이에 맞춰 대답을 짠다: 짧게 말하면 한두 마디, 길게 말하면 여러 마디에 긴 울음도 섞는다
-function buildReply(spoke){
+function buildReply(spoke, cats){
+  cats = cats && cats.length ? cats : ["naong","aeong"];
   const n = spoke < 1.500 ? 1 : spoke < 3.500 ? 2 : spoke < 6 ? 3 : 4, kinds = Object.keys(MEOWS), out = [];
-  let who = Math.random() < 0.5 ? "naong" : "aeong", prev = "";
+  let who = pickOne(cats), prev = "";
   for(let i = 0; i < n; i++){
     let pool = kinds.filter(k => k !== prev);
     if(n === 1) pool = ["mew","meow","ask","meow","long","twice"];
     if(n >= 3 && i === 1 && Math.random() < 0.6) pool = ["long"];
     const k = pickOne(pool); out.push({cat:who, kind:k, text:pickOne(MEOWS[k].w[who])}); prev = k;
-    if(Math.random() < 0.45) who = who === "naong" ? "aeong" : "naong";
+    if(cats.length > 1 && (i === 0 || Math.random() < 0.45)) who = who === "naong" ? "aeong" : "naong";
   }
   return out;
 }
 let AC = null;
 function talkScreen(){
   $("game-root").innerHTML = '<div class="game deco talk" role="dialog" aria-modal="true" aria-label="대화하기"><div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><b class="hand" style="font-size:26px">대화하기</b><span style="width:44px"></span></div>'
-    + '<div class="tscene"><img class="rbg" src="'+art("bg_game_garden")+'" alt=""><div class="tcat l" id="tc-naong"><span class="tbub" id="tb-naong" role="status"></span><img src="'+spr("naong","sit")+'" alt="나옹이"></div><div class="tcat r" id="tc-aeong"><span class="tbub" id="tb-aeong" role="status"></span><img src="'+spr("aeong","sit2")+'" alt="애옹이"></div></div>'
+    + '<div class="seg twho" role="group" aria-label="누구랑 이야기할까요">'+[["both","둘 다"],["naong","나옹이"],["aeong","애옹이"]].map(w => '<button data-tw="'+w[0]+'" class="'+(w[0] === "both" ? "on" : "")+'" aria-pressed="'+(w[0] === "both")+'">'+w[1]+'</button>').join("")+'</div>'
+    + '<div class="tscene" id="t-scene"><img class="rbg" src="'+art("bg_game_garden")+'" alt=""><div class="tcat l" id="tc-naong"><span class="tbub" id="tb-naong" role="status"></span><img src="'+spr("naong","sit")+'" alt="나옹이"></div><div class="tcat r" id="tc-aeong"><span class="tbub" id="tb-aeong" role="status"></span><img src="'+spr("aeong","sit2")+'" alt="애옹이"></div></div>'
     + '<p class="tmsg" id="t-msg" role="status">마이크를 누르고 말해 봐!</p>'
     + '<button class="micbtn" id="t-mic" aria-pressed="false" aria-label="말하기 시작">'+MIC+'</button>'
     + '<p class="small mut" style="text-align:center;margin:0 24px">목소리는 녹음하지 않아요. 소리가 안 나면 휴대폰 무음 모드를 풀어 주세요.</p></div>';
-  let state = "idle", t0 = 0, auto = 0, timers = [], ready = null;
+  let state = "idle", t0 = 0, auto = 0, timers = [], ready = null, who = "both";
+  const cats = () => who === "both" ? ["naong","aeong"] : [who];
+  $("game-root").querySelectorAll("[data-tw]").forEach(b => b.onclick = () => {
+    if(state !== "idle") return;                       // 듣거나 대답하는 중에는 바꾸지 않는다
+    who = b.dataset.tw; $("game-root").querySelectorAll("[data-tw]").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+    $("t-scene").className = "tscene" + (who === "both" ? "" : " solo only-" + who);
+    $("tb-naong").textContent = ""; $("tb-aeong").textContent = "";
+    $("t-msg").textContent = who === "both" ? "마이크를 누르고 말해 봐!" : CATS[who].name + "한테 말해 봐!";
+  });
   const mic = $("t-mic"), msg = $("t-msg"), setCat = (k, pose) => { $("tc-"+k).querySelector("img").src = spr(k, pose); };
   const rest = () => { setCat("naong", "sit"); setCat("aeong", "sit2"); };
   const stopAll = () => { timers.forEach(clearTimeout); timers = []; clearTimeout(auto); };
@@ -1924,7 +1995,7 @@ function talkScreen(){
   }
   function speak(spoke){
     if(!$("t-mic")) return;
-    const reply = buildReply(spoke);
+    const reply = buildReply(spoke, cats());
     state = "reply"; mic.classList.remove("on"); mic.disabled = true; mic.setAttribute("aria-pressed", "false"); msg.textContent = "";
     let t = AC ? AC.currentTime + 0.35 : 0, delay = 350, master = null;
     if(AC){ master = AC.createDynamicsCompressor(); const mg = AC.createGain(); mg.gain.value = 1; master.connect(mg); mg.connect(AC.destination); }
@@ -1936,7 +2007,7 @@ function talkScreen(){
       t += d + gap; delay += (d + gap) * 1000;
     });
     timers.push(setTimeout(() => { state = "idle"; mic.disabled = false; mic.setAttribute("aria-label", "말하기 시작"); msg.textContent = "또 말해 볼까?"; rest();
-      const day0 = TK(); ["naong","aeong"].forEach(k => { const c = S.cats[k]; c.talk = c.talk && c.talk.d === day0 ? c.talk : {d:day0, n:0}; if(c.talk.n < 5){ c.talk.n++; cheer(k, 2, 1); } }); save(); }, delay + 300));
+      const day0 = TK(); cats().forEach(k => { const c = S.cats[k]; c.talk = c.talk && c.talk.d === day0 ? c.talk : {d:day0, n:0}; if(c.talk.n < 5){ c.talk.n++; cheer(k, 2, 1); } }); save(); }, delay + 300));
   }
   mic.onclick = () => { if(state === "idle") listen(); else if(state === "listen") answer(); };
 }
