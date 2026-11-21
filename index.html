@@ -39,6 +39,8 @@ h1,h2,h3,p{margin:0}
 .hand{font-family:var(--hand);font-weight:700}
 .title{font-family:var(--hand);font-weight:700;font-size:30px;line-height:1.1}
 .sec{font-family:var(--hand);font-weight:700;font-size:22px;line-height:1.1}
+.pbx{display:flex;align-items:center;gap:12px}.pbx svg{flex:none;animation:none}.pbx>div{display:flex;flex-direction:column;gap:2px;line-height:1.35;min-width:0}.pbx b{font-size:17px}
+.pbl{margin:0;padding:10px 12px 10px 30px;border-radius:12px;background:rgba(0,0,0,.04);display:flex;flex-direction:column;gap:6px;line-height:1.35}
 .mut{color:var(--mut)}
 .small{font-size:13px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
@@ -1125,26 +1127,60 @@ const syApi = (url, body) => fetch(url, {method:"POST", body:JSON.stringify(body
 const uiBusy = () => !!($("game-root").innerHTML || $("modal-root").innerHTML || $("sheet-root").innerHTML);
 let syBusy = false, syT = null;
 function touch(p){ if(!SY.url) return; SY.dirty[p] = (SY.dirty[p] || 0) + 1; saveSY(); clearTimeout(syT); syT = setTimeout(syncNow, 3000); }
-// 한 번의 요청으로: 이 폰에서 바뀐 덩어리는 올리고, 다른 폰에서 바뀐 덩어리는 받아 온다
+// 두 폰이 같은 덩어리를 따로 고쳤을 때 한쪽이 다른 쪽을 덮어쓰지 않게, '마지막으로 맞췄을 때 모습(base)'과 견주어 양쪽에서 바뀐 것을 모두 살린다
+let SYBASE = {}; try{ SYBASE = JSON.parse(localStorage.getItem(KEY+"-base") || "{}") || {}; }catch(e){ SYBASE = {}; }
+const setBase = (p, json) => { if(SYBASE[p] === json) return; SYBASE[p] = json; try{ localStorage.setItem(KEY+"-base", JSON.stringify(SYBASE)); }catch(e){} };
+const isObj = x => x && typeof x === "object" && !Array.isArray(x), same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+function merge3(b, l, r){            // b: 맞췄을 때, l: 이 폰, r: 다른 폰
+  if(same(l, r) || same(r, b)) return l;
+  if(same(l, b)) return r;
+  if(isObj(l) && isObj(r)){ const o = {}, bb = isObj(b) ? b : {};
+    new Set(Object.keys(l).concat(Object.keys(r))).forEach(k => { const v = merge3(bb[k], l[k], r[k]); if(v !== undefined) o[k] = v; }); return o; }
+  if(Array.isArray(l) && Array.isArray(r)){ const key = x => isObj(x) && x.id != null ? "i"+x.id : JSON.stringify(x), bb = Array.isArray(b) ? b : [];
+    const B = new Map(bb.map(x => [key(x), x])), L = new Map(l.map(x => [key(x), x])), R = new Set(r.map(key));
+    const res = r.filter(x => !B.has(key(x)) || L.has(key(x))).map(x => L.has(key(x)) ? merge3(B.get(key(x)), L.get(key(x)), x) : x);      // 다른 폰 차례를 따르되, 이 폰에서 지운 것은 뺀다
+    const mine = l.filter(x => !B.has(key(x)) && !R.has(key(x)));                                                                        // 이 폰에서 새로 넣은 것
+    return l.length && !B.has(key(l[0])) ? mine.concat(res) : res.concat(mine); }
+  if(typeof l === "number" && typeof r === "number" && typeof b === "number") return l > 1e11 || r > 1e11 ? Math.max(l, r) : b + (l - b) + (r - b);   // 생선·친밀도처럼 더하고 빼는 값은 양쪽 변화를 모두 더한다 (시각은 더 나중 것)
+  return l;
+}
+function partMerge(p, remote){       // 이 폰에서도 바꾼 덩어리에 다른 폰의 변화를 합친다
+  if(p === "diary"){ partSet(p, remote); return; }
+  let base = null; try{ base = SYBASE[p] ? JSON.parse(SYBASE[p]) : null; }catch(e){}
+  if(base === null){ partSet(p, remote); return; }                 // 견줄 모습이 없으면(연결한 뒤 처음) 저장소 쪽을 따른다
+  let m = merge3(base, JSON.parse(JSON.stringify(partGet(p))), remote);
+  if(p === "state"){ m.fish = Math.max(0, Math.round(+m.fish || 0)); if(m.log) m.log = m.log.slice().sort((x, y) => (y.t || 0) - (x.t || 0)).slice(0, 40); }
+  partSet(p, m);
+}
+// 먼저 저장소 것을 받아 와 합치고, 그다음에 이 폰에서 바뀐 덩어리를 올린다
 function syncNow(force){
   if(!SY.url || syBusy || TRIAL) return Promise.resolve(false);
   syBusy = true; clearTimeout(syT);
-  const put = {}, sent = {}; SYPARTS.forEach(p => { if(SY.dirty[p]){ put[p] = partGet(p); sent[p] = SY.dirty[p]; } });
-  return syApi(SY.url, {action:"sync", key:SYNC_CHECK, have:SY.rev, put:put}).then(d => {
+  let changed = false, later = false;
+  return syApi(SY.url, {action:"sync", key:SYNC_CHECK, have:SY.rev, put:{}}).then(d => {
     if(!d || !d.ok || !d.parts) throw new Error((d && d.error) || "응답이 이상해요");
-    let changed = false; const hold = uiBusy() && !force;
+    const hold = uiBusy() && !force, put = {}, sent = {}, json = {};
     SYPARTS.forEach(p => { const r = d.parts[p]; if(!r) return;
-      if(sent[p]){ if(SY.dirty[p] === sent[p]) delete SY.dirty[p]; SY.rev[p] = r.rev; return; }       // 올리는 사이에 또 바뀌었으면 다음에 다시 올린다
       if("v" in r){
-        if(SY.dirty[p]) return;                         // 이 폰에서 방금 바꾼 게 있으면 그것을 먼저 올린다
-        if(hold) return;                                // 놀이·창이 열려 있을 때는 바꾸지 않고, 닫힌 뒤에 다시 받는다
-        partSet(p, r.v); changed = true;
+        if(hold){ later = true; return; }               // 놀이·창이 열려 있을 때는 바꾸지 않고, 닫힌 뒤에 다시 맞춘다 (그동안은 올리지도 않는다)
+        if(SY.over && SY.dirty[p]){ /* '이 폰 기록으로 덮어쓰기'를 골랐을 때는 받지 않고 올리기만 한다 */ }
+        else { if(SY.dirty[p]) partMerge(p, r.v); else partSet(p, r.v); setBase(p, JSON.stringify(r.v)); changed = true; }
       }
       SY.rev[p] = r.rev;
+      if(SY.dirty[p]){ put[p] = partGet(p); sent[p] = SY.dirty[p]; json[p] = JSON.stringify(put[p]); }
+      else if(!("v" in r) && r.rev) setBase(p, JSON.stringify(partGet(p)));
     });
+    saveSY();
+    if(!Object.keys(put).length) return;
+    return syApi(SY.url, {action:"sync", key:SYNC_CHECK, have:SY.rev, put:put}).then(d2 => {
+      if(!d2 || !d2.ok || !d2.parts) throw new Error((d2 && d2.error) || "응답이 이상해요");
+      Object.keys(put).forEach(p => { const r = d2.parts[p]; if(!r) return; SY.rev[p] = r.rev; setBase(p, json[p]); if(SY.dirty[p] === sent[p]) delete SY.dirty[p]; });     // 올리는 사이에 또 바뀌었으면 다음에 다시 올린다
+      delete SY.over;
+    });
+  }).then(() => {
     SY.at = Date.now(); SY.err = ""; saveSY(); syBusy = false;
     if(changed && !uiBusy()) render();
-    if(Object.keys(SY.dirty).length) { clearTimeout(syT); syT = setTimeout(syncNow, 3000); }
+    if(Object.keys(SY.dirty).length || later){ clearTimeout(syT); syT = setTimeout(syncNow, later ? 8000 : 3000); }
     return true;
   }).catch(e => { syBusy = false; SY.err = String(e && e.message || e).slice(0, 80); saveSY(); return false; });
 }
@@ -1182,7 +1218,9 @@ function skipCheck(){            // 지나간 날 가운데 '오늘 할 일'을 
   }
   save();
 }
+let SYREADY = !SY.url;          // 폰이 연결돼 있으면, 처음 한 번 저장소와 맞춘 뒤에 하루 정리를 한다 (두 폰이 따로 생선을 빼지 않게)
 function settle(){               // 하루가 지나면 기분이 조금 차분해진다
+  if(!SYREADY) return;
   skipCheck();
   const t = TK();
   ["naong","aeong"].forEach(k => { const c = S.cats[k]; if(c.day === t) return;
@@ -1743,8 +1781,11 @@ function drawSettings(msg){
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">생선</h2><div class="row"><span class="pill y sp" style="justify-content:center;height:44px;font-size:20px">'+FISH+S.fish+'</span></div>'
     + '<div class="row" style="gap:6px">'+[-10,-1,1,10].map(n => '<button class="btn sp" data-fish="'+n+'" style="padding:0">'+(n > 0 ? "+" : "−")+Math.abs(n)+'</button>').join("")+'</div></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">엄빠 쿠폰</h2>'+((S.coupons || []).filter(c => !c.used).length ? (S.coupons || []).filter(c => !c.used).map(c => '<div class="row"><span class="sp" style="line-height:1.3">'+esc(c.n)+'</span><button class="btn sm" data-cdone="'+c.id+'">사용 완료</button></div>').join("") : '<p class="mut" style="margin:0">안 쓴 쿠폰이 없어요.</p>')+'<button class="btn" id="set-coupons">쿠폰함 전체 보기</button></section>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">스톱워치 선물 상자</h2><p class="small mut" style="margin:0;line-height:1.45">단계를 맞히면 나오는 상자예요.<br>지안이는 열어 봐야 알 수 있어요.</p>'
+    + ["생선 "+BOX_FISH+"마리", "간식 하나를 골라서<br>나옹이와 애옹이가 하나씩", "엄빠 쿠폰 한 장<br><span class=\"small mut\">아래 다섯 가지 중 하나가 뽑혀요</span>"].map((t, i) => '<div class="pbx">'+boxSvg(i, false).replace('width="190"','width="52"')+'<div><span class="small mut">'+STOPLV[i].n+' · '+STOPLV[i].tag+'</span><b>'+BOXES[i].n+'</b><span>'+t+'</span></div></div>').join("")
+    + '<ul class="pbl">'+COUPONS.map(c => '<li>'+esc(c)+'</li>').join("")+'</ul></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">모든 게임 해 보기</h2><p class="small mut" style="margin:0;line-height:1.45">몇 번이든 해 볼 수 있어요.<br>연습이라 생선·횟수·기록에 남지 않아요.</p>'
-    + '<div class="grid2">'+[["spell","맞춤법 퀴즈"],["match","같은 그림 찾기"],["slice","간식 슬라이스"],["tower","츄르 타워"]].map(g => '<button class="btn" data-try="'+g[0]+'" style="padding:0 6px">'+g[1]+'</button>').join("")+'</div>'
+    + '<div class="grid2">'+[["spell","맞춤법 퀴즈"],["match","같은 그림 찾기"],["slice","간식 슬라이스"],["tower","츄르 타워"]].map(g => '<button class="btn" data-try="'+g[0]+'" style="padding:0 6px">'+g[1]+'</button>').join("")+'</div><button class="btn" data-try="stop">숫자 스톱워치</button>'
     + '</section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">살펴보기</h2><button class="btn" id="set-diary">지안이 일기 보기</button><button class="btn" id="set-log">최근 기록 보기</button><button class="btn" id="set-replay">오늘 놀이·스톱워치 다시 열기</button></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">이번 주만 있는 일정</h2>'+(() => { const ks = Object.keys(ONCE).filter(k => (ONCE[k] || []).length).sort();
@@ -1770,7 +1811,7 @@ function drawSettings(msg){
     syApi(url, {action:"sync", key:SYNC_CHECK, have:{}, put:{}}).then(d => {
       if(!d || !d.ok || !d.parts) throw new Error("bad");
       const all = () => { const o = {}; SYPARTS.forEach(p => { o[p] = 1; }); return o; };
-      const up = () => { SY = {url:url, rev:{}, dirty:all(), at:0, err:""}; saveSY(); syncNow(true).then(ok => redraw(ok ? "연결했어요. 이 폰의 기록을 저장소에 올렸어요." : "연결은 됐는데 올리지 못했어요. 잠시 뒤 '지금 맞추기'를 눌러 주세요.")); };
+      const up = () => { SY = {url:url, rev:{}, dirty:all(), at:0, err:"", over:1}; SYBASE = {}; setBase("_", ""); saveSY(); syncNow(true).then(ok => redraw(ok ? "연결했어요. 이 폰의 기록을 저장소에 올렸어요." : "연결은 됐는데 올리지 못했어요. 잠시 뒤 '지금 맞추기'를 눌러 주세요.")); };
       if(!(d.parts.state && d.parts.state.rev > 0)){ up(); return; }                      // 저장소가 비어 있으면 이 폰의 기록을 올린다
       modal('<h3 class="sec">저장소에 기록이 있어요</h3><p style="margin:0;line-height:1.5;text-align:center">다른 폰에서 올린 기록이 있어요.<br>이 폰을 어떻게 맞출까요?</p>'
         + '<button class="btn y" id="sy-down" style="width:100%">저장소 기록 받아 오기</button><p class="small mut" style="margin:-4px 0 0;text-align:center">이 폰에 있던 기록은 지워져요.</p>'
@@ -1779,17 +1820,17 @@ function drawSettings(msg){
           $("sy-no").onclick = () => { closeModal(); redraw(""); };
           $("sy-up").onclick = () => { closeModal(); up(); };
           $("sy-down").onclick = () => { closeModal(); SY = {url:url, rev:{}, dirty:{}, at:Date.now(), err:""}; Object.keys(DIARY).forEach(k => { delete DIARY[k]; });
-            SYPARTS.forEach(p => { const r = d.parts[p]; if(!r) return; if("v" in r) partSet(p, r.v); SY.rev[p] = r.rev; }); SY.dirty = {}; saveSY(); redraw("연결했어요. 저장소의 기록을 받아 왔어요."); };
+            SYBASE = {}; SYPARTS.forEach(p => { const r = d.parts[p]; if(!r) return; if("v" in r){ partSet(p, r.v); setBase(p, JSON.stringify(r.v)); } SY.rev[p] = r.rev; }); SY.dirty = {}; saveSY(); redraw("연결했어요. 저장소의 기록을 받아 왔어요."); };
         });
     }).catch(() => { $("sy-go").disabled = false; symsg("연결하지 못했어요. 주소와 인터넷을 확인해 주세요."); });
   };
   if($("sy-now")){
     $("sy-now").onclick = () => { readEd(); symsg("맞추는 중이에요…"); syncNow(true).then(ok => redraw(ok ? "방금 맞췄어요." : "저장소에 닿지 않았어요. 인터넷을 확인해 주세요.")); };
     $("sy-copy").onclick = () => { const done = () => symsg("주소를 복사했어요. 다른 폰의 엄빠 ONLY → 폰 연결에 붙여 넣으세요."); try{ navigator.clipboard.writeText(SY.url).then(done, () => symsg(SY.url)); }catch(e){ symsg(SY.url); } };
-    $("sy-off").onclick = () => { const b = $("sy-off"); if(b.dataset.arm){ SY = {url:"", rev:{}, dirty:{}, at:0, err:""}; saveSY(); redraw("연결을 끊었어요. 기록은 이 폰에 그대로 있어요."); } else { b.dataset.arm = "1"; b.textContent = "한 번 더 누르면 끊어져요"; } };
+    $("sy-off").onclick = () => { const b = $("sy-off"); if(b.dataset.arm){ SY = {url:"", rev:{}, dirty:{}, at:0, err:""}; SYBASE = {}; setBase("_", ""); saveSY(); redraw("연결을 끊었어요. 기록은 이 폰에 그대로 있어요."); } else { b.dataset.arm = "1"; b.textContent = "한 번 더 누르면 끊어져요"; } };
   }
   R.querySelectorAll("[data-odel]").forEach(b => b.onclick = () => { readEd(); const q = b.dataset.odel.split("|"); (ONCE[q[0]] || []).splice(+q[1], 1); if(!(ONCE[q[0]] || []).length) delete ONCE[q[0]]; try{ localStorage.setItem(KEY+"-once", JSON.stringify(ONCE)); }catch(e){} touch("once"); drawSettings(""); });
-  R.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { const id = b.dataset.try; trialStart(); openGame(id); });
+  R.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { const id = b.dataset.try; trialStart(); if(id === "stop"){ TRIAL.lv = 0; stopScreen(); } else openGame(id); });
   R.querySelectorAll("[data-fish]").forEach(b => b.onclick = () => { readEd(); const n = +b.dataset.fish; S.fish = Math.max(0, S.fish + n); logAdd("엄빠가 생선 "+(n > 0 ? "+" : "−")+Math.abs(n), (n > 0 ? "+" : "−")+Math.abs(n)); save(); drawSettings(""); });
   R.querySelectorAll("[data-cdone]").forEach(b => b.onclick = () => { readEd(); const c = S.coupons.find(x => x.id === b.dataset.cdone); if(c){ c.used = now().getTime(); save(); } drawSettings(""); });
   $("set-coupons").onclick = () => couponModal();
@@ -2561,7 +2602,7 @@ function giftBox(lv, rec, done){
         txt.innerHTML = '<img class="geat" src="'+spr("both","eat")+'" alt=""><br>나옹이와 애옹이가<br><b>'+s.n+'</b>를 맛있게 먹었어요!'; more.innerHTML = ok(); $("gf-ok").onclick = finish; });
       return; }
     const name = pickOne(COUPONS); S.coupons = S.coupons || []; S.coupons.unshift({id:"k"+Date.now(), n:name, at:now().getTime(), used:0}); logAdd("스톱워치 금 상자: "+name, "★"); rec.gift = 1; save();
-    txt.innerHTML = '<span class="gcoupon"><small>엄빠 쿠폰</small>'+esc(name)+'</span>쿠폰함에 넣어 뒀어요.<br>엄마 아빠에게 보여 주세요!'; more.innerHTML = ok(); $("gf-ok").onclick = finish;
+    txt.innerHTML = '<span class="gcoupon"><small>엄빠 쿠폰</small>'+esc(name)+'</span>'+(TRIAL ? '연습이라 쿠폰함에는<br>들어가지 않아요.' : '쿠폰함에 넣어 뒀어요.<br>엄마 아빠에게 보여 주세요!'); more.innerHTML = ok(); $("gf-ok").onclick = finish;
   };
 }
 function couponModal(askId){
@@ -2582,8 +2623,10 @@ const speedIcon = lv => '<svg width="34" height="20" viewBox="0 0 34 20" fill="n
   + '<path d="M'+(lv ? 15 : 9)+' 17a8 8 0 0116 0"/><path d="M'+(lv ? 23 : 17)+' 17l'+[2, 4, 5.500][lv]+' -'+[6, 5, 3.500][lv]+'"/></svg>';
 const HAND = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" stroke="#C2410C" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V4.500a1.500 1.500 0 013 0V10l5.200 1.200a2 2 0 011.500 2.300l-.800 4.700A3 3 0 0114.900 21H11.500a3 3 0 01-2.300-1.100L5.500 15.500a1.400 1.400 0 012-1.900L9 14.800z"/><path d="M5.500 6a5 5 0 012-3M3 7.500A7.500 7.500 0 015.800 1.500" fill="none" stroke="#fff" stroke-width="1.500" stroke-linecap="round"/></svg>';
 function stopScreen(){
-  if(!schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
+  if(!TRIAL && !schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
+  if(TRIAL) day().stop = {v:2, res:[]};          // 연습: 빈 기록으로 시작하고, 끝나면 통째로 되돌린다
   const r = stopRec();
+  const tstate = () => { const L = TRIAL.lv || 0, x = r.res[L]; if(x && ((x.hit && x.gift) || (!x.hit && x.tries.length >= STOP_TRIES))) delete r.res[L]; const y = r.res[L]; return y && y.hit ? {lv:L, pend:true, left:0} : {lv:L, left:STOP_TRIES - (y ? y.tries.length : 0)}; };
   $("game-root").innerHTML = '<div class="game deco stopw" role="dialog" aria-modal="true" aria-label="숫자 스톱워치"><img class="sw-win" src="'+art("stop_window")+'" alt="">'
     + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><div class="sw-head"><b>'+WATCH.replace('width="24" height="24"','width="30" height="30"')+'숫자 스톱워치</b><span><i>☾</i>오늘의 야간 챌린지</span></div><span style="width:44px"></span></div>'
     + '<div class="sw-steps" id="sw-steps"></div>'
@@ -2599,16 +2642,17 @@ function stopScreen(){
   const fit = () => { const sp = $("sw-space"); if(sp && scene.offsetHeight) sp.style.height = Math.max(120, scene.offsetHeight - 26) + "px"; };
   scene.onload = fit; addEventListener("resize", fit);
   const setScene = n => { const u = art("stop_"+n); if(scene.getAttribute("src") !== u) scene.src = u; fit(); };
-  const steps = () => { const st = stopState(r); $("sw-steps").innerHTML = STOPLV.map((l, i) => { const x = r.res[i], cur = i === lv && state !== "over", locked = !x && (st.over || i > st.lv);
+  const steps = () => { const st = TRIAL ? {lv:lv} : stopState(r); $("sw-steps").innerHTML = STOPLV.map((l, i) => { const x = r.res[i], cur = i === lv && state !== "over", locked = !TRIAL && !x && (st.over || i > st.lv);
     const em = x && x.hit ? "딱 맞음!" : x && x.tries.length >= STOP_TRIES ? "다음에 또!" : locked ? LOCK : '<span class="sw-pips" aria-label="남은 기회 '+(STOP_TRIES - (x ? x.tries.length : 0))+'번">'+Array.from({length:STOP_TRIES}, (_, k) => '<i'+(x && k < x.tries.length ? ' class="used"' : '')+'></i>').join("")+'</span>';
-    return '<div class="sw-step'+(x && x.hit ? " hit" : x && x.tries.length >= STOP_TRIES ? " used" : "")+(cur ? " now" : "")+(locked ? " lock" : "")+'"><b>'+l.n+'</b><span>'+l.tag+'</span><em>'+em+'</em></div>'; }).join(""); };
+    return '<div class="sw-step'+(x && x.hit ? " hit" : x && x.tries.length >= STOP_TRIES ? " used" : "")+(cur ? " now" : "")+(locked ? " lock" : "")+'"><b>'+l.n+'</b><span>'+l.tag+'</span><em>'+em+'</em></div>'; }).join("");
+    if(TRIAL) $("sw-steps").querySelectorAll(".sw-step").forEach((e, i) => { e.style.cursor = "pointer"; e.setAttribute("role", "button"); e.onclick = () => { if(state === "run" || host().querySelector(".sw-gift")) return; TRIAL.lv = i; r.res.length = 0; ready(); }; }); };
   const info = html => { msg.className = "sw-msg info"; msg.innerHTML = html; }, bubble = html => { msg.className = "sw-msg bub"; msg.innerHTML = html; };
   const btn = (kind, html) => { go.className = "sw-go " + kind; go.innerHTML = html; };
   const at = ts => ((start + Math.floor((ts - t0) / STOPLV[lv].ms)) % 100) + 1;
   const PLAY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="#5A3A1C" aria-hidden="true"><path d="M7 4.500v15a1 1 0 001.500.900l12-7.500a1 1 0 000-1.700l-12-7.500A1 1 0 007 4.500z"/></svg>';
   function ready(){
     cancelAnimationFrame(raf); clock.classList.remove("run", "hit", "miss"); $("sw-conf").innerHTML = "";
-    const st = stopState(r); lv = st.lv;
+    const st = TRIAL ? tstate() : stopState(r); lv = st.lv;
     if(st.pend){ state = "gift"; const x = r.res[lv], last = x.tries[x.tries.length - 1]; steps(); setScene("hit"); clock.classList.add("hit"); $("sw-target").textContent = last.target; num.textContent = last.got; $("sw-sub").textContent = "";
       bubble(BOXES[lv].n+"가 기다리고 있어요!"); btn("y", "선물 상자 열기"); return; }
     if(st.over){ state = "over"; steps(); const hits = r.res.filter(x => x && x.hit).length;
@@ -2617,7 +2661,7 @@ function stopScreen(){
     state = "ready"; target = 1 + Math.floor(Math.random() * 100); steps(); setScene("ready");
     $("sw-target").textContent = target; num.textContent = "0"; $("sw-sub").textContent = "1부터 100까지";
     const used = r.res[lv] ? r.res[lv].tries.length : 0;
-    info("<b>목표 숫자</b>일 때 화면을 <b>터치</b>하세요!<br>딱 맞히면 <b>"+BOXES[lv].n+"</b>를 받아요.<br>"+PAW+" 기회는 <b>단계마다 "+STOP_TRIES+"번!</b> "+PAW);
+    info(TRIAL ? "<b>연습</b>이라 기록에 남지 않아요.<br>위에서 <b>단계를 누르면</b> 바뀌어요.<br>몇 번이든 해 볼 수 있어요." : "<b>목표 숫자</b>일 때 화면을 <b>터치</b>하세요!<br>딱 맞히면 <b>"+BOXES[lv].n+"</b>를 받아요.<br>"+PAW+" 기회는 <b>단계마다 "+STOP_TRIES+"번!</b> "+PAW);
     btn("y", PLAY+STOPLV[lv].n+(used ? " 다시 도전" : " 시작"));
   }
   function run(){
@@ -2634,7 +2678,7 @@ function stopScreen(){
     $("sw-sub").textContent = hit ? "" : diff+" 차이"; steps(); setScene(hit ? "hit" : diff <= 3 ? "run" : "ready");
     bubble(hit ? "우와, <b>"+target+"</b>에 딱 멈췄어요!" : (diff <= 3 ? "아깝다! " : "")+"<b>"+got+"</b>에서 멈췄어요."+(left ? " 기회 <b>"+left+"번</b> 남았어요!" : ""));
     if(hit){ state = "gift"; $("sw-conf").innerHTML = Array.from({length:22}, (_, i) => '<i style="left:'+(4 + Math.random() * 92).toFixed(1)+'%;background:'+["#FFC93C","#FF8A65","#7FD6C2","#F7A8B8","#9AD0F5"][i % 5]+';animation-delay:'+(Math.random() * 0.5).toFixed(2)+'s;transform:rotate('+Math.floor(Math.random() * 90)+'deg)"></i>').join(""); btn("y", "선물 상자 열기"); return; }
-    btn("y", left ? PLAY+"다시 도전" : "결과 보기");
+    btn("y", left || TRIAL ? PLAY+"다시 도전" : "결과 보기");
   }
   const host = () => $("game-root").querySelector(".game");
   const done = () => { cancelAnimationFrame(raf); state = "x"; removeEventListener("resize", fit); closeGame(); };
@@ -2669,7 +2713,8 @@ $("pair").onclick = () => { STAGE.pairUntil = 0; stageApply(); };
 $("garden-bg").src = art("bg_garden");
 setInterval(stageTick, 1800);
 init3D();
-render(); sync();
+render();
+{ const go = () => { if(SYREADY) return; SYREADY = true; if(!uiBusy()) render(); }; syncNow().then(go); setTimeout(go, 9000); }
 setInterval(() => { if(S.running){ const el = $("run-clock"); if(el) el.textContent = clock(); checkIn(); } }, 1000);
 setInterval(() => { if(!$("game-root").innerHTML && !$("sheet-root").innerHTML && !$("modal-root").innerHTML) render(); }, 30000);
 setInterval(sync, 60000);
