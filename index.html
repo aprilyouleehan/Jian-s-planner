@@ -298,7 +298,7 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 #d-mirror{position:absolute;left:0;right:0;top:0;visibility:hidden;pointer-events:none}
 #d-count{display:flex;flex-direction:column;gap:1px;line-height:1.25;word-break:keep-all;min-width:0}#d-count b{font-size:18px;color:var(--ink)}#d-count span{font-size:14px;color:var(--mut)}
 .dbot{overflow-y:auto;border-top:1.5px dashed var(--edge);background:#FFF6E6;padding-top:12px;padding-bottom:14px}
-.dhint{margin:auto;text-align:center;line-height:1.5;font-size:17px}.dhint p{margin:0 0 8px}
+.dhint{margin:auto;text-align:center;line-height:1.5;font-size:17px}.dhint p{margin:0 0 8px}.dhint .btn{margin:4px 0 14px}
 .dres{margin:0;text-align:center;font-size:18px}.dres svg{vertical-align:-5px}
 .dfixed{padding:10px 14px;border-radius:14px;background:#fff;border:1px solid var(--edge);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:17px;line-height:1.65;text-align:left;word-break:keep-all;overflow-wrap:break-word;user-select:text;-webkit-user-select:text}
 .dfixed mark{background:#FDF0B1;border-bottom:2px solid #E3B200;border-radius:3px;padding:0 2px;color:inherit;font-family:inherit!important}
@@ -2493,8 +2493,8 @@ const hangulCount = t => (t.match(/[가-힣]/g) || []).length;
 const diaryDate = k => { const p = k.split("-"); return (+p[1])+"월 "+(+p[2])+"일 "+DAYS[new Date(+p[0], +p[1]-1, +p[2]).getDay()]+"요일"; };
 const PEN = ln('<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>', 24);
 function diaryCard(){
-  const e = DIARY[TK()], done = e && e.saved;
-  return '<section class="card"><div class="ch">'+PEN+'<h2 class="sec">오늘의 일기</h2></div><div class="row" style="gap:10px"><span class="sp" style="font-size:16px;line-height:1.3">'+(done ? "오늘 일기를 썼어요!" : "다섯 문장 이상 쓰면 "+FISH+" "+DIARY_FISH)+'</span><button class="btn'+(done ? "" : " y")+'" id="go-diary">'+(done ? "다시 보기" : "일기 쓰기")+'</button></div></section>';
+  const e = DIARY[TK()], done = e && e.saved, fix = done && !day().paid.diary;          // 저장은 했지만 다섯 문장이 안 돼 생선을 못 받은 날
+  return '<section class="card"><div class="ch">'+PEN+'<h2 class="sec">오늘의 일기</h2></div><div class="row" style="gap:10px"><span class="sp" style="font-size:16px;line-height:1.3">'+(fix ? "다섯 문장이 되면 "+FISH+" "+DIARY_FISH : done ? "오늘 일기를 썼어요!" : "다섯 문장 이상 쓰면 "+FISH+" "+DIARY_FISH)+'</span><button class="btn'+(done && !fix ? "" : " y")+'" id="go-diary">'+(fix ? "고쳐 쓰기" : done ? "다시 보기" : "일기 쓰기")+'</button></div></section>';
 }
 function diaryScreen(){
   const k = TK(), e = DIARY[k] || (DIARY[k] = {text:"", saved:false, got:0, first:null});
@@ -2506,9 +2506,11 @@ function diaryScreen(){
   const ta = $("d-text"), out = $("d-out"); ta.value = e.text || "";
   const lines = () => ta.value.split(/[.!?…。]+|\n+/).filter(x => hangulCount(x) >= 2).length;          // 문장 수: 마침표·물음표·느낌표나 줄바꿈으로 끊고, 한글이 두 자 이상인 것만 센다
   const enough = () => lines() >= DIARY_LINES && hangulCount(ta.value) >= DIARY_MINCH;
-  const count = () => { const n = lines(); $("d-count").innerHTML = n >= DIARY_LINES ? (hangulCount(ta.value) >= DIARY_MINCH ? "<b>지금 "+n+"문장</b><span>다섯 문장을 썼어요!</span>" : "<b>지금 "+n+"문장</b><span>조금만 더 길게 써 봐요</span>") : "<b>지금 "+n+"문장</b><span>"+(DIARY_LINES - n)+"문장 더 쓰면 생선을 받아요</span>"; };
-  const hint = () => { out.innerHTML = '<div class="dhint">'+(e.saved ? '<p><b>오늘 일기는 저장했어요.</b><br>고쳐 쓰고 다시 저장할 수도 있어요.</p>' : '<p>다 쓰고 <b>맞춤법 검사하기</b>를 누르면<br>고친 글이 여기에 보여요.</p>')
-    + '<p class="small mut">다섯 문장 이상 쓰면 '+FISH+' '+DIARY_FISH+'마리<br>처음 검사에서 틀린 곳이 없으면 '+FISH+' '+DIARY_BONUS+'마리 더!</p></div>'; };
+  const noDot = () => lines() < DIARY_LINES && hangulCount(ta.value) >= DIARY_MINCH && hangulCount(ta.value) / Math.max(1, lines()) >= 25;       // 글은 긴데 문장이 안 나뉜 경우
+  const edit = () => { ta.focus(); try{ ta.setSelectionRange(ta.value.length, ta.value.length); }catch(x){} };
+  const count = () => { const n = lines(); $("d-count").innerHTML = n >= DIARY_LINES ? (hangulCount(ta.value) >= DIARY_MINCH ? "<b>지금 "+n+"문장</b><span>다섯 문장을 썼어요!</span>" : "<b>지금 "+n+"문장</b><span>조금만 더 길게 써 봐요</span>") : "<b>지금 "+n+"문장</b><span>"+(noDot() ? "문장 끝에 마침표(.)를 찍어요" : (DIARY_LINES - n)+"문장 더 쓰면 생선을 받아요")+"</span>"; };
+  const hint = () => { out.innerHTML = '<div class="dhint">'+(e.saved && !day().paid.diary ? '<p><b>아직 다섯 문장이 안 돼요.</b><br>'+(noDot() ? '문장 끝마다 마침표(.)를 찍어 보세요.' : '조금 더 써 보세요.')+'<br>다시 저장하면 생선을 받아요!</p><button class="btn y" id="d-edit">고쳐 쓰기</button>' : e.saved ? '<p><b>오늘 일기는 저장했어요.</b><br>고쳐 쓰고 다시 저장할 수도 있어요.</p><button class="btn" id="d-edit">고쳐 쓰기</button>' : '<p>다 쓰고 <b>맞춤법 검사하기</b>를 누르면<br>고친 글이 여기에 보여요.</p>')
+    + '<p class="small mut">다섯 문장 이상 쓰면 '+FISH+' '+DIARY_FISH+'마리<br>처음 검사에서 틀린 곳이 없으면 '+FISH+' '+DIARY_BONUS+'마리 더!</p></div>'; const b = $("d-edit"); if(b) b.onclick = edit; };
   const saveBtn = () => '<button class="btn y" id="d-save" style="width:100%">'+(e.saved ? "다시 저장하기" : "일기 저장하기")+'</button>';
   function showResult(){
     const fs = checked.fs, t = checked.text;
@@ -2527,7 +2529,7 @@ function diaryScreen(){
     const short = !enough();
     modal('<img src="'+spr("both", got ? "smile" : "look")+'" alt="" style="height:84px"><h3 class="sec">일기를 저장했어요</h3>'
       + (got ? '<p class="rfish" style="margin:0">'+FISH.replace('width="18" height="18"','width="40" height="40"')+'+'+got+'</p>' : '')
-      + '<p style="margin:0;line-height:1.45;text-align:center">'+(got ? (got > DIARY_FISH ? "처음 검사에서 틀린 곳이 없어서<br>보너스까지 받았어요!" : "오늘도 잘 썼어요!") : short ? "다섯 문장을 쓰면 생선을 받을 수 있어요.<br>더 써서 다시 저장해도 돼요." : "오늘 생선은 이미 받았어요.")+'</p><button class="btn y" id="dk-ok" style="width:100%">확인</button>', () => { $("dk-ok").onclick = () => { closeModal(); hint(); }; });
+      + '<p style="margin:0;line-height:1.45;text-align:center">'+(got ? (got > DIARY_FISH ? "처음 검사에서 틀린 곳이 없어서<br>보너스까지 받았어요!" : "오늘도 잘 썼어요!") : short ? (noDot() ? "문장 끝마다 마침표(.)를 찍어 보세요.<br>" : "조금 더 써 보세요.<br>")+"다섯 문장이 되면 생선을 받아요!" : "오늘 생선은 이미 받았어요.")+'</p>'+(short ? '<button class="btn y" id="dk-fix" style="width:100%">고쳐 쓰기</button><button class="btn" id="dk-ok" style="width:100%">나중에 할래요</button>' : '<button class="btn y" id="dk-ok" style="width:100%">확인</button>'), () => { $("dk-ok").onclick = () => { closeModal(); hint(); }; if($("dk-fix")) $("dk-fix").onclick = () => { closeModal(); hint(); edit(); }; });
   }
   ta.oninput = () => { e.text = ta.value; saveDiary(); count(); if(checked){ checked = null; hint(); } };
   $("d-check").onclick = () => {
