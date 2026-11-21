@@ -344,6 +344,8 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .sw-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;width:100%;position:relative;z-index:1}
 .sw-step{display:flex;flex-direction:column;align-items:center;padding:6px 4px 5px;border-radius:14px;border:1.5px solid #EADCC6;background:#FBF5E7;color:#B8A898;box-shadow:0 2px 0 rgba(120,90,40,.08)}
 .sw-step b{font-size:18px;line-height:1.15}.sw-step span{font-size:15px;line-height:1.15}.sw-step em{font-style:normal;font-size:13px;height:22px;display:flex;align-items:center;font-family:var(--num)!important}
+.sw-pips{display:flex;gap:4px}.sw-pips i{width:9px;height:9px;border-radius:50%;background:#F26A1B}.sw-pips i.used{background:#E3D9C8}.sw-step:not(.now) .sw-pips i:not(.used){background:#D8C9A8}
+.sw-step.lock svg{width:15px;height:15px;stroke:#C4B8A6}
 .sw-step.now{color:#5A3A1C;border:2px solid #E8B93A;background:linear-gradient(#FFF6A8,#FBE46B);box-shadow:0 3px 0 #E0A91E}.sw-step.now em{color:#D9480F}
 .sw-step.used{color:#8A7868}.sw-step.hit{color:#5A3A1C;background:#FFE9A6;border-color:#E8B93A}
 .sw-trial{position:relative;z-index:2;display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border-radius:14px;background:#FFF3D6;border:1.5px dashed #E8A91E;font-size:13px;line-height:1.3;text-align:center}.sw-trial span{flex:1;min-width:0}.sw-trial b{color:#D9480F;font-family:var(--num)!important}
@@ -372,7 +374,9 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .sw-spark i:nth-child(1){left:18%;top:34%}.sw-spark i:nth-child(2){right:16%;top:22%;font-size:20px;animation-delay:.3s}.sw-spark i:nth-child(3){right:20%;top:52%;animation-delay:.5s}.sw-spark i:nth-child(4){left:26%;top:16%;font-size:16px;animation-delay:.2s}
 @keyframes twk{from{transform:scale(.6);opacity:.5}to{transform:scale(1.1);opacity:1}}
 .sw-clock.miss .sw-dial b{color:#9A8878}
-.sw-msg{position:relative;z-index:2;margin:0;text-align:center;word-break:keep-all;min-height:0}
+.sw-msg{position:relative;z-index:2;margin:0;text-align:center;word-break:keep-all;flex:none}
+.sw-steps,.sw-target,.sw-trial,.game.stopw .gtop{flex:none}
+.game.stopw.trial .sw-scene{max-height:27%}.game.stopw.trial .sw-target{padding:3px 28px 1px}.game.stopw.trial .sw-target b{font-size:44px}.game.stopw.trial .sw-wrap{min-height:110px}
 .sw-msg b{color:#E8590C}.sw-msg svg{width:20px;height:20px;vertical-align:-4px}
 .sw-msg.info{width:100%;padding:8px 10px;border-radius:18px;background:rgba(255,251,245,.9);border:1.5px solid #F0E3CE;font-size:17px;line-height:1.5}
 .sw-msg.bub{padding:7px 22px;border-radius:99px;background:#FFFBF5;border:1.5px solid #EADCC6;box-shadow:0 3px 8px rgba(120,90,40,.12);font-size:21px;-webkit-text-stroke:.4px currentColor}
@@ -1031,6 +1035,7 @@ const SNACKS = [
   {id:"salmon", img:"snack_salmon", n:"연어 구이", price:8, mood:30, aff:8, art:'<path d="M3 13c4-6 12-7 16 0c-4 6-12 5-16 0z" fill="#FFB9A0" stroke="#303030" stroke-width="1.4" stroke-linejoin="round"/><path d="M19 13l3-3v6z" fill="#FFB9A0" stroke="#303030" stroke-width="1.4" stroke-linejoin="round"/>'}
 ];
 // 기본 할 일 + 직접 추가한 할 일 (오늘만 하는 일은 그날에만 보인다)
+const taskFish = t => String(t.id)[0] === "c" ? (+t.fish || 0) : (t.timed ? S.rewards.timed : S.rewards.task);       // 지안이가 직접 넣은 할 일은 0
 function allTasks(){ const t = TK(); return TASKS.concat((S.custom || []).filter(c => !c.day || c.day === t)); }
 const TYPES = {school:"학교", study:"학원·공부", music:"악기", sport:"운동·댄스", play:"놀기"};
 const DAYS = ["일","월","화","수","목","금","토"];
@@ -1332,7 +1337,7 @@ function tasksCard(st, p){
   const d = st.d, order = allTasks(), shown = order;
   const rows = shown.map(t => {
     const done = taskDone(d, t.id), run = S.running && S.running.id === t.id, r = d.tasks[t.id];
-    const rw = '<span class="rw">'+FISHS+'+'+(t.timed ? S.rewards.timed : S.rewards.task)+'</span>';
+    const rw = taskFish(t) ? '<span class="rw">'+FISHS+'+'+taskFish(t)+'</span>' : '';
     if(run) return '<div class="item cur"><span class="chk sq" style="border-color:var(--yd)"></span><span class="sp"><span class="nm" style="display:block">'+esc(t.n)+'</span><span class="tm">'+hm(S.running.start)+' 시작 · <b id="run-clock">'+clock()+'</b></span></span><button class="btn y sm" id="t-stop">'+CHECK+'종료</button></div>';
     if(done) return '<button class="item done" data-undo="'+t.id+'" aria-label="'+esc(t.n)+' 완료됨, '+hm(r.start)+'부터 '+hm(r.end)+'까지"><span class="chk sq">'+CHECK+'</span><span class="sp"><span class="nm" style="display:block">'+esc(t.n)+'</span><span class="tm" style="display:block">'+hm(r.start)+' – '+hm(r.end)+' · '+spent(r)+'</span></span></button>';
     return '<div class="item"><span class="chk sq"></span><span class="nm sp">'+esc(t.n)+'</span>'+rw+'<button class="btn sm" data-start="'+t.id+'"'+(S.running ? ' disabled' : '')+'>'+PLAY+'시작</button></div>';
@@ -1358,27 +1363,31 @@ function renderToday(){
   const gc = $("go-coupon"); if(gc) gc.onclick = () => couponModal();
   const gt = $("go-table"); if(gt) gt.onclick = () => show("table");
 }
-function addTaskModal(msg){
+function addTaskModal(msg, parent){
   const mine = S.custom || [], t = TK();
-  modal('<h3 class="sec">할 일 추가</h3><input class="field" id="nt-name" maxlength="16" placeholder="예: 책 20분 읽기" aria-label="할 일 이름">'
+  modal('<h3 class="sec">할 일 추가'+(parent ? ' <span class="tag">엄빠</span>' : '')+'</h3><input class="field" id="nt-name" maxlength="16" placeholder="예: 책 20분 읽기" aria-label="할 일 이름">'
     + '<div class="seg" role="radiogroup" aria-label="언제" style="width:100%"><button class="on" data-when="daily" role="radio" aria-checked="true">매일</button><button data-when="today" role="radio" aria-checked="false">오늘만</button></div>'
+    + (parent ? '<div class="seg" role="radiogroup" aria-label="생선" style="width:100%"><button class="on" data-nf="1" role="radio" aria-checked="true">생선 1마리</button><button data-nf="3" role="radio" aria-checked="false">생선 3마리</button><button data-nf="0" role="radio" aria-checked="false">없음</button></div>'
+        : '<p class="small mut" style="margin:0;width:100%;text-align:center;line-height:1.45">내가 추가한 할 일은 생선이 없어요.<br>생선을 받는 할 일은 엄마 아빠가 넣어 줘요.</p>')
     + '<p class="small" id="nt-msg" role="status" style="min-height:20px;color:#9A5B00">'+esc(msg)+'</p>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="nt-x">닫기</button><button class="btn y sp" id="nt-ok">추가</button></div>'
-    + (mine.length ? '<div style="width:100%;text-align:left;border-top:1px solid var(--line);padding-top:10px"><p class="small mut">내가 추가한 할 일</p>'+mine.map(c => '<div class="row" style="min-height:44px"><span class="sp">'+esc(c.n)+' <span class="small mut">'+(c.day ? (c.day === t ? "오늘만" : "지난 날") : "매일")+'</span></span><button class="btn sm" data-rm="'+c.id+'">삭제</button></div>').join("")+'</div>' : ''), () => {
+    + (parent ? '' : '<button class="plink" id="nt-parent" style="margin:0">'+LOCK+'엄빠가 추가하기 (생선 주기)</button>')
+    + (mine.length ? '<div style="width:100%;text-align:left;border-top:1px solid var(--line);padding-top:10px"><p class="small mut">추가한 할 일</p>'+mine.map(c => '<div class="row" style="min-height:44px"><span class="sp">'+esc(c.n)+' <span class="small mut">'+(c.day ? (c.day === t ? "오늘만" : "지난 날") : "매일")+(+c.fish ? " · 생선 "+c.fish : "")+'</span></span>'+(parent || !+c.fish ? '<button class="btn sm" data-rm="'+c.id+'">삭제</button>' : '<span class="small mut">엄빠가 넣음</span>')+'</div>').join("")+'</div>' : ''), () => {
       const M = $("modal-root"), pick = attr => M.querySelectorAll("["+attr+"]").forEach(b => b.onclick = () => M.querySelectorAll("["+attr+"]").forEach(x => { const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-checked", on); }));
-      pick("data-when");
+      pick("data-when"); pick("data-nf");
       $("nt-x").onclick = closeModal;
+      if($("nt-parent")) $("nt-parent").onclick = () => openGate(() => addTaskModal("", true));
       $("nt-name").oninput = () => { $("nt-msg").textContent = ""; };
       $("nt-ok").onclick = () => {
         const n = $("nt-name").value.trim();
         if(!n){ $("nt-msg").textContent = "할 일 이름을 적어 주세요."; return; }
         if(allTasks().some(x => x.n === n)){ $("nt-msg").textContent = "이미 있는 할 일이에요."; return; }
         if(allTasks().length >= 12){ $("nt-msg").textContent = "할 일은 12개까지 넣을 수 있어요."; return; }
-        S.custom.push({id:"c"+Date.now(), n:n, timed:false, day:M.querySelector("[data-when].on").dataset.when === "today" ? TK() : null});
+        S.custom.push({id:"c"+Date.now(), n:n, timed:false, fish:parent ? +M.querySelector("[data-nf].on").dataset.nf : 0, day:M.querySelector("[data-when].on").dataset.when === "today" ? TK() : null});
         save(); closeModal(); render(); catSay("aeong", "새 할 일이다! 같이 해 보자");
       };
       M.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { const id = b.dataset.rm;
-        S.custom = S.custom.filter(c => c.id !== id); if(S.running && S.running.id === id) S.running = null; save(); render(); addTaskModal("삭제했어요."); });
+        S.custom = S.custom.filter(c => c.id !== id); if(S.running && S.running.id === id) S.running = null; save(); render(); addTaskModal("삭제했어요.", parent); });
     });
 }
 function reward(k, got, text){
@@ -1400,7 +1409,7 @@ function startTask(id){ if(S.running) return; S.running = {id:id, start:Date.now
 function finishTask(id, start, end){
   const t = allTasks().find(x => x.id === id), rec = {start:start, end:end}; day().tasks[id] = rec;
   const label = t.n+" "+hm(start)+"–"+hm(end)+" ("+spent(rec)+")";
-  const got = pay(id, t.timed ? S.rewards.timed : S.rewards.task, label);
+  const got = pay(id, taskFish(t), label);
   if(!got) logAdd(label, "✓");
   const all = allTasks().every(x => taskDone(day(), x.id)), bonus = all ? pay("all-tasks", ALL_BONUS, "오늘 할 일 모두 끝") : 0;
   reward("aeong", got + bonus, bonus ? "다 끝냈다! 보너스 "+bonus+"마리!" : unlocked("aeong") ? "할 일 끝! 최고야" : "야호옹! 해냈다");
@@ -1736,7 +1745,7 @@ function drawSettings(msg){
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">엄빠 쿠폰</h2>'+((S.coupons || []).filter(c => !c.used).length ? (S.coupons || []).filter(c => !c.used).map(c => '<div class="row"><span class="sp" style="line-height:1.3">'+esc(c.n)+'</span><button class="btn sm" data-cdone="'+c.id+'">사용 완료</button></div>').join("") : '<p class="mut" style="margin:0">안 쓴 쿠폰이 없어요.</p>')+'<button class="btn" id="set-coupons">쿠폰함 전체 보기</button></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">모든 게임 해 보기</h2><p class="small mut" style="margin:0;line-height:1.45">몇 번이든 해 볼 수 있어요.<br>연습이라 생선·횟수·기록에 남지 않아요.</p>'
     + '<div class="grid2">'+[["spell","맞춤법 퀴즈"],["match","같은 그림 찾기"],["slice","간식 슬라이스"],["tower","츄르 타워"]].map(g => '<button class="btn" data-try="'+g[0]+'" style="padding:0 6px">'+g[1]+'</button>').join("")+'</div>'
-    + '<button class="btn y" data-try="stop">숫자 스톱워치 (단계·속도 고르기)</button></section>'
+    + '</section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">살펴보기</h2><button class="btn" id="set-diary">지안이 일기 보기</button><button class="btn" id="set-log">최근 기록 보기</button><button class="btn" id="set-replay">오늘 놀이·스톱워치 다시 열기</button></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">이번 주만 있는 일정</h2>'+(() => { const ks = Object.keys(ONCE).filter(k => (ONCE[k] || []).length).sort();
         return ks.length ? ks.map(k => ONCE[k].map((e, i) => { const q = k.split("-"), wd = DAYS[new Date(+q[0], +q[1]-1, +q[2]).getDay()]; return '<div class="row" style="gap:8px"><span class="sp" style="line-height:1.3">'+esc(e[2])+'<br><span class="small mut">'+(+q[1])+'월 '+(+q[2])+'일 '+wd+'요일 · '+e[0]+'~'+e[1]+'</span></span><button class="btn sm" data-odel="'+k+'|'+i+'" style="color:#B42318">삭제</button></div>'; }).join("")).join("") : '<p class="mut" style="margin:0">이번 주만 있는 일정이 없어요.</p>'; })()+'</section>'
@@ -1780,7 +1789,7 @@ function drawSettings(msg){
     $("sy-off").onclick = () => { const b = $("sy-off"); if(b.dataset.arm){ SY = {url:"", rev:{}, dirty:{}, at:0, err:""}; saveSY(); redraw("연결을 끊었어요. 기록은 이 폰에 그대로 있어요."); } else { b.dataset.arm = "1"; b.textContent = "한 번 더 누르면 끊어져요"; } };
   }
   R.querySelectorAll("[data-odel]").forEach(b => b.onclick = () => { readEd(); const q = b.dataset.odel.split("|"); (ONCE[q[0]] || []).splice(+q[1], 1); if(!(ONCE[q[0]] || []).length) delete ONCE[q[0]]; try{ localStorage.setItem(KEY+"-once", JSON.stringify(ONCE)); }catch(e){} touch("once"); drawSettings(""); });
-  R.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { const id = b.dataset.try; trialStart(); if(id === "stop") stopScreen(); else openGame(id); });
+  R.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { const id = b.dataset.try; trialStart(); openGame(id); });
   R.querySelectorAll("[data-fish]").forEach(b => b.onclick = () => { readEd(); const n = +b.dataset.fish; S.fish = Math.max(0, S.fish + n); logAdd("엄빠가 생선 "+(n > 0 ? "+" : "−")+Math.abs(n), (n > 0 ? "+" : "−")+Math.abs(n)); save(); drawSettings(""); });
   R.querySelectorAll("[data-cdone]").forEach(b => b.onclick = () => { readEd(); const c = S.coupons.find(x => x.id === b.dataset.cdone); if(c){ c.used = now().getTime(); save(); } drawSettings(""); });
   $("set-coupons").onclick = () => couponModal();
@@ -1788,7 +1797,7 @@ function drawSettings(msg){
   $("set-log").onclick = () => modal('<h3 class="sec">최근 기록</h3><div style="width:100%;max-height:56vh;overflow-y:auto;text-align:left">'+(S.log.length ? S.log.map(l => { const d = new Date(l.t); return '<div class="row" style="padding:6px 0;border-top:1px solid var(--line);gap:8px"><span class="small mut" style="flex:none;width:76px">'+(d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes())+'</span><span class="sp small">'+esc(l.text)+'</span><b class="small">'+esc(l.n)+'</b></div>'; }).join("") : '<p class="mut">아직 기록이 없어요.</p>')+'</div><button class="btn" id="lg-x" style="width:100%">닫기</button>', () => { $("lg-x").onclick = closeModal; });
   $("set-replay").onclick = () => { readEd(); const d = day(); d.played = {}; delete d.stop; save(); drawSettings("오늘 놀이와 스톱워치를 다시 열었어요."); };
   if($("tt-all")){
-    $("tt-all").onclick = () => { const d = day(); d.forceN = true; allTasks().forEach(t => { if(!taskDone(d, t.id)){ d.tasks[t.id] = {start:Date.now()-20*60000, end:Date.now()}; pay(t.id, t.timed ? S.rewards.timed : S.rewards.task, t.n); } }); S.running = null; save(); drawSettings("모두 완료로 바꿨어요."); };
+    $("tt-all").onclick = () => { const d = day(); d.forceN = true; allTasks().forEach(t => { if(!taskDone(d, t.id)){ d.tasks[t.id] = {start:Date.now()-20*60000, end:Date.now()}; pay(t.id, taskFish(t), t.n); } }); S.running = null; save(); drawSettings("모두 완료로 바꿨어요."); };
     $("tt-fish").onclick = () => { S.fish += 10; save(); drawSettings("생선 +10"); };
     $("tt-play").onclick = () => { day().played = {}; save(); drawSettings("오늘 놀이를 다시 열었어요."); };
   }
@@ -2500,7 +2509,18 @@ function diaryList(open){
 
 // ───────── 숫자 스톱워치: 오늘 할 일을 다 끝내면 하루 세 번(1·2·3단계) 도전한다 ─────────
 const STOPLV = [{n:"1단계", tag:"보통", ms:70}, {n:"2단계", tag:"빠름", ms:40}, {n:"3단계", tag:"엄청 빠름", ms:15}];     // ms: 숫자 하나가 넘어가는 시간
-const stopRec = () => { const d = day(); return d.stop || (d.stop = {n:0, res:[]}); };
+const STOP_TRIES = 3;                 // 단계마다 도전할 수 있는 횟수
+const stopRec = () => { const d = day(); if(!d.stop || d.stop.v !== 2) d.stop = {v:2, res:[]}; return d.stop; };       // res[단계] = {tries:[{target, got}], hit, gift}
+// 지금 어디까지 왔는지: 앞 단계를 맞혀야 다음 단계가 열리고, 한 단계에서 세 번 다 놓치면 그날은 끝난다
+function stopState(r){
+  for(let i = 0; i < STOPLV.length; i++){ const x = r.res[i];
+    if(!x) return {lv:i, left:STOP_TRIES};
+    if(x.hit){ if(!x.gift) return {lv:i, pend:true, left:0}; continue; }
+    if(x.tries.length < STOP_TRIES) return {lv:i, left:STOP_TRIES - x.tries.length};
+    return {lv:i, over:true, left:0};
+  }
+  return {lv:STOPLV.length - 1, over:true, cleared:true, left:0};
+}
 const schedDone = () => { const d = day(), ts = allTasks(); return ts.length > 0 && ts.every(t => taskDone(d, t.id)); };      // 오늘 할 일을 모두 끝내야 열린다
 const WATCH = ln('<circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.500V9.500M9.500 3h5M12 3v3M18.500 7l1.200-1.200"/>', 24);
 // 오늘 할 일 칸 오른쪽 위 알람 시계: 평소엔 검은 선 그림, 할 일을 다 끝내면 색이 들어오고 알람처럼 흔들린다
@@ -2510,16 +2530,9 @@ const alarmSvg = on => { const k = on ? "#8A5A00" : "#2B2620";
     + '<path d="M11.500 32l-3 4M28.500 32l3 4"/><circle cx="20" cy="22" r="13" fill="'+(on ? "#FFD54A" : "none")+'"/>'+(on ? '<circle cx="20" cy="22" r="9.200" fill="#FFFDF5" stroke="none"/>' : '')
     + '<path d="M20 15v7l4.500 3" stroke="'+(on ? "#5A3A1C" : k)+'"/></svg>'; };
 function stopBadge(){
-  const r = stopRec(), open = schedDone(), left = STOPLV.length - r.n, pend = r.res.some(x => x && x.got && x.got === x.target && !x.gift), ring = open && (left > 0 || pend), cp = (S.coupons || []);
+  const r = stopRec(), open = schedDone(), st = stopState(r), left = st.left, pend = !!st.pend, ring = open && !st.over, cp = (S.coupons || []);
   return (cp.length ? '<button class="cpbtn" id="go-coupon" aria-label="엄빠 쿠폰함">쿠폰함 '+cp.filter(c => !c.used).length+'</button>' : '')
-    + '<button class="alarm'+(open ? " on" : "")+(ring ? " ring" : "")+'" id="go-stop" aria-label="숫자 스톱워치'+(ring ? ", 도전 "+left+"번 남음" : open ? ", 오늘 도전 끝" : ", 오늘 할 일을 다 끝내면 열려요")+'">'+alarmSvg(open)+(ring && left > 0 ? '<i>'+left+'</i>' : '')+'</button>';
-}
-function stopCard(){
-  const r = stopRec(), left = STOPLV.length - r.n, open = schedDone();
-  const dots = STOPLV.map((l, i) => { const x = r.res[i]; return '<i class="sdot'+(x ? (x.got === x.target ? " hit" : " used") : "")+'" title="'+l.n+'">'+(x ? (x.got === x.target ? "★" : Math.abs(x.got - x.target)) : i + 1)+'</i>'; }).join("");
-  return '<section class="card"><div class="ch">'+WATCH+'<h2 class="sec">숫자 스톱워치</h2></div><div class="row" style="gap:10px"><span class="sdots sp">'+dots+'</span>'
-    + ((S.coupons || []).length ? '<button class="btn" id="go-coupon" style="min-height:40px;padding:0 10px">쿠폰함 '+S.coupons.filter(c => !c.used).length+'</button>' : '')
-    + (!open ? '<span class="small mut" style="text-align:right;line-height:1.3">오늘 일정이<br>끝나면 열려요</span>' : left > 0 ? '<button class="btn y" id="go-stop">도전! '+left+'번 남음</button>' : '<button class="btn" id="go-stop">결과 보기</button>')+'</div></section>';
+    + '<button class="alarm'+(open ? " on" : "")+(ring ? " ring" : "")+'" id="go-stop" aria-label="숫자 스톱워치'+(ring ? ", "+STOPLV[st.lv].n+" 도전 "+left+"번 남음" : open ? ", 오늘 도전 끝" : ", 오늘 할 일을 다 끝내면 열려요")+'">'+alarmSvg(open)+(ring && left > 0 ? '<i>'+left+'</i>' : '')+'</button>';
 }
 // 스톱워치 선물 상자: 1단계 나무(생선 5마리) · 2단계 은(간식 하나를 골라 둘 다에게) · 3단계 금(엄빠 쿠폰)
 const BOXES = [{n:"나무 상자", c:["#C98B4E","#A66A32","#E2B07A","#7A4A1E"]}, {n:"은 상자", c:["#DDE3EA","#AEB8C4","#F5F8FB","#7C8794"]}, {n:"금 상자", c:["#FFD54A","#F2A900","#FFF0A8","#B37400"]}];
@@ -2569,12 +2582,11 @@ const speedIcon = lv => '<svg width="34" height="20" viewBox="0 0 34 20" fill="n
   + '<path d="M'+(lv ? 15 : 9)+' 17a8 8 0 0116 0"/><path d="M'+(lv ? 23 : 17)+' 17l'+[2, 4, 5.500][lv]+' -'+[6, 5, 3.500][lv]+'"/></svg>';
 const HAND = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" stroke="#C2410C" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V4.500a1.500 1.500 0 013 0V10l5.200 1.200a2 2 0 011.500 2.300l-.800 4.700A3 3 0 0114.900 21H11.500a3 3 0 01-2.300-1.100L5.500 15.500a1.400 1.400 0 012-1.900L9 14.800z"/><path d="M5.500 6a5 5 0 012-3M3 7.500A7.500 7.500 0 015.800 1.500" fill="none" stroke="#fff" stroke-width="1.500" stroke-linecap="round"/></svg>';
 function stopScreen(){
-  if(!TRIAL && !schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
-  const r = TRIAL ? {n:TRIAL.lv, res:[]} : stopRec();
-  const msOf = l => (TRIAL && TRIAL.ms[l]) || STOPLV[l].ms;
+  if(!schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
+  const r = stopRec();
   $("game-root").innerHTML = '<div class="game deco stopw" role="dialog" aria-modal="true" aria-label="숫자 스톱워치"><img class="sw-win" src="'+art("stop_window")+'" alt="">'
     + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><div class="sw-head"><b>'+WATCH.replace('width="24" height="24"','width="30" height="30"')+'숫자 스톱워치</b><span><i>☾</i>오늘의 야간 챌린지</span></div><span style="width:44px"></span></div>'
-    + '<div class="sw-steps" id="sw-steps"></div>'+(TRIAL ? '<div class="sw-trial" id="sw-trial"></div>' : '')
+    + '<div class="sw-steps" id="sw-steps"></div>'
     + '<div class="sw-target"><span>이 숫자에서 멈춰!</span><b id="sw-target">?</b></div>'
     + '<div class="sw-wrap"><div class="sw-clock" id="sw-clock"><i class="sw-knob"></i><i class="sw-ear l"></i><i class="sw-ear r"></i>'
     + '<button class="sw-dial" id="sw-dial" aria-label="멈추기"><span class="sw-ring"></span><b id="sw-num">0</b><small id="sw-sub">1부터 100까지</small><span class="sw-rib">'+PAW+'딱 맞췄어요!'+PAW+'</span><span class="sw-spark" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></span></button></div></div>'
@@ -2587,46 +2599,42 @@ function stopScreen(){
   const fit = () => { const sp = $("sw-space"); if(sp && scene.offsetHeight) sp.style.height = Math.max(120, scene.offsetHeight - 26) + "px"; };
   scene.onload = fit; addEventListener("resize", fit);
   const setScene = n => { const u = art("stop_"+n); if(scene.getAttribute("src") !== u) scene.src = u; fit(); };
-  const steps = () => { $("sw-steps").innerHTML = STOPLV.map((l, i) => { const x = r.res[i], cur = i === lv && state !== "over";
-    return '<div class="sw-step'+(x && x.got ? (x.got === x.target ? " hit" : " used") : "")+(cur ? " now" : "")+'"><b>'+l.n+'</b><span>'+l.tag+'</span><em>'+(x && x.got ? (x.got === x.target ? "딱 맞음!" : Math.abs(x.got - x.target)+" 차이") : speedIcon(i))+'</em></div>'; }).join(""); };
+  const steps = () => { const st = stopState(r); $("sw-steps").innerHTML = STOPLV.map((l, i) => { const x = r.res[i], cur = i === lv && state !== "over", locked = !x && (st.over || i > st.lv);
+    const em = x && x.hit ? "딱 맞음!" : x && x.tries.length >= STOP_TRIES ? "다음에 또!" : locked ? LOCK : '<span class="sw-pips" aria-label="남은 기회 '+(STOP_TRIES - (x ? x.tries.length : 0))+'번">'+Array.from({length:STOP_TRIES}, (_, k) => '<i'+(x && k < x.tries.length ? ' class="used"' : '')+'></i>').join("")+'</span>';
+    return '<div class="sw-step'+(x && x.hit ? " hit" : x && x.tries.length >= STOP_TRIES ? " used" : "")+(cur ? " now" : "")+(locked ? " lock" : "")+'"><b>'+l.n+'</b><span>'+l.tag+'</span><em>'+em+'</em></div>'; }).join(""); };
   const info = html => { msg.className = "sw-msg info"; msg.innerHTML = html; }, bubble = html => { msg.className = "sw-msg bub"; msg.innerHTML = html; };
   const btn = (kind, html) => { go.className = "sw-go " + kind; go.innerHTML = html; };
-  const at = ts => ((start + Math.floor((ts - t0) / msOf(lv))) % 100) + 1;
-  const trialBar = () => { if(!TRIAL) return; const ms = msOf(lv), el = $("sw-trial");
-    el.innerHTML = '<button data-sp="1.15" aria-label="느리게">느리게</button><span>연습 · 숫자 하나에 <b>'+(ms / 1000).toFixed(3)+'초</b><br>100까지 한 바퀴 '+(ms / 10).toFixed(1)+'초'+(ms !== STOPLV[lv].ms ? ' (원래 '+(STOPLV[lv].ms / 1000).toFixed(3)+'초)' : '')+'</span><button data-sp="0.87" aria-label="빠르게">빠르게</button>';
-    el.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => { if(state === "run") return; const f = +b.dataset.sp, cur = msOf(lv); let nx = Math.round(cur * f); if(nx === cur) nx += f > 1 ? 1 : -1; TRIAL.ms[lv] = clamp(nx, 5, 200); trialBar(); });
-    $("sw-steps").querySelectorAll(".sw-step").forEach((x, i) => { x.style.cursor = "pointer"; x.onclick = () => { if(state === "run") return; TRIAL.lv = i; r.n = i; r.res = []; ready(); }; }); };
+  const at = ts => ((start + Math.floor((ts - t0) / STOPLV[lv].ms)) % 100) + 1;
+  const PLAY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="#5A3A1C" aria-hidden="true"><path d="M7 4.500v15a1 1 0 001.500.900l12-7.500a1 1 0 000-1.700l-12-7.500A1 1 0 007 4.500z"/></svg>';
   function ready(){
     cancelAnimationFrame(raf); clock.classList.remove("run", "hit", "miss"); $("sw-conf").innerHTML = "";
-    const pend = r.res.findIndex(x => x && x.got && x.got === x.target && !x.gift);          // 맞히고 아직 안 연 상자가 있으면 그것부터
-    if(pend >= 0){ state = "gift"; lv = pend; steps(); setScene("hit"); clock.classList.add("hit"); $("sw-target").textContent = r.res[pend].target; num.textContent = r.res[pend].got; $("sw-sub").textContent = "";
-      bubble(BOXES[pend].n+"가 기다리고 있어요!"); btn("y", "선물 상자 열기"); trialBar(); return; }
-    if(TRIAL){ r.n = TRIAL.lv; r.res = []; }             // 연습: 고른 단계를 몇 번이든 다시 한다
-    if(r.n >= STOPLV.length){ state = "over"; lv = STOPLV.length - 1; steps(); const hits = r.res.filter(x => x.got === x.target).length;
-      $("sw-target").textContent = "?"; num.textContent = hits ? "★" : "끝"; $("sw-sub").textContent = "오늘 도전 끝"; setScene(hits ? "hit" : "ready");
-      info(hits ? "오늘 <b>"+hits+"번</b> 딱 맞혔어요!<br>내일 또 도전해요 "+PAW : "오늘 세 번 다 도전했어요.<br>내일 또 도전해요 "+PAW); btn("y", "닫기"); return; }
-    state = "ready"; lv = r.n; target = 1 + Math.floor(Math.random() * 100); steps(); setScene("ready");
+    const st = stopState(r); lv = st.lv;
+    if(st.pend){ state = "gift"; const x = r.res[lv], last = x.tries[x.tries.length - 1]; steps(); setScene("hit"); clock.classList.add("hit"); $("sw-target").textContent = last.target; num.textContent = last.got; $("sw-sub").textContent = "";
+      bubble(BOXES[lv].n+"가 기다리고 있어요!"); btn("y", "선물 상자 열기"); return; }
+    if(st.over){ state = "over"; steps(); const hits = r.res.filter(x => x && x.hit).length;
+      $("sw-target").textContent = "?"; num.textContent = st.cleared ? "★" : "끝"; $("sw-sub").textContent = "오늘 도전 끝"; setScene(st.cleared ? "hit" : "ready");
+      info(st.cleared ? "세 단계를 <b>모두</b> 맞혔어요!<br>정말 대단해요 "+PAW : (hits ? "오늘은 <b>"+hits+"단계</b>까지 맞혔어요!<br>" : "오늘 도전은 여기까지예요.<br>")+"내일 또 도전해요 "+PAW); btn("y", "닫기"); return; }
+    state = "ready"; target = 1 + Math.floor(Math.random() * 100); steps(); setScene("ready");
     $("sw-target").textContent = target; num.textContent = "0"; $("sw-sub").textContent = "1부터 100까지";
-    info("<b>목표 숫자</b>일 때 화면을 <b>터치</b>하세요!<br>딱 맞히면 <b>"+BOXES[lv].n+"</b>를 받아요.<br>"+PAW+" 기회는 <b>하루 3번!</b> "+PAW);
-    btn("y", '<svg width="22" height="22" viewBox="0 0 24 24" fill="#5A3A1C" aria-hidden="true"><path d="M7 4.500v15a1 1 0 001.500.900l12-7.500a1 1 0 000-1.700l-12-7.500A1 1 0 007 4.500z"/></svg>'+STOPLV[lv].n+" 시작"); trialBar();
+    const used = r.res[lv] ? r.res[lv].tries.length : 0;
+    info("<b>목표 숫자</b>일 때 화면을 <b>터치</b>하세요!<br>딱 맞히면 <b>"+BOXES[lv].n+"</b>를 받아요.<br>"+PAW+" 기회는 <b>단계마다 "+STOP_TRIES+"번!</b> "+PAW);
+    btn("y", PLAY+STOPLV[lv].n+(used ? " 다시 도전" : " 시작"));
   }
   function run(){
-    state = "run"; r.n = lv + 1; r.res[lv] = {target:target, got:0, lv:lv}; save();        // 시작을 누르면 기회 하나를 쓴다
+    state = "run"; const x = r.res[lv] || (r.res[lv] = {tries:[], hit:false, gift:0}); x.tries.push({target:target, got:0}); save();        // 시작을 누르면 기회 하나를 쓴다
     start = Math.floor(Math.random() * 100); if(((target - 1 - start + 100) % 100) < 25) start = (start + 60) % 100;          // 시작하자마자 목표가 지나가지 않게
-    t0 = performance.now(); clock.classList.add("run"); msg.className = "sw-msg"; msg.innerHTML = ""; $("sw-sub").textContent = "지금이야!"; setScene("run"); btn("o", HAND+"멈춰!"); sfx("start");
+    t0 = performance.now(); clock.classList.add("run"); msg.className = "sw-msg"; msg.innerHTML = ""; $("sw-sub").textContent = "지금이야!"; setScene("run"); btn("o", HAND+"멈춰!"); steps(); sfx("start");
     const loop = ts => { if(state !== "run") return; num.textContent = at(ts); raf = requestAnimationFrame(loop); }; raf = requestAnimationFrame(loop);
   }
   function stop(){
     if(state !== "run") return; state = "result"; cancelAnimationFrame(raf);
-    const got = at(performance.now()); num.textContent = got; r.res[lv].got = got; save();
-    const diff = Math.abs(got - target), hit = diff === 0;
+    const got = at(performance.now()), x = r.res[lv]; num.textContent = got; x.tries[x.tries.length - 1].got = got;
+    const diff = Math.abs(got - target), hit = diff === 0, left = STOP_TRIES - x.tries.length; if(hit) x.hit = true; save();
     clock.classList.remove("run"); clock.classList.add(hit ? "hit" : "miss"); sfx(hit ? "win" : diff <= 3 ? "good" : "miss"); try{ navigator.vibrate && navigator.vibrate(hit ? [30, 40, 60] : 20); }catch(e){}
     $("sw-sub").textContent = hit ? "" : diff+" 차이"; steps(); setScene(hit ? "hit" : diff <= 3 ? "run" : "ready");
-    bubble(hit ? "우와, <b>"+target+"</b>에 딱 멈췄어요!" : diff <= 3 ? "아깝다! <b>"+got+"</b>에서 멈췄어요." : "<b>"+got+"</b>에서 멈췄어요. 다음엔 꼭!");
-    if(hit) $("sw-conf").innerHTML = Array.from({length:22}, (_, i) => '<i style="left:'+(4 + Math.random() * 92).toFixed(1)+'%;background:'+["#FFC93C","#FF8A65","#7FD6C2","#F7A8B8","#9AD0F5"][i % 5]+';animation-delay:'+(Math.random() * 0.5).toFixed(2)+'s;transform:rotate('+Math.floor(Math.random() * 90)+'deg)"></i>').join("");
-    if(hit){ state = "gift"; btn("y", "선물 상자 열기"); trialBar(); return; }
-    trialBar();
-    btn("y", (TRIAL ? "다시 해 보기" : r.n >= STOPLV.length ? "결과 보기" : "다음 단계로")+' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A3A1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
+    bubble(hit ? "우와, <b>"+target+"</b>에 딱 멈췄어요!" : (diff <= 3 ? "아깝다! " : "")+"<b>"+got+"</b>에서 멈췄어요."+(left ? " 기회 <b>"+left+"번</b> 남았어요!" : ""));
+    if(hit){ state = "gift"; $("sw-conf").innerHTML = Array.from({length:22}, (_, i) => '<i style="left:'+(4 + Math.random() * 92).toFixed(1)+'%;background:'+["#FFC93C","#FF8A65","#7FD6C2","#F7A8B8","#9AD0F5"][i % 5]+';animation-delay:'+(Math.random() * 0.5).toFixed(2)+'s;transform:rotate('+Math.floor(Math.random() * 90)+'deg)"></i>').join(""); btn("y", "선물 상자 열기"); return; }
+    btn("y", left ? PLAY+"다시 도전" : "결과 보기");
   }
   const host = () => $("game-root").querySelector(".game");
   const done = () => { cancelAnimationFrame(raf); state = "x"; removeEventListener("resize", fit); closeGame(); };
