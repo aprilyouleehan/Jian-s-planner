@@ -291,13 +291,14 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .game.diary .gtop{gap:8px}
 .dhalf{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:8px;padding:8px 16px}
 .dpaper{position:relative;flex:1;min-height:0;border:1px solid var(--edge);border-radius:18px;background:#FFFDF8;overflow:hidden}
-#d-text,#d-mirror{font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:18px;line-height:30px;padding:0 14px;white-space:pre-wrap;overflow-wrap:break-word;word-break:break-all;letter-spacing:0;-webkit-text-stroke:0}
+#d-text,#d-mirror{font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:18px;line-height:30px;padding:0 14px;white-space:pre-wrap;overflow-wrap:break-word;word-break:keep-all;letter-spacing:0;-webkit-text-stroke:0}
 #d-text{position:absolute;inset:0;width:100%;height:100%;border:0;margin:0;resize:none;outline:none;color:var(--ink);background:repeating-linear-gradient(transparent 0 29px,#EADFC8 29px 30px);background-attachment:local;user-select:text;-webkit-user-select:text}
 #d-mirror{position:absolute;left:0;right:0;top:0;visibility:hidden;pointer-events:none}
+#d-count{display:flex;flex-direction:column;gap:1px;line-height:1.25;word-break:keep-all;min-width:0}#d-count b{font-size:18px;color:var(--ink)}#d-count span{font-size:14px;color:var(--mut)}
 .dbot{overflow-y:auto;border-top:1.5px dashed var(--edge);background:#FFF6E6;padding-top:12px;padding-bottom:14px}
 .dhint{margin:auto;text-align:center;line-height:1.5;font-size:17px}.dhint p{margin:0 0 8px}
 .dres{margin:0;text-align:center;font-size:18px}.dres svg{vertical-align:-5px}
-.dfixed{padding:10px 14px;border-radius:14px;background:#fff;border:1px solid var(--edge);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:17px;line-height:1.65;text-align:left;word-break:break-all;user-select:text;-webkit-user-select:text}
+.dfixed{padding:10px 14px;border-radius:14px;background:#fff;border:1px solid var(--edge);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:17px;line-height:1.65;text-align:left;word-break:keep-all;overflow-wrap:break-word;user-select:text;-webkit-user-select:text}
 .dfixed mark{background:#FDF0B1;border-bottom:2px solid #E3B200;border-radius:3px;padding:0 2px;color:inherit;font-family:inherit!important}
 .dlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left}
 .dlist li{padding:8px 12px;border-radius:12px;background:#fff;border:1px solid var(--edge);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important;font-size:16px}
@@ -307,6 +308,20 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .dold button span{font-size:14px;color:var(--mut);font-family:'Gowun Dodum','Noto Sans KR',sans-serif!important}
 .plink{align-self:center;display:flex;align-items:center;gap:5px;min-height:40px;padding:0 14px;margin-top:2px;border-radius:99px;font-size:14px;color:var(--mut)}.plink svg{stroke:var(--mut)}
 .sheet{z-index:65}
+/* 엄빠 ONLY 일주일 시간표 */
+.ptcard{display:flex;flex-direction:column;gap:8px;padding-left:10px;padding-right:10px}
+.ptab{border:1px solid #D9D2C5;border-radius:10px;overflow:hidden;background:#fff;font-family:var(--num)}
+.ptab *{font-family:var(--num)!important;-webkit-text-stroke:0}
+.pt-head{display:grid;grid-template-columns:34px repeat(7,1fr);background:#F3EEE4;border-bottom:1px solid #D9D2C5}
+.pt-head b{padding:5px 0;text-align:center;font-size:13px;border-left:1px solid #E4DDD0}.pt-head b.today{background:var(--y)}
+.pt-body{position:relative;display:grid;grid-template-columns:34px repeat(7,1fr)}
+.pt-times{position:relative;background:#FBF8F2}
+.pt-times i{position:absolute;left:0;right:3px;font-style:normal;font-size:9.5px;line-height:1;text-align:right;color:#6F6F6B;transform:translateY(2px)}.pt-times i.half{color:#B5AFA5}
+.pt-col{position:relative;border-left:1px solid #E4DDD0;background:repeating-linear-gradient(#fff 0 21px,#F0EBE1 21px 22px,#fff 22px 43px,#D9D2C5 43px 44px);cursor:cell}
+.pt-col.today{background:repeating-linear-gradient(#FFFBE6 0 21px,#F0EBE1 21px 22px,#FFFBE6 22px 43px,#D9D2C5 43px 44px)}
+.pt-ev{position:absolute;left:1px;right:1px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;padding:2px 1px;border-radius:4px;border:1px solid rgba(0,0,0,.16);overflow:hidden;text-align:center;color:#2B2620}
+.pt-ev b{font-size:min(10.5px,2.35vw);line-height:11px;white-space:nowrap;letter-spacing:-.02em}.pt-ev span{font-size:min(8.5px,2.1vw);line-height:1.1;color:#55504A;white-space:nowrap}
+.pt-ev.once{border:1.5px dashed #7A6A52}
 /* 숫자 스톱워치 */
 .alarm{position:relative;flex:none;width:48px;height:48px;margin:-8px -6px -8px 0;display:flex;align-items:center;justify-content:center;border-radius:50%}
 .alarm.ring svg{transform-origin:50% 60%;animation:alring 1.5s ease-in-out infinite}
@@ -331,6 +346,8 @@ nav button.on{box-shadow:0 1px 2px rgba(150,110,0,.12),0 3px 8px rgba(150,110,0,
 .sw-step b{font-size:18px;line-height:1.15}.sw-step span{font-size:15px;line-height:1.15}.sw-step em{font-style:normal;font-size:13px;height:22px;display:flex;align-items:center;font-family:var(--num)!important}
 .sw-step.now{color:#5A3A1C;border:2px solid #E8B93A;background:linear-gradient(#FFF6A8,#FBE46B);box-shadow:0 3px 0 #E0A91E}.sw-step.now em{color:#D9480F}
 .sw-step.used{color:#8A7868}.sw-step.hit{color:#5A3A1C;background:#FFE9A6;border-color:#E8B93A}
+.sw-trial{position:relative;z-index:2;display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border-radius:14px;background:#FFF3D6;border:1.5px dashed #E8A91E;font-size:13px;line-height:1.3;text-align:center}.sw-trial span{flex:1;min-width:0}.sw-trial b{color:#D9480F;font-family:var(--num)!important}
+.sw-trial button{flex:none;height:36px;padding:0 10px;border-radius:10px;background:#fff;border:1.5px solid #E0C48A;font-size:14px;color:#5A3A1C}
 .sw-target{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:6px 34px 4px;border-radius:20px;background:#FFFBF5;border:1.5px solid #EADCC6;box-shadow:0 3px 8px rgba(120,90,40,.12)}
 .sw-target span{font-size:18px;-webkit-text-stroke:.4px currentColor}
 .sw-target b{font-family:'Jua',var(--num)!important;font-size:54px;line-height:1;color:#E8590C;font-variant-numeric:tabular-nums;min-width:88px;text-align:center}
@@ -460,7 +477,7 @@ nav button{font-family:var(--hand);font-size:15px;color:#3A352F}
 .tr .tt{font-size:15px}
 #bub,.scene .say{font-family:var(--hand);font-size:17px}
 .gsay,.gfx,.toast{font-family:var(--hand)}
-.toast{font-size:16px}
+.toast{font-size:16px;z-index:90}
 /* 정원: 시안의 그림을 그대로 쓴다 */
 #garden{aspect-ratio:1856/820;margin:0 -16px}
 #garden-bg{object-fit:fill;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%)}
@@ -499,7 +516,7 @@ nav button{font-family:var(--hand);font-size:15px;color:#3A352F}
 .game .gbg{object-position:50% 0}
 
 /* ── 시안 3차 보정: 굵기·크기 ── */
-body{-webkit-text-stroke:.28px currentColor}
+body{-webkit-text-stroke:.28px currentColor;word-break:keep-all;overflow-wrap:break-word}
 .title,.sec,.hd,.now .nm,.nmh,.rfish{-webkit-text-stroke:.7px currentColor}
 .item .t,.tr .tt,.count,.gp,.now .small,.item .tm,.log .mut,.rw,.nowmark b,.pill{-webkit-text-stroke:.2px currentColor}
 .title{font-size:34px}.hd{font-size:29px}.sec{font-size:25px}
@@ -1044,7 +1061,7 @@ const SHORT = {"창의독서논술":"논술", "친구들과 놀기":"놀기", "�
 function shortName(n){ const b = n.replace(/ ?정규수업| ?[0-9]부|학원$/g, "").trim(); return (SHORT[b] || SHORT[n] || b).slice(0, 3); }
 
 // ───────── 저장 (기존 기록을 그대로 이어 쓴다) ─────────
-const BE = window.JIAN_BACKEND, PREVIEW = !!window.JIAN_PREVIEW;
+const PREVIEW = false;
 let FIXED = DEFAULT_FIXED;
 function norm(x){ const o = {}; for(let i=0;i<7;i++) o[i] = (x && Array.isArray(x[i])) ? x[i] : []; return o; }
 try{ const sc = localStorage.getItem(KEY+"-schedule"); if(sc) FIXED = norm(JSON.parse(sc)); }catch(e){}
@@ -1070,27 +1087,63 @@ function upgrade(s){
 }
 let S = upgrade({});
 try{ const raw = localStorage.getItem(KEY); if(raw) S = upgrade(JSON.parse(raw)); }catch(e){}
-function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
-let pushT = null;
-function save(){
-  S.updatedAt = Date.now(); saveLocal();
-  if(!BE) return;
-  clearTimeout(pushT);
-  pushT = setTimeout(() => { try{ BE.post({action:"saveState", state:S}).catch(()=>{}); }catch(e){} }, 700);
-}
+let TRIAL = null;                 // 엄빠 ONLY의 '모든 게임 해 보기'를 하는 동안만 값이 있다
+function saveLocal(){ if(TRIAL) return; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function save(){ if(TRIAL) return; S.updatedAt = Date.now(); saveLocal(); touch("state"); }
+function trialStart(){ if(!TRIAL) TRIAL = {snap:JSON.stringify(S), cat:PLAYCAT, lv:0, ms:{}}; $("sheet-root").innerHTML = ""; $("modal-root").innerHTML = ""; PLAYCAT = "naong"; }
+function trialEnd(){ if(!TRIAL) return; const t = TRIAL; TRIAL = null; try{ S = upgrade(JSON.parse(t.snap)); }catch(e){} PLAYCAT = t.cat; $("game-root").innerHTML = ""; $("modal-root").innerHTML = ""; render(); openSettings(); }
 function logAdd(text, n){ S.log.unshift({t:Date.now(), text:text, n:n}); if(S.log.length > 40) S.log.length = 40; }
-let syncing = false;
-function sync(){
-  if(!BE || syncing) return; syncing = true;
-  BE.get().then(d => {
-    syncing = false;
-    if(!d || !d.ok) return;
-    if(d.schedule){ FIXED = norm(d.schedule); try{ localStorage.setItem(KEY+"-schedule", JSON.stringify(FIXED)); }catch(e){} }
-    if(d.state && d.state.v === 2 && (d.state.updatedAt||0) > (S.updatedAt||0)){ S = upgrade(d.state); saveLocal(); }
-    else if(!d.state || d.state.v !== 2) save();
-    render();
-  }).catch(() => { syncing = false; });
+
+// ───────── 폰끼리 같은 기록 보기 ─────────
+// 엄빠 ONLY에서 구글 시트 저장소 주소를 한 번 넣으면, 같은 주소를 넣은 폰들이 생선·일정·일기를 함께 본다.
+// 주소는 이 폰 안에만 저장한다(공개된 파일에는 넣지 않는다). 나눠 담는 덩어리: state(생선·고양이·하루 기록) / schedule(매주 일정) / once(이번 주만 일정) / diary(일기)
+const SYNC_CHECK = "jian-planner-v1", SYPARTS = ["state","schedule","once","diary"];
+let SY = {url:"", rev:{}, dirty:{}, at:0, err:""};
+try{ SY = Object.assign(SY, JSON.parse(localStorage.getItem(KEY+"-sync") || "{}")); }catch(e){}
+SY.rev = SY.rev || {}; SY.dirty = SY.dirty || {};
+const saveSY = () => { try{ localStorage.setItem(KEY+"-sync", JSON.stringify(SY)); }catch(e){} };
+const partGet = p => p === "state" ? S : p === "schedule" ? FIXED : p === "once" ? ONCE : DIARY;
+function partSet(p, v){            // 다른 폰에서 온 내용을 이 폰에 넣는다
+  try{
+    if(p === "state"){ if(v && v.v === 2){ S = upgrade(v); saveLocal(); } }
+    else if(p === "schedule"){ if(v){ FIXED = norm(v); localStorage.setItem(KEY+"-schedule", JSON.stringify(FIXED)); } }
+    else if(p === "once"){ ONCE = v && typeof v === "object" ? v : {}; localStorage.setItem(KEY+"-once", JSON.stringify(ONCE)); }
+    else if(p === "diary"){          // 일기는 날짜별로 더 나중에 고친 쪽을 남긴다 (이 폰에만 있는 날은 그대로 두고 다시 올린다)
+      const r = v && typeof v === "object" ? v : {}; let extra = false;
+      Object.keys(r).forEach(k => { if(!DIARY[k] || (r[k].ut || 0) >= (DIARY[k].ut || 0)) DIARY[k] = r[k]; else extra = true; });
+      Object.keys(DIARY).forEach(k => { if(!r[k]) extra = true; });
+      localStorage.setItem(KEY+"-diary", JSON.stringify(DIARY)); if(extra) SY.dirty.diary = (SY.dirty.diary || 0) + 1;
+    }
+  }catch(e){}
 }
+const syApi = (url, body) => fetch(url, {method:"POST", body:JSON.stringify(body), redirect:"follow"}).then(r => r.json());
+const uiBusy = () => !!($("game-root").innerHTML || $("modal-root").innerHTML || $("sheet-root").innerHTML);
+let syBusy = false, syT = null;
+function touch(p){ if(!SY.url) return; SY.dirty[p] = (SY.dirty[p] || 0) + 1; saveSY(); clearTimeout(syT); syT = setTimeout(syncNow, 3000); }
+// 한 번의 요청으로: 이 폰에서 바뀐 덩어리는 올리고, 다른 폰에서 바뀐 덩어리는 받아 온다
+function syncNow(force){
+  if(!SY.url || syBusy || TRIAL) return Promise.resolve(false);
+  syBusy = true; clearTimeout(syT);
+  const put = {}, sent = {}; SYPARTS.forEach(p => { if(SY.dirty[p]){ put[p] = partGet(p); sent[p] = SY.dirty[p]; } });
+  return syApi(SY.url, {action:"sync", key:SYNC_CHECK, have:SY.rev, put:put}).then(d => {
+    if(!d || !d.ok || !d.parts) throw new Error((d && d.error) || "응답이 이상해요");
+    let changed = false; const hold = uiBusy() && !force;
+    SYPARTS.forEach(p => { const r = d.parts[p]; if(!r) return;
+      if(sent[p]){ if(SY.dirty[p] === sent[p]) delete SY.dirty[p]; SY.rev[p] = r.rev; return; }       // 올리는 사이에 또 바뀌었으면 다음에 다시 올린다
+      if("v" in r){
+        if(SY.dirty[p]) return;                         // 이 폰에서 방금 바꾼 게 있으면 그것을 먼저 올린다
+        if(hold) return;                                // 놀이·창이 열려 있을 때는 바꾸지 않고, 닫힌 뒤에 다시 받는다
+        partSet(p, r.v); changed = true;
+      }
+      SY.rev[p] = r.rev;
+    });
+    SY.at = Date.now(); SY.err = ""; saveSY(); syBusy = false;
+    if(changed && !uiBusy()) render();
+    if(Object.keys(SY.dirty).length) { clearTimeout(syT); syT = setTimeout(syncNow, 3000); }
+    return true;
+  }).catch(e => { syBusy = false; SY.err = String(e && e.message || e).slice(0, 80); saveSY(); return false; });
+}
+const sync = () => { syncNow(); };
 
 // ───────── 하루 상태 ─────────
 const TK = () => keyOf(now());
@@ -1266,7 +1319,7 @@ function scheduleCard(st, p){
   const rows = st.ev.map((e,i) => {
     const past = toMin(e[1]) <= st.m, cur = i === st.cur;
     return '<div class="item'+(past ? " done" : "")+(cur ? " cur" : "")+'"><span class="t">'+e[0]+'</span>'+ticon(e[4] || "study", 22)+(cur
-        ? '<span class="sp"><span class="nm" style="display:block">'+esc(e[2])+'</span><span class="tm" style="display:block">'+e[1]+'까지'+(e[3] ? ' · '+esc(e[3]) : '')+'</span><span class="bar y" style="display:block;margin-top:6px"><i style="width:'+clamp((st.m - toMin(e[0])) / (toMin(e[1]) - toMin(e[0])) * 100, 0, 100).toFixed(0)+'%"></i></span></span><span class="tag">지금</span>'
+        ? '<span class="sp"><span class="nm" style="display:block">'+esc(e[2])+'</span><span class="tm" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+e[1]+'까지'+(e[3] ? ' · '+esc(e[3]) : '')+'</span><span class="bar y" style="display:block;margin-top:6px"><i style="width:'+clamp((st.m - toMin(e[0])) / (toMin(e[1]) - toMin(e[0])) * 100, 0, 100).toFixed(0)+'%"></i></span></span><span class="tag">지금</span>'
         : '<span class="nm sp">'+esc(e[2])+'</span>'+(past ? '<span class="stamp" role="img" aria-label="참 잘했어요 도장"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.500l2.900 6 6.600.900-4.800 4.600 1.200 6.500L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.900z" fill="currentColor"/></svg>참 잘했어요</span>' : ''))+'</div>';
   }).join("");
   const foot = "";
@@ -1374,7 +1427,7 @@ function checkIn(){
 
 // ───────── 시간표 ─────────
 // 일주일 보기에서 일정 추가: 요일(여러 개 가능)·시간·이름·종류를 정해 시간표에 넣는다
-function addEventModal(keep){
+function addEventModal(keep, after){
   const v = keep || {n:"", s:"15:00", e:"16:00", type:"study", days:[now().getDay()], msg:"", rep:"week"};
   modal('<h3 class="sec">일정 추가</h3><input class="field" id="ne-name" maxlength="14" placeholder="예: 미술학원" aria-label="일정 이름" value="'+esc(v.n)+'">'
     + '<div class="days" role="group" aria-label="요일 (여러 개 고를 수 있어요)" style="width:100%;margin:0">'+[1,2,3,4,5,6,0].map(w => '<button class="day'+(v.days.includes(w) ? " on" : "")+'" data-nd="'+w+'" aria-pressed="'+v.days.includes(w)+'">'+DAYS[w]+'</button>').join("")+'</div>'
@@ -1402,14 +1455,15 @@ function addEventModal(keep){
           days.forEach(w => { const dk = weekDateKey(w); (ONCE[dk] = ONCE[dk] || []).push([st, en, n, "", type]); });
           const mon = weekDateKey(1); Object.keys(ONCE).forEach(dk => { if(dk < mon) delete ONCE[dk]; });      // 지난 주 것은 정리
           try{ localStorage.setItem(KEY+"-once", JSON.stringify(ONCE)); }catch(e){}
-          closeModal(); render(); toast(n+" 일정을 이번 주에만 넣었어요"); return;
+          touch("once");
+          closeModal(); render(); if(after) after(); toast(n+" 일정을 이번 주에만 넣었어요"); return;
         }
         const next = norm(JSON.parse(JSON.stringify(FIXED)));          // 기존 일정은 그대로 두고 새 일정만 끼워 넣는다
         days.forEach(w => { next[w].push([st, en, n, "", type]); next[w].sort((a, b) => a[0] < b[0] ? -1 : 1); });
         FIXED = next;
         try{ localStorage.setItem(KEY+"-schedule", JSON.stringify(FIXED)); }catch(e){}
-        if(BE) try{ BE.post({action:"schedule", schedule:FIXED}).catch(()=>{}); }catch(e){}
-        closeModal(); render(); toast(n+" 일정을 매주 반복으로 넣었어요");
+        touch("schedule");
+        closeModal(); render(); if(after) after(); toast(n+" 일정을 매주 반복으로 넣었어요");
       };
     });
 }
@@ -1493,7 +1547,7 @@ function renderRoom(){
     + '<button class="scene" id="room-cat" aria-label="고양이 쓰다듬기">'+sceneLayers()+'<span class="say '+(roomFx && roomFx.who ? roomFx.who : "")+'" role="status">'+esc(roomFx ? roomFx.say : "")+'</span><span class="cw"><img id="room-img" src="'+img+'" alt="나옹이와 애옹이"></span></button>'
     + '<div class="grid2 cats2">'+card("naong")+card("aeong")+'</div>'
     + '<div class="grid2">'+["naong","aeong"].map(x => '<button class="act" data-snack="'+x+'"><img src="'+art(x === "naong" ? "snack_milk" : "snack_can")+'" alt="">'+CATS[x].name+'<br>간식 주기</button>').join("")
-    + ["naong","aeong"].map(x => '<button class="act" data-toys="'+x+'">'+toyIcon(TOYS[x === "naong" ? 1 : 3], 40)+CATS[x].name+'<br>장난감 대여하기</button>').join("")
+    + ["naong","aeong"].map(x => '<button class="act" data-toys="'+x+'">'+toyIcon(TOYS[x === "naong" ? 1 : 3], 40)+CATS[x].name+'<br>장난감 대여</button>').join("")
     + ["naong","aeong"].map(x => '<button class="act" data-with="'+x+'"><img src="'+spr(x, x === "naong" ? "yarn" : "paw")+'" alt="">'+CATS[x].name+'랑<br>놀기</button>').join("")+'</div>'
     + '<button class="act talkbtn" id="open-talk">'+MIC+'나옹이·애옹이와 대화하기</button>'
     ;
@@ -1520,7 +1574,7 @@ function profileModal(k, edit){
   modal(head+'<dl class="pf">'+PFIELDS.map(f => '<div'+(f[0] === "nature" || f[0] === "likes" ? ' class="wide"' : '')+'><dt>'+f[1]+'</dt><dd>'+esc(pfVal(k, f[0]))+'</dd></div>').join("")
     + '<div class="wide"><dt>장난감</dt><dd>'+(TOYS.filter(t => hasToy(k, t.id)).map(t => '<span title="'+t.n+'" style="display:inline-flex;flex-direction:column;align-items:center;margin-right:8px;font-size:12px;color:var(--mut)">'+toyIcon(t, 34)+toyLeft(k, t.id)+'일</span>').join("") || "빌린 장난감이 없어요")+'</dd></div>'
     + '<div class="wide"><dt>기분</dt><dd>'+moodTxt(c.mood)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+c.mood+'%"></i></span></dd></div>'
-    + '<div class="wide"><dt>친밀도</dt><dd>Lv.'+affLv(c.aff)+' · 모은 하트 ♥'+c.aff+' · 다음 레벨까지 ♥'+(20 - c.aff % 20)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+pct+'%"></i></span></dd></div></dl>'
+    + '<div class="wide"><dt>친밀도</dt><dd>Lv.'+affLv(c.aff)+' · 모은 하트 ♥'+c.aff+'<br>다음 레벨까지 ♥'+(20 - c.aff % 20)+'<span class="bar y" style="display:block;margin-top:6px"><i style="width:'+pct+'%"></i></span></dd></div></dl>'
     + '<div class="row" style="width:100%"><button class="btn sp" id="pf-edit">고치기</button><button class="btn y sp" id="pf-x">닫기</button></div>', () => {
       $("pf-x").onclick = closeModal; $("pf-edit").onclick = () => profileModal(k, true);
     });
@@ -1547,10 +1601,10 @@ function toyModal(cat, sel, msg){
   const list = TOYS.map(t => { const own = hasToy(cat, t.id);
     return '<button class="snack toy'+(own ? " own" : "")+(sel === t.id ? " sel" : "")+'" data-toy="'+t.id+'" aria-pressed="'+(sel === t.id)+'" aria-label="'+t.n+(own ? " 빌린 중, "+toyLeft(cat, t.id)+"일 남음" : " 생선 "+t.price+"마리")+'">'+toyIcon(t)+'<span style="min-width:0"><b style="display:block;font-size:16px;white-space:normal;word-break:keep-all;line-height:1.15">'+t.n+'</b><span class="row" style="gap:4px">'+(own ? '<span class="tag g">'+toyLeft(cat, t.id)+'일 남음</span>' : FISH+t.price)+'</span></span></button>'; }).join("");
   const st = TOYS.find(t => t.id === sel), own = st && hasToy(cat, st.id);
-  modal('<h3 class="sec">'+CATS[cat].name+' 장난감 대여하기</h3><span class="pill y">'+FISH+S.fish+'</span>'
+  modal('<h3 class="sec">'+CATS[cat].name+' 장난감 대여</h3><span class="pill y">'+FISH+S.fish+'</span>'
     + '<div class="grid2" style="width:100%">'+list+'</div>'
     + '<p class="small" id="ty-msg" role="status" style="min-height:20px;margin:0;color:#9A5B00">'+esc(msg || (st ? "" : "한 번 빌리면 "+RENT_DAYS+"일 동안 가지고 놀아요."))+'</p>'
-    + '<div class="row" style="width:100%"><button class="btn sp" id="ty-x">닫기</button>'+(st ? '<button class="btn y sp" id="ty-ok" style="flex:2">'+(own ? "가지고 놀기" : FISH+st.price+"마리로 "+RENT_DAYS+"일 빌리기")+'</button>' : '')+'</div>', () => {
+    + '<div class="row" style="width:100%"><button class="btn sp" id="ty-x">닫기</button>'+(st ? '<button class="btn y sp" id="ty-ok" style="flex:2">'+(own ? "가지고 놀기" : FISH+st.price+" · "+RENT_DAYS+"일 빌리기")+'</button>' : '')+'</div>', () => {
       $("ty-x").onclick = closeModal;
       $("modal-root").querySelectorAll("[data-toy]").forEach(b => b.onclick = () => toyModal(cat, b.dataset.toy, ""));
       if(!st) return;
@@ -1625,44 +1679,108 @@ function openGate(then){
       try{ $("gate-in").focus(); }catch(e){}
     });
 }
-let ED = null, edDay = 1;
+// ───────── 엄빠 ONLY: 일주일 시간표 (30분 줄이 그어진 표. 빈칸을 누르면 넣고, 일정을 누르면 고치거나 지운다) ─────────
+const PT_ROW = 22;                       // 30분 한 줄의 높이(px)
+// 좁은 칸에 이름을 넣을 때: 띄어쓰기에서 줄을 바꾸고, 네 글자가 넘는 낱말만 고르게 나눈다 (예: 창의독서논술 → 창의독 / 서논술)
+function ptName(n){ const out = []; String(n).split(/\s+/).forEach(w => { if(w.length <= 4){ out.push(w); return; } const k = Math.ceil(w.length / 4), size = Math.ceil(w.length / k); for(let i = 0; i < w.length; i += size) out.push(w.slice(i, i + size)); });
+  const lines = []; out.forEach(w => { const last = lines[lines.length - 1]; if(last && (last + " " + w).length <= 4) lines[lines.length - 1] = last + " " + w; else lines.push(w); }); return lines; }
+function ptTable(){
+  const order = [1,2,3,4,5,6,0], all = order.map(w => EV(w)); let lo = 9 * 60, hi = 18 * 60;
+  all.forEach(ev => ev.forEach(e => { lo = Math.min(lo, toMin(e[0])); hi = Math.max(hi, toMin(e[1])); }));
+  lo = Math.floor(lo / 60) * 60; hi = Math.ceil(hi / 60) * 60; const rows = (hi - lo) / 30, H = rows * PT_ROW, today = now().getDay();
+  const y = m => (m - lo) / 30 * PT_ROW, hm = m => Math.floor(m / 60)+":"+pad(m % 60);
+  let times = ""; for(let r = 0; r < rows; r++) times += '<i style="top:'+(r * PT_ROW)+'px"'+(r % 2 ? ' class="half"' : '')+'>'+hm(lo + r * 30)+'</i>';
+  const cols = order.map((w, ci) => { const dk = weekDateKey(w), once = ONCE[dk] || [];
+    return '<div class="pt-col'+(w === today ? " today" : "")+'" data-ptw="'+w+'">'+all[ci].map(e => { const fi = (FIXED[w] || []).indexOf(e), oi = once.indexOf(e), top = y(toMin(e[0])), h = Math.max(PT_ROW - 2, y(toMin(e[1])) - top - 1);
+      return '<button class="pt-ev t-'+(e[4] || "study")+(fi < 0 ? " once" : "")+'" style="top:'+top+'px;height:'+h+'px" data-pte="'+w+'|'+(fi >= 0 ? "f"+fi : "o"+oi)+'" aria-label="'+DAYS[w]+'요일 '+e[0]+'부터 '+e[1]+'까지 '+esc(e[2])+'">'+(lines => '<b>'+(h < lines.length * 11 + 2 ? esc(lines.join("")) : lines.map(esc).join("<br>"))+'</b>'+(h >= lines.length * 11 + 26 ? '<span>'+e[0]+'<br>~'+e[1]+'</span>' : ''))(ptName(e[2]))+'</button>'; }).join("")+'</div>'; }).join("");
+  return '<div class="ptab" data-lo="'+lo+'"><div class="pt-head"><span></span>'+order.map(w => '<b'+(w === today ? ' class="today"' : '')+'>'+DAYS[w]+'</b>').join("")+'</div>'
+    + '<div class="pt-body" style="height:'+H+'px"><div class="pt-times">'+times+'</div>'+cols+'</div></div>';
+}
+// 일정 하나 고치기·지우기 (매주 반복 일정). 이번 주만 있는 일정은 지우기만 된다
+function ptEdit(w, key, after){
+  const once = key[0] === "o", i = +key.slice(1), dk = weekDateKey(w), list = once ? (ONCE[dk] || []) : (FIXED[w] || []), e = list[i]; if(!e) return;
+  const keep = () => { try{ localStorage.setItem(KEY+(once ? "-once" : "-schedule"), JSON.stringify(once ? ONCE : FIXED)); }catch(x){} touch(once ? "once" : "schedule"); closeModal(); after(); };
+  modal('<h3 class="sec">'+DAYS[w]+'요일 일정'+(once ? ' <span class="tag">이번 주만</span>' : '')+'</h3>'
+    + (once ? '<p style="margin:0;line-height:1.5;text-align:center"><b>'+esc(e[2])+'</b><br>'+e[0]+' ~ '+e[1]+'</p>'
+      : '<input class="field" id="pe-name" maxlength="14" aria-label="일정 이름" value="'+esc(e[2])+'">'
+      + '<div class="row" style="width:100%"><label class="sp small" style="text-align:left">시작<input class="field" type="time" id="pe-s" value="'+e[0]+'"></label><label class="sp small" style="text-align:left">끝<input class="field" type="time" id="pe-e" value="'+e[1]+'"></label></div>'
+      + '<div class="row" style="width:100%"><label class="sp small" style="text-align:left">종류<select class="field" id="pe-type">'+Object.keys(TYPES).map(t => '<option value="'+t+'"'+(t === e[4] ? " selected" : "")+'>'+TYPES[t]+'</option>').join("")+'</select></label><label class="sp small" style="text-align:left">메모<input class="field" id="pe-memo" maxlength="12" value="'+esc(e[3] || "")+'"></label></div>')
+    + '<p class="small" id="pe-msg" role="status" style="min-height:18px;margin:0;color:#9A5B00"></p>'
+    + '<div class="row" style="width:100%;gap:6px"><button class="btn" id="pe-del" style="color:#B42318;padding:0 12px">삭제</button><button class="btn sp" id="pe-x">닫기</button>'+(once ? '' : '<button class="btn y sp" id="pe-ok">저장</button>')+'</div>', () => {
+      $("pe-x").onclick = closeModal;
+      $("pe-del").onclick = () => { const b = $("pe-del"); if(!b.dataset.arm){ b.dataset.arm = "1"; b.textContent = "정말 삭제"; return; } list.splice(i, 1); if(once && !list.length) delete ONCE[dk]; keep(); };
+      if(once) return;
+      $("pe-ok").onclick = () => {
+        const n = $("pe-name").value.trim(), st = $("pe-s").value, en = $("pe-e").value, fail = t => { $("pe-msg").textContent = t; };
+        if(!n) return fail("일정 이름을 적어 주세요."); if(!st || !en) return fail("시작과 끝 시간을 정해 주세요."); if(en <= st) return fail("끝 시간이 시작보다 늦어야 해요.");
+        const hit = EV(w).find(x => x !== e && st < x[1] && x[0] < en); if(hit) return fail("그 시간에 이미 '"+hit[2]+"'이(가) 있어요.");
+        e[0] = st; e[1] = en; e[2] = n; e[3] = $("pe-memo").value.trim(); e[4] = $("pe-type").value; FIXED[w].sort((a, b) => a[0] < b[0] ? -1 : 1); keep();
+      };
+    });
+}
+let ED = null, edDay = 1, SYMSG = "";
 function openSettings(){ ED = JSON.parse(JSON.stringify(norm(FIXED))); edDay = now().getDay(); drawSettings(""); }
-function readEd(){ ED[edDay] = [...document.querySelectorAll("#sheet-root .ed")].map(el => [0,1,2,3,4].map(i => el.querySelector('[data-k="'+i+'"]').value.trim())); }
+function readEd(){}
 function drawSettings(msg){
   const rows = ED[edDay];
   $("sheet-root").innerHTML = '<div class="sheet"><div class="wrap">'
     + '<div class="row"><h1 class="title sp">엄빠 ONLY</h1><button class="btn sm" id="set-x">닫기</button></div>'
+    + '<section class="card ptcard"><div class="row"><h2 class="sec sp">일주일 시간표</h2><button class="btn sm" id="pt-add">+ 일정 추가</button></div><p class="small mut" style="margin:0;line-height:1.45">빈칸을 누르면 일정을 넣고,<br>일정을 누르면 고치거나 지울 수 있어요.</p>'+ptTable()+'<p class="small mut" style="margin:0">점선 테두리는 이번 주에만 있는 일정이에요.</p></section>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">폰 연결</h2>'
+    + (SY.url ? '<p style="margin:0;line-height:1.4"><b>연결되어 있어요.</b><br><span class="small mut">'+(SY.at ? "마지막으로 맞춘 시각 · "+(d => (d.getMonth()+1)+"월 "+d.getDate()+"일 "+pad(d.getHours())+":"+pad(d.getMinutes()))(new Date(SY.at)) : "아직 맞춘 적이 없어요")+'</span>'+(SY.err ? '<br><span class="small" style="color:#B42318">지금은 저장소에 닿지 않아요. 인터넷이 되면 다시 맞춰요.</span>' : '')+'</p>'
+        + '<div class="row" style="gap:6px"><button class="btn sp" id="sy-now" style="padding:0 6px">지금 맞추기</button><button class="btn sp" id="sy-copy" style="padding:0 6px">주소 복사</button></div><button class="btn sm" id="sy-off" style="align-self:flex-start;color:#B42318">연결 끊기</button>'
+      : '<p class="small mut" style="margin:0;line-height:1.45">구글 시트 저장소 주소를 넣으면<br>지안이 폰과 엄마 아빠 폰이 같은 기록을 봐요.<br><b style="color:var(--ink)">지안이 폰부터 연결해 주세요.</b></p><input class="field" id="sy-url" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec" aria-label="저장소 주소" style="font-size:14px"><button class="btn y" id="sy-go">연결하기</button>')
+    + '<p class="small" id="sy-msg" role="status" style="min-height:18px;margin:0;line-height:1.4">'+esc(SYMSG)+'</p></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">생선</h2><div class="row"><span class="pill y sp" style="justify-content:center;height:44px;font-size:20px">'+FISH+S.fish+'</span></div>'
     + '<div class="row" style="gap:6px">'+[-10,-1,1,10].map(n => '<button class="btn sp" data-fish="'+n+'" style="padding:0">'+(n > 0 ? "+" : "−")+Math.abs(n)+'</button>').join("")+'</div></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">엄빠 쿠폰</h2>'+((S.coupons || []).filter(c => !c.used).length ? (S.coupons || []).filter(c => !c.used).map(c => '<div class="row"><span class="sp" style="line-height:1.3">'+esc(c.n)+'</span><button class="btn sm" data-cdone="'+c.id+'">사용 완료</button></div>').join("") : '<p class="mut" style="margin:0">안 쓴 쿠폰이 없어요.</p>')+'<button class="btn" id="set-coupons">쿠폰함 전체 보기</button></section>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">모든 게임 해 보기</h2><p class="small mut" style="margin:0;line-height:1.45">몇 번이든 해 볼 수 있어요.<br>연습이라 생선·횟수·기록에 남지 않아요.</p>'
+    + '<div class="grid2">'+[["spell","맞춤법 퀴즈"],["match","같은 그림 찾기"],["slice","간식 슬라이스"],["tower","츄르 타워"]].map(g => '<button class="btn" data-try="'+g[0]+'" style="padding:0 6px">'+g[1]+'</button>').join("")+'</div>'
+    + '<button class="btn y" data-try="stop">숫자 스톱워치 (단계·속도 고르기)</button></section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">살펴보기</h2><button class="btn" id="set-diary">지안이 일기 보기</button><button class="btn" id="set-log">최근 기록 보기</button><button class="btn" id="set-replay">오늘 놀이·스톱워치 다시 열기</button></section>'
-    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">일정 관리</h2>'
-    + '<div class="days">'+[1,2,3,4,5,6,0].map(w => '<button class="day'+(w===edDay?" on":"")+'" data-ed="'+w+'">'+DAYS[w]+'</button>').join("")+'</div>'
-    + (rows.length ? rows.map((e,i) => '<div class="ed"><label>시작<input class="field" type="time" data-k="0" value="'+e[0]+'"></label><label>끝<input class="field" type="time" data-k="1" value="'+e[1]+'"></label>'
-        + '<label class="full">이름<input class="field" type="text" data-k="2" value="'+esc(e[2])+'"></label><label>메모<input class="field" type="text" data-k="3" value="'+esc(e[3]||"")+'"></label>'
-        + '<label>종류<select class="field" data-k="4">'+Object.keys(TYPES).map(t => '<option value="'+t+'"'+(t===e[4]?" selected":"")+'>'+TYPES[t]+'</option>').join("")+'</select></label>'
-        + '<button class="btn sm full" data-del="'+i+'" style="color:#B42318">이 일정 삭제</button></div>').join("") : '<p class="mut">'+DAYS[edDay]+'요일은 일정이 없어요.</p>')
-    + '<button class="btn" id="ed-add">+ 일정 추가</button><button class="btn y" id="ed-save">일정 저장</button><p class="small" id="ed-msg" role="status" style="min-height:18px">'+esc(msg)+'</p></section>'
+    + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">이번 주만 있는 일정</h2>'+(() => { const ks = Object.keys(ONCE).filter(k => (ONCE[k] || []).length).sort();
+        return ks.length ? ks.map(k => ONCE[k].map((e, i) => { const q = k.split("-"), wd = DAYS[new Date(+q[0], +q[1]-1, +q[2]).getDay()]; return '<div class="row" style="gap:8px"><span class="sp" style="line-height:1.3">'+esc(e[2])+'<br><span class="small mut">'+(+q[1])+'월 '+(+q[2])+'일 '+wd+'요일 · '+e[0]+'~'+e[1]+'</span></span><button class="btn sm" data-odel="'+k+'|'+i+'" style="color:#B42318">삭제</button></div>'; }).join("")).join("") : '<p class="mut" style="margin:0">이번 주만 있는 일정이 없어요.</p>'; })()+'</section>'
     + '<section class="card" style="display:flex;flex-direction:column;gap:10px"><h2 class="sec">기록 관리</h2><button class="btn" id="set-reset">모든 기록 지우기</button></section>'
     + '</div></div>';
   const R = $("sheet-root");
-  $("set-x").onclick = () => { R.innerHTML = ""; render(); };
-  R.querySelectorAll("[data-ed]").forEach(b => b.onclick = () => { readEd(); edDay = +b.dataset.ed; drawSettings(""); });
-  R.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { readEd(); ED[edDay].splice(+b.dataset.del, 1); drawSettings("삭제는 '일정 저장'을 눌러야 반영돼요."); });
-  $("ed-add").onclick = () => { readEd(); ED[edDay].push(["15:00","16:00","새 일정","","study"]); drawSettings(""); };
-  $("ed-save").onclick = () => {
-    readEd();
-    for(let w=0; w<7; w++){ for(const e of ED[w]){
-      if(!e[0] || !e[1] || !e[2]) return drawSettings(DAYS[w]+"요일에 시간이나 이름이 빈 일정이 있어요.");
-      if(e[1] <= e[0]) return drawSettings(DAYS[w]+"요일 '"+e[2]+"'의 끝 시간이 시작보다 빨라요.");
-    } ED[w].sort((a,b) => a[0] < b[0] ? -1 : 1); }
-    FIXED = norm(JSON.parse(JSON.stringify(ED)));
-    try{ localStorage.setItem(KEY+"-schedule", JSON.stringify(FIXED)); }catch(e){}
-    if(BE) try{ BE.post({action:"schedule", schedule:FIXED}).catch(()=>{}); }catch(e){}
-    drawSettings("저장했어요.");
-  };
+  if(msg) toast(msg);
+  $("set-x").onclick = () => { R.innerHTML = ""; render(); if(SY.url) setTimeout(syncNow, 400); };
+  const again = () => { const sc = R.querySelector(".sheet"), top = sc ? sc.scrollTop : 0; drawSettings(""); const s2 = R.querySelector(".sheet"); if(s2) s2.scrollTop = top; };
+  $("pt-add").onclick = () => addEventModal(null, again);
+  R.querySelectorAll("[data-pte]").forEach(b => b.onclick = ev => { ev.stopPropagation(); const q = b.dataset.pte.split("|"); ptEdit(+q[0], q[1], again); });
+  R.querySelectorAll("[data-ptw]").forEach(c => c.onclick = ev => {            // 빈칸: 누른 자리의 30분 칸에서 시작하는 한 시간짜리로 미리 채운다
+    const lo = +R.querySelector(".ptab").dataset.lo, m = lo + Math.floor((ev.clientY - c.getBoundingClientRect().top) / PT_ROW) * 30, st = pad(Math.floor(m / 60))+":"+pad(m % 60), e2 = Math.min(m + 60, 23 * 60 + 30), en = pad(Math.floor(e2 / 60))+":"+pad(e2 % 60);
+    addEventModal({n:"", s:st, e:en, type:"study", days:[+c.dataset.ptw], msg:"", rep:"week"}, again); });
   R.querySelectorAll("[data-rw]").forEach(b => b.onclick = () => { readEd(); const k = b.dataset.rw; S.rewards[k] = clamp(S.rewards[k] + (+b.dataset.d), 0, 9); save(); drawSettings(""); });
   $("set-reset").onclick = () => { const b = $("set-reset"); if(b.dataset.arm){ const rw = S.rewards; S = upgrade({}); S.rewards = rw; save(); drawSettings("기록을 지웠어요. 일정은 그대로예요."); } else { b.dataset.arm = "1"; b.textContent = "한 번 더 누르면 지워져요 (되돌릴 수 없어요)"; } };
+  SYMSG = ""; const symsg = t => { $("sy-msg").textContent = t; }, redraw = t => { ED = JSON.parse(JSON.stringify(norm(FIXED))); SYMSG = t; drawSettings(""); };
+  if($("sy-go")) $("sy-go").onclick = () => {
+    const url = $("sy-url").value.trim();
+    if(!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(url) && !/^http:\/\/(localhost|127\.0\.0\.1)[:\/]/.test(url)){ symsg("주소가 맞지 않아요. https://script.google.com/macros/s/ 로 시작하고 /exec 로 끝나야 해요."); return; }
+    symsg("연결하는 중이에요…"); $("sy-go").disabled = true;
+    syApi(url, {action:"sync", key:SYNC_CHECK, have:{}, put:{}}).then(d => {
+      if(!d || !d.ok || !d.parts) throw new Error("bad");
+      const all = () => { const o = {}; SYPARTS.forEach(p => { o[p] = 1; }); return o; };
+      const up = () => { SY = {url:url, rev:{}, dirty:all(), at:0, err:""}; saveSY(); syncNow(true).then(ok => redraw(ok ? "연결했어요. 이 폰의 기록을 저장소에 올렸어요." : "연결은 됐는데 올리지 못했어요. 잠시 뒤 '지금 맞추기'를 눌러 주세요.")); };
+      if(!(d.parts.state && d.parts.state.rev > 0)){ up(); return; }                      // 저장소가 비어 있으면 이 폰의 기록을 올린다
+      modal('<h3 class="sec">저장소에 기록이 있어요</h3><p style="margin:0;line-height:1.5;text-align:center">다른 폰에서 올린 기록이 있어요.<br>이 폰을 어떻게 맞출까요?</p>'
+        + '<button class="btn y" id="sy-down" style="width:100%">저장소 기록 받아 오기</button><p class="small mut" style="margin:-4px 0 0;text-align:center">이 폰에 있던 기록은 지워져요.</p>'
+        + '<button class="btn" id="sy-up" style="width:100%">이 폰 기록으로 덮어쓰기</button><p class="small mut" style="margin:-4px 0 0;text-align:center">다른 폰의 기록이 이 폰 것으로 바뀌어요.</p>'
+        + '<button class="btn sm" id="sy-no">그만두기</button>', () => {
+          $("sy-no").onclick = () => { closeModal(); redraw(""); };
+          $("sy-up").onclick = () => { closeModal(); up(); };
+          $("sy-down").onclick = () => { closeModal(); SY = {url:url, rev:{}, dirty:{}, at:Date.now(), err:""}; Object.keys(DIARY).forEach(k => { delete DIARY[k]; });
+            SYPARTS.forEach(p => { const r = d.parts[p]; if(!r) return; if("v" in r) partSet(p, r.v); SY.rev[p] = r.rev; }); SY.dirty = {}; saveSY(); redraw("연결했어요. 저장소의 기록을 받아 왔어요."); };
+        });
+    }).catch(() => { $("sy-go").disabled = false; symsg("연결하지 못했어요. 주소와 인터넷을 확인해 주세요."); });
+  };
+  if($("sy-now")){
+    $("sy-now").onclick = () => { readEd(); symsg("맞추는 중이에요…"); syncNow(true).then(ok => redraw(ok ? "방금 맞췄어요." : "저장소에 닿지 않았어요. 인터넷을 확인해 주세요.")); };
+    $("sy-copy").onclick = () => { const done = () => symsg("주소를 복사했어요. 다른 폰의 엄빠 ONLY → 폰 연결에 붙여 넣으세요."); try{ navigator.clipboard.writeText(SY.url).then(done, () => symsg(SY.url)); }catch(e){ symsg(SY.url); } };
+    $("sy-off").onclick = () => { const b = $("sy-off"); if(b.dataset.arm){ SY = {url:"", rev:{}, dirty:{}, at:0, err:""}; saveSY(); redraw("연결을 끊었어요. 기록은 이 폰에 그대로 있어요."); } else { b.dataset.arm = "1"; b.textContent = "한 번 더 누르면 끊어져요"; } };
+  }
+  R.querySelectorAll("[data-odel]").forEach(b => b.onclick = () => { readEd(); const q = b.dataset.odel.split("|"); (ONCE[q[0]] || []).splice(+q[1], 1); if(!(ONCE[q[0]] || []).length) delete ONCE[q[0]]; try{ localStorage.setItem(KEY+"-once", JSON.stringify(ONCE)); }catch(e){} touch("once"); drawSettings(""); });
+  R.querySelectorAll("[data-try]").forEach(b => b.onclick = () => { const id = b.dataset.try; trialStart(); if(id === "stop") stopScreen(); else openGame(id); });
   R.querySelectorAll("[data-fish]").forEach(b => b.onclick = () => { readEd(); const n = +b.dataset.fish; S.fish = Math.max(0, S.fish + n); logAdd("엄빠가 생선 "+(n > 0 ? "+" : "−")+Math.abs(n), (n > 0 ? "+" : "−")+Math.abs(n)); save(); drawSettings(""); });
   R.querySelectorAll("[data-cdone]").forEach(b => b.onclick = () => { readEd(); const c = S.coupons.find(x => x.id === b.dataset.cdone); if(c){ c.used = now().getTime(); save(); } drawSettings(""); });
   $("set-coupons").onclick = () => couponModal();
@@ -1718,13 +1836,14 @@ function rewardOf(id, score){
 function tryPlay(cat){ PLAYCAT = cat; openGame(cat === "naong" ? "fish" : "fly"); }
 function openGame(id){
   if(id === "deco") return decoScreen();
+  if(TRIAL){ const d = day(); d.played = {}; if(id !== "spell") d.played["spell_"+PLAYCAT] = {n:1}; }
   const g = GAMES[id], st = gameState(id);
   if(st === "done"){ toast("오늘 "+CATS[PLAYCAT].name+"랑은 두 번 다 했어요. 내일 또 해요!"); return; }
   if(st === "locked"){ toast(FREE.includes(id) ? CATS[PLAYCAT].name+"랑 맞춤법 퀴즈를 먼저 하면 열려요" : g.cat === "naong" ? "오늘 일정이 모두 끝나면 열려요" : "오늘 할 일을 모두 마치면 열려요"); return; }
   ({fish:fishGame, yarn:yarnGame, fly:flyGame, match:matchGame, slice:sliceGame, band:bandGame, tower:towerGame, spell:spellGame})[id]();
 }
 function fx(area, x, y, text){ const e = document.createElement("span"); e.className = "gfx"; e.textContent = text; e.style.left = (x-14)+"px"; e.style.top = (y-20)+"px"; area.appendChild(e); setTimeout(() => e.remove(), 850); }
-function closeGame(){ $("game-root").innerHTML = ""; render(); }
+function closeGame(){ if(TRIAL) return trialEnd(); $("game-root").innerHTML = ""; render(); if(SY.url) setTimeout(syncNow, 400); }
 function runGame(id, setup){
   const g = GAMES[id], again = id !== "spell" && playN(id) >= 1, SECS = g.secs || GAME_SECS, mmss = n => pad(Math.floor(n/60))+":"+pad(n%60);
   $("game-root").innerHTML = '<div class="game" role="dialog" aria-modal="true" aria-label="'+g.n+'">'+(g.bg ? '<img class="gbg" src="'+art(g.bg)+'" alt="">' : '')+'<div class="area" id="g-area"></div><div class="gsay" id="g-say" role="status"></div>'
@@ -1754,10 +1873,11 @@ function gameEnd(id, score){
   save(); sfx(got ? "win" : "end");
   const box = document.createElement("div"); box.className = "modal-bg result";
   box.innerHTML = '<div class="rays"></div><div class="modal rcard" role="alertdialog" aria-label="놀이 끝"><h3 class="sec" style="font-size:28px">잘 놀았어요! '+PAW+'</h3><p class="rfish">'+FISH.replace('width="18" height="18"','width="44" height="44"')+'+'+got+'</p>'
-    + (g.unit ? '<p class="rpts">'+g.unit[0]+' <b>'+score+g.unit[1]+'</b></p>' : '')+(g.rule ? '<p class="small mut" style="margin:0;line-height:1.35">'+(id !== "spell" && playN(id) >= 2 ? "두 번째 판은 생선 없이 놀아요." : g.rule)+'</p>' : '')+''+'<button class="btn y" id="g-home" style="width:100%">확인</button>'+'</div>'
+    + (g.unit ? '<p class="rpts">'+g.unit[0]+' <b>'+score+g.unit[1]+'</b></p>' : '')+(g.rule ? '<p class="small mut" style="margin:0;line-height:1.35">'+(id !== "spell" && playN(id) >= 2 ? "두 번째 판은 생선 없이 놀아요." : g.rule)+'</p>' : '')+(TRIAL ? '<p class="small" style="margin:0;color:#B45309">연습이라 생선과 기록에 남지 않아요.</p><button class="btn y" id="g-again" style="width:100%">한 번 더 해 보기</button><button class="btn" id="g-home" style="width:100%">엄빠 ONLY로 돌아가기</button>' : '<button class="btn y" id="g-home" style="width:100%">확인</button>')+'</div>'
     + '<img class="rc l joy" src="'+spr("naong","laugh")+'" alt=""><img class="rc r joy" src="'+spr("aeong","cheer")+'" alt="">';
   $("game-root").querySelector(".game").appendChild(box);
-  $("g-home").onclick = () => { $("game-root").innerHTML = ""; show("room"); };
+  $("g-home").onclick = () => { if(TRIAL) return trialEnd(); $("game-root").innerHTML = ""; show("room"); };
+  if($("g-again")) $("g-again").onclick = () => { $("game-root").innerHTML = ""; openGame(id); };
   if(g.custom) box.classList.add("cz");
 }
 // 같은 그림 찾기: 카드 12장(여섯 쌍). 놀 때마다 다른 고양이 모습이 나온다
@@ -2273,10 +2393,10 @@ function talkScreen(){
   mic.onclick = () => { if(state === "idle") listen(); else if(state === "listen") answer(); };
 }
 
-// ───────── 일기 쓰기 (하루 한 번, 생선 10마리 · 처음 검사에서 틀린 게 없으면 3마리 더) ─────────
+// ───────── 일기 쓰기 (하루 한 번, 다섯 문장 이상이면 생선 10마리 · 처음 검사에서 틀린 게 없으면 3마리 더) ─────────
 const DIARY_FISH = 10, DIARY_BONUS = 3, DIARY_LINES = 5, DIARY_MINCH = 40;
 let DIARY = {}; try{ DIARY = JSON.parse(localStorage.getItem(KEY+"-diary") || "{}") || {}; }catch(e){ DIARY = {}; }
-const saveDiary = () => { try{ localStorage.setItem(KEY+"-diary", JSON.stringify(DIARY)); }catch(e){} };
+const saveDiary = () => { const e = DIARY[TK()]; if(e) e.ut = Date.now(); try{ localStorage.setItem(KEY+"-diary", JSON.stringify(DIARY)); }catch(x){} touch("diary"); };
 // 자주 틀리는 맞춤법 규칙: [찾을 모양, 고친 말, 까닭]. 문맥을 봐야 아는 것(낫다/낳다, 맞히다/맞추다 등)은 넣지 않는다.
 const SPFIX = (() => {
   const R = [], add = (re, to, why) => R.push([re, to, why]);
@@ -2324,46 +2444,46 @@ const diaryDate = k => { const p = k.split("-"); return (+p[1])+"월 "+(+p[2])+"
 const PEN = ln('<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>', 24);
 function diaryCard(){
   const e = DIARY[TK()], done = e && e.saved;
-  return '<section class="card"><div class="ch">'+PEN+'<h2 class="sec">오늘의 일기</h2></div><div class="row" style="gap:10px"><span class="sp" style="font-size:16px;line-height:1.3">'+(done ? "오늘 일기를 썼어요!" : "다섯 줄 이상 쓰면 "+FISH+" "+DIARY_FISH)+'</span><button class="btn'+(done ? "" : " y")+'" id="go-diary">'+(done ? "다시 보기" : "일기 쓰기")+'</button></div></section>';
+  return '<section class="card"><div class="ch">'+PEN+'<h2 class="sec">오늘의 일기</h2></div><div class="row" style="gap:10px"><span class="sp" style="font-size:16px;line-height:1.3">'+(done ? "오늘 일기를 썼어요!" : "다섯 문장 이상 쓰면 "+FISH+" "+DIARY_FISH)+'</span><button class="btn'+(done ? "" : " y")+'" id="go-diary">'+(done ? "다시 보기" : "일기 쓰기")+'</button></div></section>';
 }
 function diaryScreen(){
   const k = TK(), e = DIARY[k] || (DIARY[k] = {text:"", saved:false, got:0, first:null});
   let checked = null;            // 마지막 검사 결과 (글을 고치면 다시 검사해야 저장할 수 있다)
-  $("game-root").innerHTML = '<div class="game deco diary" role="dialog" aria-modal="true" aria-label="일기 쓰기"><div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><b class="hand" style="font-size:24px">'+diaryDate(k)+' 일기</b><button class="btn" id="d-old" style="min-height:40px;padding:0 12px">지난 일기</button></div>'
+  $("game-root").innerHTML = '<div class="game deco diary" role="dialog" aria-modal="true" aria-label="일기 쓰기"><div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><b class="hand" style="font-size:min(24px,5.6vw);white-space:nowrap">'+diaryDate(k)+' 일기</b><button class="btn" id="d-old" style="min-height:40px;padding:0 12px">지난 일기</button></div>'
     + '<div class="dhalf dtop"><div class="dpaper"><textarea id="d-text" maxlength="1500" placeholder="오늘 있었던 일을 써 보세요." aria-label="일기 쓰는 곳"></textarea><div id="d-mirror" aria-hidden="true"></div></div>'
     + '<div class="row" style="gap:10px"><span class="sp small" id="d-count" role="status"></span><button class="btn y" id="d-check">맞춤법 검사하기</button></div></div>'
     + '<div class="dhalf dbot" id="d-out" aria-live="polite"></div></div>';
   const ta = $("d-text"), out = $("d-out"); ta.value = e.text || "";
-  const lines = () => { const m = $("d-mirror"); m.textContent = ta.value.replace(/\n$/, "\n ") || " "; return ta.value.trim() ? Math.round(m.scrollHeight / 30) : 0; };
+  const lines = () => ta.value.split(/[.!?…。]+|\n+/).filter(x => hangulCount(x) >= 2).length;          // 문장 수: 마침표·물음표·느낌표나 줄바꿈으로 끊고, 한글이 두 자 이상인 것만 센다
   const enough = () => lines() >= DIARY_LINES && hangulCount(ta.value) >= DIARY_MINCH;
-  const count = () => { const n = lines(); $("d-count").innerHTML = n >= DIARY_LINES ? (hangulCount(ta.value) >= DIARY_MINCH ? "지금 "+n+"줄 · 다섯 줄을 채웠어요!" : "지금 "+n+"줄 · 글자를 조금 더 채워 봐요") : "지금 "+n+"줄 · "+(DIARY_LINES - n)+"줄 더 쓰면 생선을 받아요"; };
+  const count = () => { const n = lines(); $("d-count").innerHTML = n >= DIARY_LINES ? (hangulCount(ta.value) >= DIARY_MINCH ? "<b>지금 "+n+"문장</b><span>다섯 문장을 썼어요!</span>" : "<b>지금 "+n+"문장</b><span>조금만 더 길게 써 봐요</span>") : "<b>지금 "+n+"문장</b><span>"+(DIARY_LINES - n)+"문장 더 쓰면 생선을 받아요</span>"; };
   const hint = () => { out.innerHTML = '<div class="dhint">'+(e.saved ? '<p><b>오늘 일기는 저장했어요.</b><br>고쳐 쓰고 다시 저장할 수도 있어요.</p>' : '<p>다 쓰고 <b>맞춤법 검사하기</b>를 누르면<br>고친 글이 여기에 보여요.</p>')
-    + '<p class="small mut">다섯 줄 이상 쓰면 '+FISH+' '+DIARY_FISH+'마리<br>처음 검사에서 틀린 곳이 없으면 '+FISH+' '+DIARY_BONUS+'마리 더!</p></div>'; };
+    + '<p class="small mut">다섯 문장 이상 쓰면 '+FISH+' '+DIARY_FISH+'마리<br>처음 검사에서 틀린 곳이 없으면 '+FISH+' '+DIARY_BONUS+'마리 더!</p></div>'; };
   const saveBtn = () => '<button class="btn y" id="d-save" style="width:100%">'+(e.saved ? "다시 저장하기" : "일기 저장하기")+'</button>';
   function showResult(){
     const fs = checked.fs, t = checked.text;
     out.innerHTML = (fs.length ? '<p class="dres">고칠 곳을 <b>'+fs.length+'군데</b> 찾았어요.</p><div class="dfixed">'+spellHtml(t, fs)+'</div><ul class="dlist">'+fs.map(f => '<li><s>'+esc(f.bad)+'</s> → <b>'+esc(f.good)+'</b><span>'+esc(f.why)+'</span></li>').join("")+'</ul><button class="btn" id="d-apply" style="width:100%">고친 글로 바꾸기</button>'
         : '<p class="dres">'+PAW+' 틀린 곳을 찾지 못했어요. 잘 썼어요!</p><div class="dfixed">'+spellHtml(t, [])+'</div>')
-      + '<p class="small mut" style="margin:0;text-align:center">자주 틀리는 맞춤법만 찾아 줘요. 모든 틀린 곳을 찾지는 못해요.</p>' + saveBtn();
+      + '<p class="small mut" style="margin:0;text-align:center">자주 틀리는 맞춤법만 찾아 줘요.<br>모든 틀린 곳을 찾지는 못해요.</p>' + saveBtn();
     const ap = $("d-apply"); if(ap) ap.onclick = () => { ta.value = spellApply(t, fs); e.text = ta.value; saveDiary(); count(); checked = {text:ta.value, fs:spellCheck(ta.value)}; showResult(); };
     $("d-save").onclick = saveIt;
   }
   function saveIt(){
     if(!checked || checked.text !== ta.value){ toast("맞춤법 검사를 먼저 해 주세요"); return; }
-    e.text = ta.value; e.at = Date.now(); e.lines = lines(); e.errs = e.first ? e.first.n : 0;
+    e.text = ta.value; e.at = Date.now(); e.sents = lines(); delete e.lines; e.errs = e.first ? e.first.n : 0;
     let got = 0;
     if(enough()){ got += pay("diary", DIARY_FISH, "일기 쓰기"); if(e.first && e.first.n === 0) got += pay("diary-bonus", DIARY_BONUS, "일기 맞춤법 보너스"); }
     e.saved = true; e.got = (e.got || 0) + got; saveDiary(); save(); if(got) sfx("win");
     const short = !enough();
     modal('<img src="'+spr("both", got ? "smile" : "look")+'" alt="" style="height:84px"><h3 class="sec">일기를 저장했어요</h3>'
       + (got ? '<p class="rfish" style="margin:0">'+FISH.replace('width="18" height="18"','width="40" height="40"')+'+'+got+'</p>' : '')
-      + '<p style="margin:0;line-height:1.45;text-align:center">'+(got ? (got > DIARY_FISH ? "처음 검사에서 틀린 곳이 없어서<br>보너스까지 받았어요!" : "오늘도 잘 썼어요!") : short ? "다섯 줄을 채우면 생선을 받을 수 있어요.<br>더 써서 다시 저장해도 돼요." : "오늘 생선은 이미 받았어요.")+'</p><button class="btn y" id="dk-ok" style="width:100%">확인</button>', () => { $("dk-ok").onclick = () => { closeModal(); hint(); }; });
+      + '<p style="margin:0;line-height:1.45;text-align:center">'+(got ? (got > DIARY_FISH ? "처음 검사에서 틀린 곳이 없어서<br>보너스까지 받았어요!" : "오늘도 잘 썼어요!") : short ? "다섯 문장을 쓰면 생선을 받을 수 있어요.<br>더 써서 다시 저장해도 돼요." : "오늘 생선은 이미 받았어요.")+'</p><button class="btn y" id="dk-ok" style="width:100%">확인</button>', () => { $("dk-ok").onclick = () => { closeModal(); hint(); }; });
   }
   ta.oninput = () => { e.text = ta.value; saveDiary(); count(); if(checked){ checked = null; hint(); } };
   $("d-check").onclick = () => {
     if(!ta.value.trim()){ toast("먼저 일기를 써 주세요"); return; }
     checked = {text:ta.value, fs:spellCheck(ta.value)};
-    if(!e.first && enough()){ e.first = {n:checked.fs.length, at:Date.now()}; saveDiary(); }       // 보너스는 다섯 줄을 채운 뒤 처음 한 검사로 정한다
+    if(!e.first && enough()){ e.first = {n:checked.fs.length, at:Date.now()}; saveDiary(); }       // 보너스는 다섯 문장을 채운 뒤 처음 한 검사로 정한다
     ta.blur(); showResult();
   };
   $("g-x").onclick = () => { e.text = ta.value; if(!e.text && !e.saved) delete DIARY[k]; saveDiary(); closeGame(); };
@@ -2373,7 +2493,7 @@ function diaryScreen(){
 function diaryList(open){
   const keys = Object.keys(DIARY).filter(k => DIARY[k].saved).sort().reverse();
   if(open && DIARY[open]){ const e = DIARY[open];
-    modal('<h3 class="sec">'+diaryDate(open)+'</h3><div class="dfixed" style="width:100%;max-height:50vh;overflow-y:auto;text-align:left">'+esc(e.text).replace(/\n/g, "<br>")+'</div><p class="small mut" style="margin:0">'+(e.lines || 0)+'줄 · 받은 생선 '+(e.got || 0)+'마리</p><button class="btn y" id="dl-back" style="width:100%">목록으로</button>', () => { $("dl-back").onclick = () => diaryList(); }); return; }
+    modal('<h3 class="sec">'+diaryDate(open)+'</h3><div class="dfixed" style="width:100%;max-height:50vh;overflow-y:auto;text-align:left">'+esc(e.text).replace(/\n/g, "<br>")+'</div><p class="small mut" style="margin:0">'+(e.sents != null ? e.sents+"문장" : (e.lines || 0)+"줄")+' · 받은 생선 '+(e.got || 0)+'마리</p><button class="btn y" id="dl-back" style="width:100%">목록으로</button>', () => { $("dl-back").onclick = () => diaryList(); }); return; }
   modal('<h3 class="sec">지난 일기</h3>'+(keys.length ? '<div class="dold">'+keys.map(k => '<button data-dk="'+k+'"><b>'+diaryDate(k)+'</b><span>'+esc((DIARY[k].text || "").replace(/\s+/g, " ").slice(0, 26))+'</span></button>').join("")+'</div>' : '<p class="mut" style="margin:0">아직 저장한 일기가 없어요.</p>')
     + '<p class="small mut" style="margin:0">모두 '+keys.length+'편</p><button class="btn" id="dl-x" style="width:100%">닫기</button>', () => { $("dl-x").onclick = closeModal; $("modal-root").querySelectorAll("[data-dk]").forEach(b => b.onclick = () => diaryList(b.dataset.dk)); });
 }
@@ -2449,11 +2569,12 @@ const speedIcon = lv => '<svg width="34" height="20" viewBox="0 0 34 20" fill="n
   + '<path d="M'+(lv ? 15 : 9)+' 17a8 8 0 0116 0"/><path d="M'+(lv ? 23 : 17)+' 17l'+[2, 4, 5.500][lv]+' -'+[6, 5, 3.500][lv]+'"/></svg>';
 const HAND = '<svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" stroke="#C2410C" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V4.500a1.500 1.500 0 013 0V10l5.200 1.200a2 2 0 011.500 2.300l-.800 4.700A3 3 0 0114.900 21H11.500a3 3 0 01-2.300-1.100L5.500 15.500a1.400 1.400 0 012-1.900L9 14.800z"/><path d="M5.500 6a5 5 0 012-3M3 7.500A7.500 7.500 0 015.800 1.500" fill="none" stroke="#fff" stroke-width="1.500" stroke-linecap="round"/></svg>';
 function stopScreen(){
-  if(!schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
-  const r = stopRec();
+  if(!TRIAL && !schedDone()){ toast("오늘 할 일을 다 끝내면 열려요"); return; }
+  const r = TRIAL ? {n:TRIAL.lv, res:[]} : stopRec();
+  const msOf = l => (TRIAL && TRIAL.ms[l]) || STOPLV[l].ms;
   $("game-root").innerHTML = '<div class="game deco stopw" role="dialog" aria-modal="true" aria-label="숫자 스톱워치"><img class="sw-win" src="'+art("stop_window")+'" alt="">'
     + '<div class="gtop"><button class="back" id="g-x" aria-label="뒤로 가기">'+BACK+'</button><div class="sw-head"><b>'+WATCH.replace('width="24" height="24"','width="30" height="30"')+'숫자 스톱워치</b><span><i>☾</i>오늘의 야간 챌린지</span></div><span style="width:44px"></span></div>'
-    + '<div class="sw-steps" id="sw-steps"></div>'
+    + '<div class="sw-steps" id="sw-steps"></div>'+(TRIAL ? '<div class="sw-trial" id="sw-trial"></div>' : '')
     + '<div class="sw-target"><span>이 숫자에서 멈춰!</span><b id="sw-target">?</b></div>'
     + '<div class="sw-wrap"><div class="sw-clock" id="sw-clock"><i class="sw-knob"></i><i class="sw-ear l"></i><i class="sw-ear r"></i>'
     + '<button class="sw-dial" id="sw-dial" aria-label="멈추기"><span class="sw-ring"></span><b id="sw-num">0</b><small id="sw-sub">1부터 100까지</small><span class="sw-rib">'+PAW+'딱 맞췄어요!'+PAW+'</span><span class="sw-spark" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></span></button></div></div>'
@@ -2470,19 +2591,24 @@ function stopScreen(){
     return '<div class="sw-step'+(x && x.got ? (x.got === x.target ? " hit" : " used") : "")+(cur ? " now" : "")+'"><b>'+l.n+'</b><span>'+l.tag+'</span><em>'+(x && x.got ? (x.got === x.target ? "딱 맞음!" : Math.abs(x.got - x.target)+" 차이") : speedIcon(i))+'</em></div>'; }).join(""); };
   const info = html => { msg.className = "sw-msg info"; msg.innerHTML = html; }, bubble = html => { msg.className = "sw-msg bub"; msg.innerHTML = html; };
   const btn = (kind, html) => { go.className = "sw-go " + kind; go.innerHTML = html; };
-  const at = ts => ((start + Math.floor((ts - t0) / STOPLV[lv].ms)) % 100) + 1;
+  const at = ts => ((start + Math.floor((ts - t0) / msOf(lv))) % 100) + 1;
+  const trialBar = () => { if(!TRIAL) return; const ms = msOf(lv), el = $("sw-trial");
+    el.innerHTML = '<button data-sp="1.15" aria-label="느리게">느리게</button><span>연습 · 숫자 하나에 <b>'+(ms / 1000).toFixed(3)+'초</b><br>100까지 한 바퀴 '+(ms / 10).toFixed(1)+'초'+(ms !== STOPLV[lv].ms ? ' (원래 '+(STOPLV[lv].ms / 1000).toFixed(3)+'초)' : '')+'</span><button data-sp="0.87" aria-label="빠르게">빠르게</button>';
+    el.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => { if(state === "run") return; const f = +b.dataset.sp, cur = msOf(lv); let nx = Math.round(cur * f); if(nx === cur) nx += f > 1 ? 1 : -1; TRIAL.ms[lv] = clamp(nx, 5, 200); trialBar(); });
+    $("sw-steps").querySelectorAll(".sw-step").forEach((x, i) => { x.style.cursor = "pointer"; x.onclick = () => { if(state === "run") return; TRIAL.lv = i; r.n = i; r.res = []; ready(); }; }); };
   function ready(){
     cancelAnimationFrame(raf); clock.classList.remove("run", "hit", "miss"); $("sw-conf").innerHTML = "";
     const pend = r.res.findIndex(x => x && x.got && x.got === x.target && !x.gift);          // 맞히고 아직 안 연 상자가 있으면 그것부터
     if(pend >= 0){ state = "gift"; lv = pend; steps(); setScene("hit"); clock.classList.add("hit"); $("sw-target").textContent = r.res[pend].target; num.textContent = r.res[pend].got; $("sw-sub").textContent = "";
-      bubble(BOXES[pend].n+"가 기다리고 있어요!"); btn("y", "선물 상자 열기"); return; }
+      bubble(BOXES[pend].n+"가 기다리고 있어요!"); btn("y", "선물 상자 열기"); trialBar(); return; }
+    if(TRIAL){ r.n = TRIAL.lv; r.res = []; }             // 연습: 고른 단계를 몇 번이든 다시 한다
     if(r.n >= STOPLV.length){ state = "over"; lv = STOPLV.length - 1; steps(); const hits = r.res.filter(x => x.got === x.target).length;
       $("sw-target").textContent = "?"; num.textContent = hits ? "★" : "끝"; $("sw-sub").textContent = "오늘 도전 끝"; setScene(hits ? "hit" : "ready");
       info(hits ? "오늘 <b>"+hits+"번</b> 딱 맞혔어요!<br>내일 또 도전해요 "+PAW : "오늘 세 번 다 도전했어요.<br>내일 또 도전해요 "+PAW); btn("y", "닫기"); return; }
     state = "ready"; lv = r.n; target = 1 + Math.floor(Math.random() * 100); steps(); setScene("ready");
     $("sw-target").textContent = target; num.textContent = "0"; $("sw-sub").textContent = "1부터 100까지";
     info("<b>목표 숫자</b>일 때 화면을 <b>터치</b>하세요!<br>딱 맞히면 <b>"+BOXES[lv].n+"</b>를 받아요.<br>"+PAW+" 기회는 <b>하루 3번!</b> "+PAW);
-    btn("y", '<svg width="22" height="22" viewBox="0 0 24 24" fill="#5A3A1C" aria-hidden="true"><path d="M7 4.500v15a1 1 0 001.500.900l12-7.500a1 1 0 000-1.700l-12-7.500A1 1 0 007 4.500z"/></svg>'+STOPLV[lv].n+" 시작");
+    btn("y", '<svg width="22" height="22" viewBox="0 0 24 24" fill="#5A3A1C" aria-hidden="true"><path d="M7 4.500v15a1 1 0 001.500.900l12-7.500a1 1 0 000-1.700l-12-7.500A1 1 0 007 4.500z"/></svg>'+STOPLV[lv].n+" 시작"); trialBar();
   }
   function run(){
     state = "run"; r.n = lv + 1; r.res[lv] = {target:target, got:0, lv:lv}; save();        // 시작을 누르면 기회 하나를 쓴다
@@ -2498,8 +2624,9 @@ function stopScreen(){
     $("sw-sub").textContent = hit ? "" : diff+" 차이"; steps(); setScene(hit ? "hit" : diff <= 3 ? "run" : "ready");
     bubble(hit ? "우와, <b>"+target+"</b>에 딱 멈췄어요!" : diff <= 3 ? "아깝다! <b>"+got+"</b>에서 멈췄어요." : "<b>"+got+"</b>에서 멈췄어요. 다음엔 꼭!");
     if(hit) $("sw-conf").innerHTML = Array.from({length:22}, (_, i) => '<i style="left:'+(4 + Math.random() * 92).toFixed(1)+'%;background:'+["#FFC93C","#FF8A65","#7FD6C2","#F7A8B8","#9AD0F5"][i % 5]+';animation-delay:'+(Math.random() * 0.5).toFixed(2)+'s;transform:rotate('+Math.floor(Math.random() * 90)+'deg)"></i>').join("");
-    if(hit){ state = "gift"; btn("y", "선물 상자 열기"); return; }
-    btn("y", (r.n >= STOPLV.length ? "결과 보기" : "다음 단계로")+' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A3A1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
+    if(hit){ state = "gift"; btn("y", "선물 상자 열기"); trialBar(); return; }
+    trialBar();
+    btn("y", (TRIAL ? "다시 해 보기" : r.n >= STOPLV.length ? "결과 보기" : "다음 단계로")+' <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5A3A1C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>');
   }
   const host = () => $("game-root").querySelector(".game");
   const done = () => { cancelAnimationFrame(raf); state = "x"; removeEventListener("resize", fit); closeGame(); };
@@ -2538,7 +2665,8 @@ render(); sync();
 setInterval(() => { if(S.running){ const el = $("run-clock"); if(el) el.textContent = clock(); checkIn(); } }, 1000);
 setInterval(() => { if(!$("game-root").innerHTML && !$("sheet-root").innerHTML && !$("modal-root").innerHTML) render(); }, 30000);
 setInterval(sync, 60000);
-document.addEventListener("visibilitychange", () => { if(!document.hidden){ render(); sync(); } });
+document.addEventListener("visibilitychange", () => { if(!document.hidden){ render(); sync(); } else if(SY.url && Object.keys(SY.dirty).length) syncNow(); });
+addEventListener("online", () => syncNow());
 })();
 </script>
 <script>if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){ addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }</script>
