@@ -193,6 +193,7 @@ nav button.on .ic{background:var(--y)}
 .item .nm{font-family:var(--hand);font-weight:700;font-size:21px;line-height:1.15}
 .item svg.ti{flex:none}
 .chk.sq{border-radius:8px;width:26px;height:26px}
+.item .nm{text-wrap:balance;line-height:1.2}
 .rw{flex:none;font-size:13px;color:var(--mut);display:inline-flex;align-items:center;gap:3px}
 nav{padding:6px 10px calc(6px + env(safe-area-inset-bottom));gap:6px}
 nav button{border-radius:16px}
@@ -1027,8 +1028,10 @@ const TASKS = [
   {id:"school-hw", n:"학교 숙제", ic:"book", timed:true},
   {id:"academy-hw", n:"학원 숙제", ic:"pencil", timed:true},
   {id:"dance", n:"댄스 연습", ic:"music", timed:true},
+  {id:"dance-log", n:"연습 일지 기록", ic:"pencil", timed:false, from:"2026-11-22"},
   {id:"dinner", n:"저녁 먹기", ic:"bowl", timed:false},
-  {id:"shower", n:"샤워하기", ic:"drop", timed:false}
+  {id:"shower", n:"샤워하기", ic:"drop", timed:false},
+  {id:"reading", n:"독서 30분 이상", ic:"book", timed:false, fish:5, from:"2026-11-22"}      // from: 이 날부터 생긴 할 일 (그 전날들은 이 일이 없던 것으로 본다)
 ];
 const SNACKS = [
   {id:"milk", img:"snack_milk", n:"고양이 우유", price:2, mood:10, aff:2, art:'<path d="M8 8l2-3h4l2 3v12H8z" fill="#FFFFFF" stroke="#303030" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 12h8" stroke="#9CC7EA" stroke-width="2"/>'},
@@ -1037,7 +1040,7 @@ const SNACKS = [
   {id:"salmon", img:"snack_salmon", n:"연어 구이", price:8, mood:30, aff:8, art:'<path d="M3 13c4-6 12-7 16 0c-4 6-12 5-16 0z" fill="#FFB9A0" stroke="#303030" stroke-width="1.4" stroke-linejoin="round"/><path d="M19 13l3-3v6z" fill="#FFB9A0" stroke="#303030" stroke-width="1.4" stroke-linejoin="round"/>'}
 ];
 // 기본 할 일 + 직접 추가한 할 일 (오늘만 하는 일은 그날에만 보인다)
-const taskFish = t => String(t.id)[0] === "c" ? (+t.fish || 0) : (t.timed ? S.rewards.timed : S.rewards.task);       // 지안이가 직접 넣은 할 일은 0
+const taskFish = t => String(t.id)[0] === "c" ? (+t.fish || 0) : t.fish != null ? t.fish : (t.timed ? S.rewards.timed : S.rewards.task);       // 지안이가 직접 넣은 할 일은 0
 function allTasks(){ const t = TK(); return TASKS.concat((S.custom || []).filter(c => !c.day || c.day === t)); }
 const TYPES = {school:"학교", study:"학원·공부", music:"악기", sport:"운동·댄스", play:"놀기"};
 const DAYS = ["일","월","화","수","목","금","토"];
@@ -1206,7 +1209,7 @@ function skipCheck(){            // 지나간 날 가운데 '오늘 할 일'을 
   if(S.skip.last >= back(1)) return;
   const missed = [];
   for(let n = 7; n >= 1; n--){ const k = back(n); if(k <= S.skip.last) continue;
-    const rec = S.days[k], list = TASKS.concat((S.custom || []).filter(c => c.day ? c.day === k : keyOf(new Date(+String(c.id).slice(1) || 0)) <= k));     // 그날 있던 할 일 (나중에 추가한 것은 빼고)
+    const rec = S.days[k], list = TASKS.filter(x => !x.from || x.from <= k).concat((S.custom || []).filter(c => c.day ? c.day === k : keyOf(new Date(+String(c.id).slice(1) || 0)) <= k));     // 그날 있던 할 일 (나중에 추가한 것은 빼고)
     if(!list.every(t => rec && rec.tasks && rec.tasks[t.id] && rec.tasks[t.id].end)) missed.push(k); }
   S.skip.last = back(1);
   if(missed.length){
@@ -1850,7 +1853,7 @@ const GAMES = {
   match:{n:"같은 그림 찾기", img:"sprites/both_smile.webp", key:"match", secs:60, unit:["찾은 짝","쌍"], rule:"3쌍 찾으면 생선 1마리,<br>6쌍 다 찾으면 2마리!", how:"카드를 두 장씩 뒤집어<br>같은 모습의 고양이를 찾아요."},
   slice:{n:"간식 슬라이스", img:"art/snack_can.webp", key:"slice", bg:"bg_game_garden", unit:["자른 간식","개"], rule:"10개 자르면 생선 1마리!<br>털실 공을 건드리면 2개 줄어요.", how:"날아오르는 간식을<br>손가락으로 쓱 그어요.<br>털실 공은 건드리면 안 돼요!"},
   band:{n:"고양이 밴드", img:"sprites/both_sing.webp", key:"band", secs:34, how:"내려오는 음표가 까만 줄에 닿을 때 그 칸을 눌러요. 박자를 맞추면 노래가 돼요!"},
-  tower:{n:"츄르 타워", img:"art/snack_chur.webp", key:"tower", bg:"bg_churu_room", secs:90, custom:true, unit:["쌓은 츄르","층"], rule:"5층까지 쌓으면 생선 1마리!", how:"좌우로 움직이는 츄르가 아래 츄르 위에 왔을 때 화면을 눌러요!"},
+  tower:{n:"츄르 타워", img:"art/snack_chur.webp", key:"tower", bg:"bg_churu_room", secs:90, custom:true, unit:["쌓은 츄르","층"], rule:"5층마다 생선 1마리! (최대 5마리)", how:"좌우로 움직이는 츄르가 아래 츄르 위에 왔을 때 화면을 눌러요!"},
   spell:{n:"맞춤법 퀴즈", img:"sprites/naong_wonder.webp", key:"spell", secs:180, unit:["맞힌 문제","개"], rule:"2개 맞힐 때마다 생선 1마리,<br>10개 다 맞히면 2마리 더!", how:"두 가지 중에서<br>맞춤법이 맞는 쪽을 골라요."},
   yarn:{n:"털실 공놀이", ic:"game_yarn", key:"yarn", bg:"bg_game_garden", how:"털실 공을 누르거나 끌어서 던져요. 나옹이와 애옹이가 쫓아가서 톡 쳐요!"},
   fly:{n:"나비 잡기", ic:"game_butterfly", cat:"aeong", key:"aeong", bg:"bg_game_garden", how:"날아다니는 나비를 누르면 애옹이가 폴짝 뛰어 잡아요!"},
@@ -1860,7 +1863,7 @@ const GAME_SECS = 30, FREE = ["yarn","match","slice","band","tower","spell"];   
 const gicon = g => g.img ? R(g.img) : art(g.ic);
 let PLAYCAT = "naong";                                   // 지금 누구랑 노는지
 const pkey = id => GAMES[id].key + "_" + PLAYCAT;        // 놀이마다, 고양이마다 하루 한 번
-const PRIZE = {spell:7, match:2, slice:1, tower:1};       // 놀이별 최대 생선
+const PRIZE = {spell:7, match:2, slice:1, tower:5};       // 놀이별 최대 생선
 const PLAYMAX = 2;                                        // 놀이마다, 고양이마다 하루에 할 수 있는 횟수
 const playN = id => { const r = day().played[pkey(id)]; return r ? (r.n || 1) : 0; };
 const quizDone = () => playN("spell") > 0;                // 지금 같이 노는 고양이와 오늘 맞춤법 퀴즈를 했는지
@@ -1878,7 +1881,7 @@ function rewardOf(id, score){
   if(id === "spell") return Math.min(5, Math.floor(score / 2)) + (score >= 10 ? 2 : 0);    // 2개당 1마리, 다 맞히면 +2
   if(id === "match") return score >= 6 ? 2 : score >= 3 ? 1 : 0;
   if(id === "slice") return score >= 10 ? 1 : 0;
-  if(id === "tower") return score >= 5 ? 1 : 0;
+  if(id === "tower") return Math.min(PRIZE.tower, Math.floor(score / 5));      // 5층마다 1마리, 최대 5마리
   if(id === "yarn") return Math.min(3, Math.floor(score / 4));
   if(id === "band") return Math.min(5, Math.floor(score / 8));
   return Math.min(20, score);
@@ -2047,7 +2050,7 @@ function churuIntro(again){
     + '<p class="cz-txt">좌우로 움직이는 츄르가<br>아래 츄르 위에 왔을 때<br>화면을 눌러요!</p>'
     + '<div class="cz-demo" aria-hidden="true"><span class="mvr">'+churuEl(0, 120)+'</span><i></i><span>'+churuEl(0, 120)+'</span></div>'
     + '<p class="cz-txt sm">'+PAW+'딱 맞출수록 츄르를 더 높이<br>쌓을 수 있어요!</p>'
-    + (again ? '<p class="cz-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '<p class="cz-note">5층까지 쌓으면 생선 1마리!</p>')
+    + (again ? '<p class="cz-note">오늘 생선은 이미 받았어요.<br>그냥 놀아도 좋아요!</p>' : '<p class="cz-note">5층마다 생선 1마리!<br>25층이면 5마리까지 받아요.</p>')
     + '<button class="cz-btn" id="g-start">시작하기 ›</button></div></div>';
 }
 function towerGame(){ runGame("tower", api => {
